@@ -49,3 +49,19 @@ export function readEnvironment(source: Record<string, string | undefined>): App
 }
 
 export const environment: AppEnvironment = readEnvironment(process.env);
+
+/**
+ * El entorno crudo, para comprobar la **presencia** de credenciales.
+ *
+ * No entra al esquema porque los nombres de las credenciales dependen de qué
+ * servicios estén en modo real, y eso se resuelve al componer. Se expone acá y
+ * no se lee `process.env` en otro archivo: este módulo sigue siendo el único
+ * punto del sistema que lo toca.
+ */
+export const environmentSource: Record<string, string | undefined> = process.env;
+
+/**
+ * Si esto es desarrollo. No entra al esquema porque lo pone la herramienta de
+ * construcción, no una persona: validarlo sería fingir que se puede configurar.
+ */
+export const isDevelopment: boolean = process.env.NODE_ENV !== 'production';

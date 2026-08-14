@@ -33,8 +33,33 @@ puertos; hoy el esquema los acepta y los tipa.
 ## Regla
 
 Con `MODO_SERVICIOS=real`, si falta una credencial la aplicación **no arranca** y
-nombra la que falta. **Jamás cae a simulado en silencio** (RN10). Las
-credenciales aparecen en P4; el mecanismo que las exige ya está puesto.
+nombra la que falta. **Jamás cae a simulado en silencio** (RN10).
+
+Construido en P4 y verificado contra el build, no solo en pruebas:
+
+```bash
+$ MODO_SERVICIOS=real npx next build
+El servicio "calendar" está configurado en modo real y faltan estas variables:
+GOOGLE_CALENDAR_ID, GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_PRIVATE_KEY.
+La aplicación no arranca en simulado sin avisar (RN10).
+```
+
+Con las credenciales puestas **también** se detiene hasta P12, porque el
+adaptador real todavía no existe: seguir sería usar el simulado sin avisar.
+
+## Credenciales por servicio
+
+Los nombres viven en `src/shared/infrastructure/config/credentials.ts`. Se exigen
+**solo** del servicio que esté en modo real.
+
+| Servicio | Variables |
+|---|---|
+| Calendario | `GOOGLE_CALENDAR_ID` · `GOOGLE_SERVICE_ACCOUNT_EMAIL` · `GOOGLE_PRIVATE_KEY` |
+| Correo | `BREVO_API_KEY` · `BREVO_SENDER_EMAIL` |
+| Modelo del bot | `MODELO_API_KEY` · `MODELO_NOMBRE` · `MODELO_TOPE_MENSUAL_USD` |
+| Almacén | `DATABASE_URL` |
+
+Una variable vacía cuenta como ausente.
 
 Se comprueba después de desplegar con `GET /api/estado`, que devuelve el modo
 activo (ADR-0007).

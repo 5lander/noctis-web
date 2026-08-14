@@ -1,0 +1,36 @@
+.page {
+  width: 100%;
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 48px var(--borde);
+}
+
+.intro,
+.empty {
+  color: var(--texto-2);
+  margin: 16px 0 32px;
+  max-width: 56ch;
+}
+
+.message {
+  padding: 24px 0;
+  border-top: 1px solid var(--linea);
+}
+
+.message h2 {
+  font-size: 21px;
+}
+
+.meta {
+  margin: 8px 0 16px;
+  font-size: 14px;
+  color: var(--texto-2);
+}
+
+.body {
+  font-family: var(--texto-f);
+  font-size: 15px;
+  white-space: pre-wrap;
+  color: var(--texto-2);
+  max-width: 68ch;
+}

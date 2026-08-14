@@ -5,8 +5,8 @@
 
 ## Dónde va el proyecto
 
-**Paquete actual:** P4 — Puertos, adaptadores simulados y selector de modo
-**Último commit de paquete:** `{hash-p3}` — P3 Capa de animación
+**Paquete actual:** P5 — Motor de disponibilidad (dominio puro)
+**Último commit de paquete:** `{hash-p4}` — P4 Puertos y adaptadores simulados
 **Fecha de última actualización:** 2026-08-14
 **Modo:** 🤖 **autónomo hasta P5**, activado por el usuario. Avanza solo entre paquetes; el resto del protocolo se cumple igual.
 
@@ -17,9 +17,9 @@
 | P0 | Fundación | ✅ Cerrado · 2026-08-14 · `6d69dc7` |
 | P1 | Sistema de diseño y modo claro/oscuro | ✅ Cerrado · 2026-08-14 · `e8466b9` |
 | P2 | Contenido tipado y secciones estáticas | ✅ Cerrado · 2026-08-14 · `65eb06d` |
-| P3 | Capa de animación GSAP | ✅ Cerrado · 2026-08-14 · `{hash-p3}` |
-| P4 | Puertos, adaptadores simulados y selector de modo | 🔄 En curso |
-| P5 | Motor de disponibilidad (dominio puro) | ⬜ Pendiente |
+| P3 | Capa de animación GSAP | ✅ Cerrado · 2026-08-14 · `c4fc55f` |
+| P4 | Puertos, adaptadores simulados y selector de modo | ✅ Cerrado · 2026-08-14 · `{hash-p4}` |
+| P5 | Motor de disponibilidad (dominio puro) | 🔄 En curso |
 | P6 | API de agendamiento | ⬜ Pendiente |
 | P7 | Agendador en la interfaz | ⬜ Pendiente |
 | P8 | Bot conversacional | ⬜ Pendiente |
@@ -59,6 +59,28 @@ Estados: ⬜ Pendiente · 🔄 En curso · ✅ Cerrado
 - **El camino crítico del proyecto es P5.** El motor de disponibilidad es el componente central del dominio: si queda mal, la prueba de arquitectura falla y P6, P7 y P8 se construyen sobre arena. Se prueba sin base de datos, sin red y sin Google Calendar
 - **Este proyecto construye completo primero y endurece en Pf.** Ver la adaptación deliberada en `CLAUDE.md` §0
 - **Los adaptadores simulados no se descartan.** Son el entorno de pruebas y el modo demostración comercial
+
+### Lo que dejó P4 y hay que usar, no reinventar
+
+| Necesito… | Ya existe en |
+|---|---|
+| Hablar con el calendario, el correo, el bot o el almacén | `services` de `shared/infrastructure/config/service-registry.ts`. **Nunca instancies un adaptador dentro de una regla de negocio** |
+| Un intervalo de tiempo | `modules/availability/domain/time-range.ts`. `overlaps` ya está escrito y probado |
+| Agregar una credencial | `shared/infrastructure/config/credentials.ts`, a `.env.example` y a `docs/sistema/configuracion.md` |
+| Que un adaptador simulado falle, para construir un estado de error | `new FakeCalendar({ latencyMs: 0, fault: 'unavailable' })` |
+
+### Trampas de P4
+
+- **El registro de servicios se compone al cargar el módulo.** Importarlo con una
+  configuración mala tumba el arranque, que es lo que se busca. Si una prueba
+  necesita otra configuración, usa `createServices(entorno, credenciales)` en vez
+  del singleton
+- Un `next build` con `MODO_SERVICIOS=real` **falla a propósito** y deja la salida
+  a medias: hay que reconstruir en demo antes de `next start`
+- La bandeja `/dev/bandeja` no existe en producción. No es un permiso: es que ahí
+  se ven correos enteros
+- El bot simulado **ignora lo que escribe el visitante** al decidir qué responder.
+  No es una limitación, es la propiedad que hace que RN13 sea cierta
 
 ### Lo que dejó P3 y hay que usar, no reinventar
 

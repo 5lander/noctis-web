@@ -4,6 +4,31 @@ Una entrada por commit de paquete. Formato: qué se construyó, qué quedó fuer
 
 ## [Sin publicar]
 
+### P4 — Puertos, adaptadores simulados y selector de modo · 2026-08-14
+
+**Qué se construyó**
+
+- Los cuatro puertos de `BUILD.md` §2, con las reglas metidas en su forma:
+  `CalendarPort.busyRanges` devuelve intervalos y nada más, así que **RN1 no
+  depende de la disciplina de nadie**; `ChatPort` devuelve texto y no órdenes,
+  así que el modelo no tiene por dónde ejecutar nada.
+- Los cuatro adaptadores simulados, con latencia y un **interruptor** de fallo
+  —no un dado—: pruebas deterministas y demostraciones que siempre hacen lo
+  mismo, que es lo que `BUILD.md` §3 pide.
+- El selector de modo, global y por servicio, que es lo que permite pasar a real
+  uno a la vez en P12.
+- `TimeRange`, el primer tipo de dominio del sistema.
+- `/dev/bandeja`, que muestra los correos que se habrían enviado. **404 en
+  producción**: es donde se ven correos enteros.
+- 38 pruebas nuevas, 135 en total.
+
+**RN10, verificada contra el build**
+
+Con un servicio en `real` y sin credenciales, `next build` **falla** y nombra las
+tres variables que faltan. Con las credenciales puestas también se detiene, porque
+el adaptador real llega en P12: seguir sería usar el simulado sin avisar, que es
+exactamente el desastre invisible que la regla prohíbe.
+
 ### P3 — Capa de animación GSAP · 2026-08-14
 
 **Qué se construyó**
