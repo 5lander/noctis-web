@@ -6,7 +6,7 @@
 |---|---|
 | Paquete | P5 — Motor de disponibilidad · **camino crítico** |
 | Fecha inicio / fin | 2026-08-14 / 2026-08-14 |
-| Commit final | `{hash}` |
+| Commit final | `45987f7` |
 | Decisiones implementadas | D1, D2 y D3 de `DECISIONES.md` |
 | Estado | ✅ completado |
 
