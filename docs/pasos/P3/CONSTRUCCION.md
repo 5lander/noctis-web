@@ -6,7 +6,7 @@
 |---|---|
 | Paquete | P3 — Capa de animación GSAP |
 | Fecha inicio / fin | 2026-08-14 / 2026-08-14 |
-| Commit final | `{hash}` |
+| Commit final | `c4fc55f` |
 | Secciones implementadas | `ANIMACION.md` RA-01 a RA-05, §4 accesibilidad y corte de móvil |
 | Estado | ✅ completado |
 

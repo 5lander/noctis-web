@@ -10,3 +10,16 @@
 export const UI_TEXT = {
   modeToggle: 'Cambiar entre modo claro y oscuro',
 } as const;
+
+/**
+ * La bandeja de correo simulada. Solo existe en desarrollo, pero su texto vive
+ * acá igual: la regla no tiene excepciones por audiencia.
+ */
+export const DEV_MAILBOX = {
+  title: 'Bandeja simulada',
+  intro:
+    'Los correos que el sistema habría enviado. Viven en memoria y desaparecen al reiniciar el servidor.',
+  empty: 'Todavía no se envió ningún correo en esta sesión.',
+  to: 'Para',
+  sentAt: 'Enviado',
+} as const;
