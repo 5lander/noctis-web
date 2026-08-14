@@ -13,3 +13,5 @@ Plantilla: `docs/plantillas/ADR.md`. Ante la duda de si algo merece ADR, escríb
 | [0005](ADR-0005-typescript-6-en-lugar-de-7.md) | TypeScript 6.0.3, no 7.0.2 | 2026-08-14 | ✅ aceptado |
 | [0006](ADR-0006-utilidades-propias-en-lugar-de-dependencias.md) | Registro, limitador y pre-commit propios, sin dependencias | 2026-08-14 | ✅ aceptado |
 | [0007](ADR-0007-endpoint-de-estado.md) | `GET /api/estado` expone el modo de servicios | 2026-08-14 | ✅ aceptado |
+| [0008](ADR-0008-nombres-de-componentes-en-ingles-y-tokens-en-espanol.md) | Componentes en inglés, tokens en español | 2026-08-14 | ✅ aceptado |
+| [0009](ADR-0009-contraste-verificado-y-dos-desvios-del-prototipo.md) | Contraste verificado, y los dos desvíos del prototipo que obligó | 2026-08-14 | ✅ aceptado |

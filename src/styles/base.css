@@ -1,15 +1,70 @@
 /*
- * Base mínima. Sin un solo valor de diseño: los tokens de color, tipografía y
- * espaciado llegan en P1 desde `tokens.css`, y ningún componente escribe uno
- * literal (CLAUDE.md §10).
+ * Base del documento. Solo lo que no pertenece a ningún componente: reinicio,
+ * cuerpo, enlaces, foco y jerarquía tipográfica.
+ *
+ * Ni un valor literal: todo sale de `tokens.css` (`CLAUDE.md` §10).
  */
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  margin: 0;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--texto-f);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  transition:
+    background 0.5s var(--curva),
+    color 0.5s var(--curva);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* El foco de teclado se ve siempre, en todo elemento interactivo (SPEC §8.3) */
+:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: 4px;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--display);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1.03;
+}
+
+/*
+ * Movimiento reducido: la página queda entera, sin una sola transición.
+ * Vive acá y no en la capa de animación para que valga aunque GSAP no cargue
+ * (RN11, SPEC §8.1).
+ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
 }

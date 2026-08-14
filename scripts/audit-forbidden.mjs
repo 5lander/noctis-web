@@ -16,6 +16,18 @@ const SCANNED_ROOT_FILES = ['next.config.ts', 'eslint.config.mjs', 'eslint.compl
 const SCANNED_EXTENSIONS = new Set(['.ts', '.tsx', '.mjs', '.cjs', '.css']);
 const SKIPPED_DIRS = new Set(['node_modules', '.next', '.git', 'out', 'coverage', 'report']);
 
+/**
+ * Excepciones declaradas de `html-crudo`.
+ *
+ * `CLAUDE.md` §8 prohíbe `dangerouslySetInnerHTML` **con contenido de usuario**;
+ * §10 exige un script en línea que fije el modo antes del primer pintado, y en
+ * React eso no se escribe de otra forma. La lista se imprime en cada corrida:
+ * una excepción que nadie ve deja de ser una excepción y pasa a ser un agujero.
+ *
+ * Para agregar una hace falta un ADR. Hoy hay una.
+ */
+const RAW_HTML_EXCEPTIONS = new Set([`src${sep}components${sep}theme${sep}theme-script.tsx`]);
+
 const RULES = [
   {
     id: 'supresion-de-tipos',
@@ -36,6 +48,7 @@ const RULES = [
     id: 'html-crudo',
     pattern: /dangerouslySetInnerHTML/,
     message: 'Prohibido con datos que hayan tocado a un usuario (SEGURIDAD.md §4.1).',
+    exceptFiles: RAW_HTML_EXCEPTIONS,
   },
   {
     id: 'script-desde-cdn',
@@ -69,7 +82,9 @@ function collectFiles(directory, found) {
 }
 
 function rulesFor(filePath) {
-  return filePath.includes(DOMAIN_PATH) ? [...RULES, ...DOMAIN_RULES] : RULES;
+  const relativePath = relative(ROOT, filePath);
+  const applicable = RULES.filter((rule) => rule.exceptFiles?.has(relativePath) !== true);
+  return filePath.includes(DOMAIN_PATH) ? [...applicable, ...DOMAIN_RULES] : applicable;
 }
 
 function scanFile(filePath) {
@@ -105,7 +120,14 @@ function scanEverything() {
   return [...files.flatMap(scanFile), ...versionedEnvFiles()];
 }
 
+function describeExceptions() {
+  const declared = [...RAW_HTML_EXCEPTIONS];
+  return `${declared.length} excepción(es) declarada(s) de html-crudo: ${declared.join(', ')}`;
+}
+
 const findings = scanEverything();
+
+console.log(`audit:forbidden — ${describeExceptions()}`);
 
 if (findings.length === 0) {
   console.log('audit:forbidden — sin hallazgos');

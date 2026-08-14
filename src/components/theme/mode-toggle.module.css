@@ -1,0 +1,43 @@
+.toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--linea);
+  background: transparent;
+  color: var(--texto);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: border-color 0.3s ease;
+}
+
+.toggle:hover {
+  border-color: var(--texto);
+}
+
+.toggle svg {
+  width: 16px;
+  height: 16px;
+}
+
+/*
+ * El icono muestra a qué modo se va a cambiar, no en cuál se está.
+ * El estado por defecto es el del modo oscuro: si `data-mode` todavía no está
+ * puesto —JavaScript deshabilitado—, el botón se ve bien igual en vez de quedar
+ * sin icono.
+ */
+.sun {
+  display: block;
+}
+
+.moon {
+  display: none;
+}
+
+html[data-mode='light'] .sun {
+  display: none;
+}
+
+html[data-mode='light'] .moon {
+  display: block;
+}

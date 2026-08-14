@@ -68,6 +68,38 @@ commit. Cuatro reglas, todas en `error`:
 de `domain/`, `any`, supresiones de compilador o linter, `dangerouslySetInnerHTML`,
 scripts desde CDN, SQL interpolado y archivos `.env` versionados.
 
+## La capa visual — P1
+
+```mermaid
+flowchart TD
+  PX["src/proxy.ts"] -->|nonce| LY["app/layout.tsx"]
+  LY -->|data-mode por defecto| HTML["&lt;html data-mode='dark'&gt;"]
+  LY --> TS["ThemeScript en &lt;head&gt;"]
+  TS -->|antes del primer pintado| HTML
+  LY --> FONT["next/font · Inter Tight + Inter<br/>descargadas en el build"]
+  HTML --> TOK["tokens.css · dos modos + .inv"]
+  TOK --> UI["Button · Field · Label · Status · Accordion"]
+  MT["ModeToggle (cliente)"] -->|clic| HTML
+  MT --> LS["localStorage"]
+  LS -.->|próxima visita| TS
+```
+
+**Por qué no parpadea.** El `<html>` sale del servidor con el modo por defecto,
+así que la paleta se aplica desde el primer byte —y la página se ve entera
+aunque JavaScript esté deshabilitado—. El script del `<head>` es lo primero que
+corre y corrige el modo antes de que el navegador pinte, si el visitante eligió
+otro o su sistema pide otro.
+
+**Cero valores literales en componentes.** Todo color, fuente y curva sale de
+`tokens.css`. Los nombres de los tokens están en español, contra la convención
+del resto del código, porque son el contrato visual que se comparte con Commerce
+y Care (ADR-0008).
+
+**El contraste se calcula, no se afirma.** `src/styles/contrast.spec.ts` lee
+`tokens.css` y comprueba AA en los cuatro contextos: los dos modos, cada uno con
+y sin franja invertida. Si alguien retoca un token, la prueba falla con el número
+exacto.
+
 ## Flujo de reserva *(llega en P6)*
 
 ```mermaid

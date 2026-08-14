@@ -2,7 +2,7 @@
 
 | Fecha | Auditor | Commit auditado |
 |---|---|---|
-| 2026-08-14 | Claude Code | `{hash}` |
+| 2026-08-14 | Claude Code | `6d69dc7` |
 
 > Se corrió la checklist **completa** de `docs/AUDITORIA.md`, no solo la rápida. En
 > P0 sale barato porque el paquete es la fundación: correrla entera ahora deja el
@@ -82,7 +82,7 @@
 | # | Resultado | Evidencia |
 |---|---|---|
 | E1–E7 · E9 · E12–E14 | — no aplica | Corresponden a P5, P6 y P8 |
-| E8 | ✅ | `grep -ri "SRI\|facturación electrónica"` sobre `src/` → sin coincidencias. El contenido de cara al usuario son dos archivos y ninguno lo menciona |
+| E8 | ✅ | `grep -rniE "sri\|facturaci[oó]n electr"` sobre `src/` → **sin coincidencias**. La primera pasada encontró una: un comentario en `content/site.ts` que citaba la regla nombrando lo prohibido. Se reescribió para que la cita no reintroduzca la cadena y un chequeo automático futuro no tenga que aprender excepciones |
 | E10 | ⚠️ parcial | El entorno se valida por esquema al arrancar y una configuración mala impide el arranque nombrando la variable. **La exigencia de credenciales en `MODO_SERVICIOS=real` llega en P4**, cuando existan credenciales que exigir. Hoy no hay forma de caer a simulado en silencio porque no hay nada real que simular |
 | E11 | ✅ | Sin JavaScript la página se lee: es HTML renderizado en servidor. No hay animación todavía (P3) |
 
