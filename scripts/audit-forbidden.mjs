@@ -26,7 +26,7 @@ const SKIPPED_DIRS = new Set(['node_modules', '.next', '.git', 'out', 'coverage'
  *
  * Para agregar una hace falta un ADR. Hoy hay una.
  */
-const RAW_HTML_EXCEPTIONS = new Set([`src${sep}components${sep}theme${sep}theme-script.tsx`]);
+const RAW_HTML_EXCEPTIONS = new Set([`src${sep}components${sep}head${sep}inline-head-script.tsx`]);
 
 const RULES = [
   {

@@ -1,0 +1,50 @@
+/*
+ * Estados iniciales de la animación.
+ *
+ * **Todo cuelga de `html.animation-ready`**, que solo pone JavaScript. Sin
+ * JavaScript no hay clase, no hay estado inicial y la página se ve entera
+ * (RN11). El prototipo lo hace al revés —esconde por defecto y muestra si algo
+ * falla— y con JavaScript deshabilitado se queda en blanco.
+ *
+ * El estado inicial vive en CSS y no en JavaScript porque `ANIMACION.md` §3
+ * RA-01 lo pide así: si lo pusiera JavaScript, habría un instante con el
+ * contenido en su sitio antes de saltar al estado de partida.
+ */
+
+html.animation-ready [data-anim] {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+/* RA-01: cada palabra del titular, enmascarada y esperando abajo. */
+.word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+html.animation-ready .word > span {
+  display: inline-block;
+  transform: translateY(105%);
+}
+
+.word > span {
+  display: inline-block;
+}
+
+/*
+ * Movimiento reducido: no se anima nada y todo queda visible, aunque la clase
+ * esté puesta. Es la primera de las tres condiciones no negociables de
+ * `ANIMACION.md` §4, y vive en CSS para que valga aunque el paquete de la
+ * animación no llegue a ejecutarse.
+ */
+@media (prefers-reduced-motion: reduce) {
+  html.animation-ready [data-anim] {
+    opacity: 1;
+    transform: none;
+  }
+
+  html.animation-ready .word > span {
+    transform: none;
+  }
+}

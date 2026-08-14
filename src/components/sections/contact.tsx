@@ -43,7 +43,7 @@ function TextInput({ field, type, required = false }: TextInputProps) {
 
 function ContactForm() {
   return (
-    <form className={styles['form']} method="post" action="/api/contacto">
+    <form className={styles['form']} method="post" action="/api/contacto" data-anim>
       <TextInput field={FIELDS.name} type="text" required />
       <TextInput field={FIELDS.business} type="text" />
       <TextInput field={FIELDS.email} type="email" required />
@@ -73,10 +73,10 @@ function ContactForm() {
 
 export function Contact() {
   return (
-    <section id="contacto" className={`inv ${styles['section']}`}>
+    <section id="contacto" className={`inv ${styles['section']}`} data-reveal-root>
       <Container>
         <div className={styles['grid']}>
-          <div>
+          <div data-anim>
             <h2>{CONTACT.title}</h2>
             <p className={styles['support']}>{CONTACT.support}</p>
           </div>

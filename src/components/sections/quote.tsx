@@ -18,9 +18,9 @@ export function Quote() {
   if (QUOTE.pending) return null;
 
   return (
-    <section className={styles['quote']}>
+    <section className={styles['quote']} data-reveal-root>
       <Container>
-        <blockquote>{`“${QUOTE.text}”`}</blockquote>
+        <blockquote data-anim>{`“${QUOTE.text}”`}</blockquote>
         <p className={styles['attribution']}>
           <b>{QUOTE.author}</b>
           {QUOTE.role}

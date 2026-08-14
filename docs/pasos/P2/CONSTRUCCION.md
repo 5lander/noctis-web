@@ -6,7 +6,7 @@
 |---|---|
 | Paquete | P2 — Contenido tipado y secciones estáticas |
 | Fecha inicio / fin | 2026-08-14 / 2026-08-14 |
-| Commit final | `{hash}` |
+| Commit final | `65eb06d` |
 | Secciones del SPEC implementadas | §3 estructura · §5 contenido completo · §6 las once secciones · §8 accesibilidad |
 | Estado | ✅ completado |
 

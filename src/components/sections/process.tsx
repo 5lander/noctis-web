@@ -10,7 +10,7 @@ export function Process() {
     <Section id="proceso" heading={HEADINGS.process}>
       <div className={styles['grid']}>
         {PROCESS_STEPS.map((step) => (
-          <div key={step.id} className={styles['step']}>
+          <div key={step.id} className={styles['step']} data-anim>
             <Label>{step.stage}</Label>
             <h3>{step.title}</h3>
             <p>{step.description}</p>

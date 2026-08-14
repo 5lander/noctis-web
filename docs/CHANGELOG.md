@@ -4,6 +4,36 @@ Una entrada por commit de paquete. Formato: qué se construyó, qué quedó fuer
 
 ## [Sin publicar]
 
+### P3 — Capa de animación GSAP · 2026-08-14
+
+**Qué se construyó**
+
+- RA-01 a RA-05 de `docs/ANIMACION.md`, dentro de un `gsap.context()` con
+  limpieza: al desmontar, `revert()` deshace los estilos y mata los
+  ScrollTrigger, así que navegar entre rutas no deja disparadores huérfanos.
+- GSAP 3.15 desde el paquete, empaquetado con la aplicación. **Nunca desde un
+  CDN**; verificado sobre el HTML servido.
+- Corte de móvil con `gsap.matchMedia()` a 768 px.
+- El registro nocturno de la portada, renderizado en el servidor y rotando en el
+  cliente. Con movimiento reducido no rota.
+- Un solo componente de cliente para toda la animación: las once secciones
+  siguen siendo Server Components.
+
+**D15 no bloqueó, y sigue abierto**
+
+D15 (licencia de GSAP) está en 🔴 y bloquea P3 **si se usan plugins**. No se usa
+ninguno: el titular se parte en el servidor en vez de con `SplitText` —lo que
+además evita el instante con el titular entero reorganizándose— y ScrollSmoother
+está fuera de v1. Queda pendiente para el día que se quieran.
+
+**Un agujero del prototipo, corregido**
+
+Su CSS esconde los elementos animados y los rescata con una clase que **nadie
+agrega**: con JavaScript deshabilitado, la página queda en blanco, contra RN11.
+Se invirtió la condición —se esconde solo si JavaScript lo pidió— y se agregó un
+temporizador de rescate por si la capa no llega a ejecutarse. ADR-0010, con
+prueba que lo ejecuta.
+
 ### P2 — Contenido tipado y secciones estáticas · 2026-08-14
 
 **Qué se construyó**
