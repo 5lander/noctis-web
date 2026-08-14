@@ -6,7 +6,7 @@
 ## Dónde va el proyecto
 
 **Paquete actual:** P6 — API de agendamiento (siguiente; el modo autónomo llegaba hasta P5)
-**Último commit de paquete:** `{hash-p5}` — P5 Motor de disponibilidad
+**Último commit de paquete:** `45987f7` — P5 Motor de disponibilidad
 **Fecha de última actualización:** 2026-08-14
 **Modo:** ⏸️ **corrida autónoma terminada** en P5, como se pidió. P6 en adelante espera confirmación del usuario.
 
@@ -19,7 +19,7 @@
 | P2 | Contenido tipado y secciones estáticas | ✅ Cerrado · 2026-08-14 · `65eb06d` |
 | P3 | Capa de animación GSAP | ✅ Cerrado · 2026-08-14 · `c4fc55f` |
 | P4 | Puertos, adaptadores simulados y selector de modo | ✅ Cerrado · 2026-08-14 · `b0a4789` |
-| P5 | Motor de disponibilidad (dominio puro) | ✅ Cerrado · 2026-08-14 · `{hash-p5}` |
+| P5 | Motor de disponibilidad (dominio puro) | ✅ Cerrado · 2026-08-14 · `45987f7` |
 | P6 | API de agendamiento | ⬜ Pendiente |
 | P7 | Agendador en la interfaz | ⬜ Pendiente |
 | P8 | Bot conversacional | ⬜ Pendiente |

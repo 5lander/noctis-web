@@ -2,7 +2,7 @@
 
 | Fecha | Auditor | Commit auditado |
 |---|---|---|
-| 2026-08-14 | Claude Code | `{hash}` |
+| 2026-08-14 | Claude Code | `45987f7` |
 
 ---
 
