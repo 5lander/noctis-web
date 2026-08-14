@@ -1,0 +1,116 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.work {
+  display: block;
+  cursor: pointer;
+}
+
+.canvas {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid var(--linea);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--fondo-2);
+}
+
+.mark {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(20px, 2.4vw, 34px);
+  letter-spacing: -0.03em;
+  text-align: center;
+  line-height: 1.05;
+  transition: transform 0.7s var(--curva);
+}
+
+.kind {
+  position: absolute;
+  left: 16px;
+  bottom: 14px;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.arrow {
+  position: absolute;
+  right: 16px;
+  top: 14px;
+  font-size: 15px;
+  opacity: 0;
+  transform: translate(-6px, 6px);
+  transition: all 0.5s var(--curva);
+}
+
+.work:hover .mark {
+  transform: scale(1.04);
+}
+
+.work:hover .arrow {
+  opacity: 0.7;
+  transform: none;
+}
+
+/* Los cuatro tratamientos del prototipo: todo tipografía y contraste */
+.inverted {
+  background: var(--inv-fondo);
+  color: var(--inv-texto);
+}
+
+.italic .mark {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.uppercase {
+  background: var(--fondo);
+}
+
+.uppercase .mark {
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-size: clamp(16px, 1.9vw, 24px);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 14px;
+  font-size: 14.5px;
+}
+
+.info b {
+  font-weight: 500;
+}
+
+.info span {
+  color: var(--texto-2);
+}
+
+@media (max-width: 1000px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 620px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
