@@ -5,10 +5,10 @@
 
 ## Dónde va el proyecto
 
-**Paquete actual:** P6 — API de agendamiento (siguiente; el modo autónomo llegaba hasta P5)
-**Último commit de paquete:** `45987f7` — P5 Motor de disponibilidad
+**Paquete actual:** P6 — API de agendamiento (siguiente)
+**Último commit de paquete:** P3.1 — Capa de movimiento expresiva (fuera de la numeración, después de P5)
 **Fecha de última actualización:** 2026-08-14
-**Modo:** ⏸️ **corrida autónoma terminada** en P5, como se pidió. P6 en adelante espera confirmación del usuario.
+**Modo:** ⏸️ P3.1 se construyó en autonomía hasta el commit, a pedido. P6 en adelante espera confirmación del usuario.
 
 ## Paquetes
 
@@ -18,6 +18,7 @@
 | P1 | Sistema de diseño y modo claro/oscuro | ✅ Cerrado · 2026-08-14 · `e8466b9` |
 | P2 | Contenido tipado y secciones estáticas | ✅ Cerrado · 2026-08-14 · `65eb06d` |
 | P3 | Capa de animación GSAP | ✅ Cerrado · 2026-08-14 · `c4fc55f` |
+| P3.1 | Capa de movimiento expresiva (fuera de numeración) | ✅ Cerrado · 2026-08-14 |
 | P4 | Puertos, adaptadores simulados y selector de modo | ✅ Cerrado · 2026-08-14 · `b0a4789` |
 | P5 | Motor de disponibilidad (dominio puro) | ✅ Cerrado · 2026-08-14 · `45987f7` |
 | P6 | API de agendamiento | ⬜ Pendiente |
@@ -44,6 +45,10 @@ Estados: ⬜ Pendiente · 🔄 En curso · ✅ Cerrado
 | 2026-08-14 | Componentes en inglés (`Button`, `Field`, `Label`, `Status`, `Accordion`), nombres de token en español porque son el contrato compartido con Commerce y Care | [0008](docs/decisiones/ADR-0008-nombres-de-componentes-en-ingles-y-tokens-en-espanol.md) |
 | 2026-08-14 | Contraste calculado por prueba. Los dos fallos que encontró se corrigieron **en el uso, no en la paleta** | [0009](docs/decisiones/ADR-0009-contraste-verificado-y-dos-desvios-del-prototipo.md) |
 | 2026-08-14 | El estado inicial de la animación cuelga de `html.animation-ready`: el CSS del prototipo dejaba la página en blanco sin JavaScript | [0010](docs/decisiones/ADR-0010-estado-inicial-de-animacion-invertido.md) |
+| 2026-08-14 | **D15 cerrado**: GSAP es gratuito por completo desde 2025, plugins incluidos. El paquete de npm ya los traía: no hubo nada que instalar | [0012](docs/decisiones/ADR-0012-licencia-de-gsap-resuelta.md) |
+| 2026-08-14 | El criterio de animación gira: de "que no se note" a "que se note". `ANIMACION.md` pasa a v2.0 con nueve requisitos nuevos. **Decisión del usuario** | [0013](docs/decisiones/ADR-0013-criterio-de-animacion-expresivo.md) |
+| 2026-08-14 | `three` como dependencia de producción para el cielo de la portada, autorizada explícitamente, con el uso acotado y la salida escrita si el presupuesto de Pf no da | [0014](docs/decisiones/ADR-0014-three-js-para-el-cielo-de-la-portada.md) |
+| 2026-08-14 | Rebrand: la paleta vive en dos capas (los siete `--color-*` del spec de marca + los alias cortos que consumen los componentes) y el logotipo se sirve como imagen de fondo, no como SVG copiado en un componente | [0011](docs/decisiones/ADR-0011-paleta-de-marca-en-dos-capas-y-logo-como-imagen.md) |
 
 ## Dudas abiertas
 
@@ -104,6 +109,49 @@ Estados: ⬜ Pendiente · 🔄 En curso · ✅ Cerrado
 - El bot simulado **ignora lo que escribe el visitante** al decidir qué responder.
   No es una limitación, es la propiedad que hace que RN13 sea cierta
 
+### Lo que dejó P3.1 y hay que usar, no reinventar
+
+**Reemplaza a lo que dice P3 más abajo, que quedó viejo.** El criterio de
+animación **cambió**: `docs/ANIMACION.md` es v2.0 y pide lo contrario que la v1.
+Si lees la v1 en algún lado, es una cita histórica dentro del propio documento.
+
+| Necesito… | Ya existe en |
+|---|---|
+| Animar algo nuevo | Un archivo en `components/animation/effects/`, y su llamada en `animation-layer.tsx`, que **solo compone**. No metas la animación dentro de la capa |
+| Un número del movimiento | `animation-settings.ts`. Ni uno suelto: `no-magic-numbers` bloquea el commit |
+| Un plugin de GSAP | `gsap-plugins.ts`, que los registra todos. Están **todos** disponibles y son gratuitos (D15 ✅) |
+| Que una sección se revele al entrar | `data-reveal-root` en la sección y `data-anim` en cada pieza. Ya lo hace `layout/section.tsx` |
+| Que una sección se anime **a su manera** | `data-owns-anim` en el contenedor: el revelado genérico la deja en paz. Si te lo olvidas, la pieza tiene dos dueños y gana el que corra último |
+| Un color dentro de un shader o de un canvas | `brand-colors.ts`, que lo lee de `tokens.css`. **No escribas un color en el shader** |
+| Un script en línea en el `<head>` | `head-script-source.ts`, que une los que ya están. **No agregues otro `<script>`** |
+
+### Trampas de P3.1
+
+- **Al unir scripts en línea, el separador importa.** Concatenar dos IIFE sin `;`
+  produce `})()(function(){…})()`, que el navegador lee como una llamada. Estuvo
+  roto desde P3 y **ninguna prueba lo vio**, porque cada script pasaba la suya por
+  separado. Si agregas un tercero, va a `HEAD_SCRIPT` y la prueba del texto unido
+  lo cubre solo.
+- **Un efecto que se actualiza en `onUpdate` de un disparador se queda pegado.** El
+  disparador solo avisa mientras hay scroll: el último valor se queda puesto. Si
+  tu efecto tiene que volver a un reposo, necesita su propio temporizador — mira
+  `straighten` en `scroll-skew.ts`.
+- **`gsap.context()` no limpia escuchas.** Todo efecto que haga
+  `addEventListener`, cree un elemento o parta un titular devuelve **su propia**
+  función de limpieza, y la capa las junta.
+- **La rama de móvil tiene que mostrar, no simplemente no animar.** Si no anima,
+  el estado inicial —que esconde— se queda puesto. Es la misma trampa de P3, y
+  ahora aplica también al proceso anclado y a las cortinas.
+- **`SplitText` con máscara recorta a la caja de línea**, y una serif grande se
+  sale de ella. El relleno de `.hero-line` es lo que lo arregla, y **no se
+  compensa con margen negativo**: eso encoge la máscara y la última línea se monta
+  sobre el párrafo.
+- **`tsc` ahora tarda minutos.** `@types/three` arrastra seis dependencias de
+  desarrollo. Es el costo de ADR-0014 y hay que contarlo al estimar.
+- **Nada del movimiento tiene prueba automatizada.** Se verificó a mano contra el
+  sitio corriendo. Playwright es de Pf, y las tres degradaciones (movimiento
+  reducido, sin JS, móvil) son lo primero que hay que cubrir ahí.
+
 ### Lo que dejó P3 y hay que usar, no reinventar
 
 | Necesito… | Ya existe en |
@@ -133,6 +181,24 @@ Estados: ⬜ Pendiente · 🔄 En curso · ✅ Cerrado
 | El ancho máximo del prototipo | `components/layout/container.tsx` |
 | Poner un trabajo real (C1) | Cambiar `content/works.ts`: `cover` pasa a `{ kind: 'image', src, alt }`. **El componente no se toca** |
 | Publicar el testimonio (C2) | `QUOTE.pending` a `false` en `content/site-copy.ts`. El componente no se toca |
+
+### Rebrand de identidad visual — aplicado sobre P1, fuera de la numeración
+
+Paleta, tipografía y logotipo salen desde ahora de
+`docs/identidad-de-marca-noctis/spec-rebrand-noctis.md`. **Para color y
+tipografía ese spec reemplaza al prototipo como fuente de verdad**; el prototipo
+sigue mandando en composición, espaciado y comportamiento.
+
+| Necesito… | Ya existe en |
+|---|---|
+| Un color de marca | `--color-accion` (interactivo) y `--color-acento` (decorativo) de `tokens.css`. **`--color-marca` no es texto en modo oscuro**: `#4338CA` sobre el fondo da 2.49:1, sirve de relleno con texto claro encima |
+| El logotipo | `components/brand/logo.tsx`. **Solo se coloca sobre `--color-fondo`**: el recorte de la luna es un círculo opaco del color del fondo, no un recorte real (ADR-0011) |
+| Verificar que un tono es el que dice la marca | `styles/contrast.spec.ts` lee el spec y `tokens.css` y compara los siete colores de cada modo. Cambiar uno sin el otro falla |
+
+Lo que **no** entró en este pase, porque el pedido fue paleta, tipografía y
+logo: el vidrio esmerilado en superficies flotantes más allá de la barra
+(spec §5), el copy con el mensaje *"todo bajo una sola relación"* (spec §6 y
+§7.5) y los archivos apilado y monocromo, que siguen en `docs/`.
 
 ### Lo que dejó P1 y hay que usar, no reinventar
 

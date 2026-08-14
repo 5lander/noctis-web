@@ -5,9 +5,10 @@
 
 .phrase {
   font-family: var(--display);
-  font-weight: 500;
+  font-weight: 600;
   font-size: clamp(24px, 3.6vw, 44px);
-  letter-spacing: -0.035em;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
   max-width: 16ch;
   margin-bottom: 56px;
 }
@@ -21,14 +22,6 @@
   border-top: 1px solid var(--linea);
   font-size: 14px;
   color: var(--texto-2);
-}
-
-.logo {
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: 19px;
-  letter-spacing: -0.03em;
-  color: var(--texto);
 }
 
 .rights {

@@ -1,3 +1,34 @@
+/* El panel es lo que se ancla (RA-12): su alto define cuánto dura el anclaje. */
+.panel {
+  position: relative;
+  padding-top: 34px;
+}
+
+/*
+ * El trazo que une los pasos. Se estira al ancho del panel con
+ * `preserveAspectRatio: none`, así que no hay que recalcularlo al cambiar el
+ * tamaño de la ventana: lo hace el propio SVG.
+ */
+.connector {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  overflow: visible;
+}
+
+.connector line {
+  stroke: var(--color-acento);
+  stroke-width: 2;
+}
+
+@media (max-width: 1000px) {
+  .connector {
+    display: none;
+  }
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

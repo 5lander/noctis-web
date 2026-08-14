@@ -17,6 +17,12 @@ import { Works } from '@/components/sections/works';
  * Solo composición: ni un texto, ni una clase visual, ni una decisión. Cada
  * sección sabe cómo se pinta y saca su contenido de `content/`.
  *
+ * Los dos envoltorios son el andamio que `ScrollSmoother` necesita para desfasar
+ * el contenido (RA-08). Están siempre, aunque el suavizado no arranque: dos
+ * `div` sin estilo no cambian nada y evitan que la estructura del documento
+ * dependa de si un plugin llegó a ejecutarse. La barra queda **fuera** a
+ * propósito — es fija, y lo que está dentro del envoltorio se desplaza.
+ *
  * `Quote` puede devolver nada: el testimonio no se publica hasta tener el
  * nombre real (C2).
  */
@@ -24,18 +30,22 @@ export default function HomePage() {
   return (
     <>
       <NavBar />
-      <main>
-        <Hero />
-        <Marquee />
-        <Products />
-        <Works />
-        <Services />
-        <Process />
-        <Quote />
-        <Questions />
-        <Contact />
-      </main>
-      <SiteFooter />
+      <div id="smooth-wrapper">
+        <div id="smooth-content">
+          <main>
+            <Hero />
+            <Marquee />
+            <Products />
+            <Works />
+            <Services />
+            <Process />
+            <Quote />
+            <Questions />
+            <Contact />
+          </main>
+          <SiteFooter />
+        </div>
+      </div>
       <AnimationLayer />
     </>
   );

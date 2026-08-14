@@ -1,0 +1,27 @@
+/*
+ * 96px de ancho, por encima del mínimo de 90px que fija el spec §3 para la
+ * versión horizontal completa. La proporción se declara con `aspect-ratio` y no
+ * con un alto calculado a mano para que nadie la desajuste editando un solo
+ * número: 210 × 120 es el `viewBox` del archivo de marca.
+ *
+ * A esa proporción el bloque mide 54.9px de alto y entra en la barra de 66px.
+ */
+.logo {
+  display: block;
+  width: 96px;
+  aspect-ratio: 210 / 120;
+  background-image: url('/marca/logo.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+/*
+ * El recorte de la luna es un círculo opaco del color del fondo, así que cada
+ * archivo solo funciona sobre el fondo para el que fue hecho: `#FAFAFA` el
+ * claro, `#0A0A12` el oscuro. Por eso se conmutan, y por eso el logotipo no se
+ * coloca sobre una superficie que no sea `--color-fondo`.
+ */
+html[data-mode='dark'] .logo {
+  background-image: url('/marca/logo-oscuro.svg');
+}

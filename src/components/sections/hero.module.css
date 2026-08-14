@@ -1,5 +1,23 @@
 .hero {
+  position: relative;
   padding: 180px 0 0;
+  isolation: isolate;
+}
+
+/* El contenido va por encima del cielo, que cubre toda la portada. */
+.content {
+  position: relative;
+  z-index: 1;
+}
+
+/* El envoltorio magnético (RA-09) tiene que poder moverse: en línea no se mueve. */
+.magnet {
+  display: inline-block;
+  will-change: transform;
+}
+
+.log {
+  display: block;
 }
 
 .hero h1 {

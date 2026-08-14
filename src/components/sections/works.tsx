@@ -10,6 +10,11 @@ import styles from './works.module.css';
 /**
  * La grilla de seis trabajos.
  *
+ * La grilla se anima ella misma (RA-11): entra en onda desde el centro, cada
+ * portada se descubre con una cortina de `clip-path` y el conjunto se inclina
+ * con la velocidad del scroll (RA-10). Por eso lleva `data-owns-anim`: el
+ * revelado genérico de sección la deja en paz en vez de pelearle cada tarjeta.
+ *
  * El componente acepta **portada tipográfica o imagen** desde hoy, aunque los
  * seis trabajos actuales sean marcadores de posición. Ese es el criterio de
  * aceptación de P10: cuando lleguen las capturas reales (C1) se cambia
@@ -53,8 +58,8 @@ function Cover({ cover }: { readonly cover: WorkCover }) {
 
 function WorkCard({ work }: { readonly work: Work }) {
   return (
-    <a className={styles['work']} href={work.href} data-anim>
-      <div className={canvasClassName(work.cover)}>
+    <a className={styles['work']} href={work.href} data-anim data-cursor-grow>
+      <div className={canvasClassName(work.cover)} data-curtain>
         <Cover cover={work.cover} />
         <span className={styles['kind']}>{work.kind}</span>
         <span className={styles['arrow']} aria-hidden="true">
@@ -72,7 +77,7 @@ function WorkCard({ work }: { readonly work: Work }) {
 export function Works() {
   return (
     <Section id="trabajos" heading={HEADINGS.works}>
-      <div className={styles['grid']}>
+      <div className={styles['grid']} data-owns-anim data-grid-wave data-skew>
         {WORKS.map((work) => (
           <WorkCard key={work.id} work={work} />
         ))}

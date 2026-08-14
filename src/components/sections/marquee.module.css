@@ -11,8 +11,9 @@
   will-change: transform;
 }
 
+/* Versalitas espaciadas: es rótulo, no titular, así que va en Inter. */
 .track span {
-  font-family: var(--display);
+  font-family: var(--texto-f);
   font-size: 14px;
   letter-spacing: 0.16em;
   text-transform: uppercase;

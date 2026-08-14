@@ -1,0 +1,35 @@
+/*
+ * El lienzo del cielo (RA-07) y su reemplazo cuando no hay WebGL.
+ *
+ * El degradado del contenedor **no es decoración de más**: es lo que se ve si el
+ * navegador no da contexto WebGL, si el visitante pidió movimiento reducido o si
+ * el paquete de three.js no llega. Reproduce el "cielo de medianoche" del
+ * moodboard del manual de marca con los mismos tokens, así que la portada nunca
+ * queda plana ni depende de que el WebGL arranque.
+ */
+
+.sky {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      120% 90% at 72% 8%,
+      color-mix(in srgb, var(--color-marca) 42%, transparent) 0%,
+      transparent 62%
+    ),
+    radial-gradient(
+      80% 60% at 18% 0%,
+      color-mix(in srgb, var(--color-acento) 14%, transparent) 0%,
+      transparent 70%
+    );
+  mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+}
+
+.canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}

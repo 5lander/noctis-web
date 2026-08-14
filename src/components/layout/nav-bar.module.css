@@ -19,11 +19,9 @@
   height: 66px;
 }
 
-.logo {
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: 19px;
-  letter-spacing: -0.03em;
+/* Solo posiciona: el logotipo trae su tamaño y su área de seguridad. */
+.brand {
+  display: flex;
   margin-right: auto;
 }
 

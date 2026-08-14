@@ -4,6 +4,50 @@ Una entrada por commit de paquete. Formato: qué se construyó, qué quedó fuer
 
 ## [Sin publicar]
 
+### P3.1 — Capa de movimiento expresiva · 2026-08-14 · **fuera de la numeración**
+
+**Qué se construyó**
+
+- Nueve requisitos nuevos de movimiento, RA-06 a RA-14: cielo WebGL en la portada,
+  suavizado de scroll, botón magnético, inclinación por velocidad, onda desde el
+  centro y cortina en la grilla de trabajos, proceso anclado con trazo que se
+  dibuja, parallax por capas, cursor sobre la grilla y barrido circular al cambiar
+  de modo. Más el corte por líneas del titular con `SplitText`, que era lo que
+  `ANIMACION.md` pedía desde el principio.
+- `animation-layer.tsx` pasó a **solo componer**: cada efecto vive en
+  `components/animation/effects/` con su requisito en la cabecera, y todos los
+  parámetros en `animation-settings.ts`.
+- Las secciones no ganaron lógica: ganaron atributos `data-*`. Siguen siendo
+  Server Components.
+- 22 pruebas nuevas, 181 en total.
+
+**Dos bugs que estaban vivos**
+
+- **El script del `<head>` no corría entero desde P3.** Las dos constantes se
+  concatenaban sin separador y el navegador leía `})()(function(){…})()` como una
+  llamada: `TypeError` y la segunda mitad muerta. La clase `animation-ready` no se
+  ponía, así que el estado inicial de toda la animación y el temporizador de
+  rescate no existían. Cada script pasaba su prueba por separado; ahora se prueba
+  **el texto unido**, que es lo único que el navegador ejecuta.
+- La grilla de trabajos se quedaba torcida: el disparador solo avisa mientras hay
+  scroll y la última inclinación no la bajaba nadie.
+
+**Qué quedó fuera**
+
+- Pruebas del shader y de las animaciones: verificadas a mano en el navegador.
+  Playwright sigue para Pf.
+- Medición de rendimiento: es de Pf, y este paquete es el que más la necesita.
+- `Flip` y transiciones entre páginas: no hay páginas de detalle todavía.
+
+**Decisiones** — tres ADRs, `ADR-0012` a `ADR-0014`
+
+- **D15 cerrado**: GSAP es gratuito por completo, plugins incluidos, y el paquete
+  de npm ya los traía. Nada que instalar, nada que pagar.
+- El criterio de animación gira: de "que no se note" a "que se note".
+  `ANIMACION.md` pasa a v2.0 · **decisión del usuario**.
+- `three` como dependencia de producción, autorizada explícitamente, con el uso
+  acotado y la salida escrita por si el presupuesto de Pf no da.
+
 ### P5 — Motor de disponibilidad · 2026-08-14 · **camino crítico**
 
 **Qué se construyó**

@@ -5,6 +5,15 @@
 
 ---
 
+> **Actualización de P3.1.** Este documento se escribió como catálogo de lo que
+> *además se podría hacer*. Después de P3.1 describe, en su mayoría, **lo que hay**:
+> están implementadas la 01, 05, 07, 08, 09, 10, 11 y 12. Siguen fuera la 02
+> (decodificado, que sigue sin usarse en contenido), la 03 (cifras, faltan cifras
+> reales), la 04 (scroll horizontal) y la 06 (trazo SVG genérico — el del proceso sí
+> se dibuja, con `DrawSVGPlugin`). Y lo que decía sobre WebGL —"fuera de alcance"—
+> dejó de valer: entró, acotado y con autorización explícita
+> ([ADR-0014](decisiones/ADR-0014-three-js-para-el-cielo-de-la-portada.md)).
+
 ## Cómo leer esto
 
 `ANIMACION.md` es conservador a propósito: define el movimiento mínimo que hace que el sitio se sienta fluido sin pelear con la identidad minimalista. **Este documento es el catálogo de lo que además se puede hacer**, con el costo y el riesgo de cada cosa, para elegir con criterio en vez de por entusiasmo.

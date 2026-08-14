@@ -1,14 +1,21 @@
+/*
+ * El botón es interfaz, no titular: va en Inter (spec de marca §2) y lleva el
+ * color de acción de la marca. `--color-accion` no es el mismo tono en los dos
+ * modos a propósito —índigo en claro, lavanda en oscuro— porque el índigo sobre
+ * el fondo oscuro da 2.49:1. El texto se queda en `--fondo`, que contra el color
+ * de acción da 9.52:1 en claro y 10.68:1 en oscuro.
+ */
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--display);
+  font-family: var(--texto-f);
   font-size: 14.5px;
   font-weight: 500;
   padding: 11px 20px;
   border-radius: 2px;
-  border: 1px solid var(--texto);
-  background: var(--texto);
+  border: 1px solid var(--color-accion);
+  background: var(--color-accion);
   color: var(--fondo);
   cursor: pointer;
   transition:
@@ -18,7 +25,7 @@
 
 .button:hover {
   background: transparent;
-  color: var(--texto);
+  color: var(--color-accion);
 }
 
 .outline {
@@ -28,7 +35,7 @@
 }
 
 .outline:hover {
-  background: var(--texto);
+  background: var(--color-accion);
   color: var(--fondo);
-  border-color: var(--texto);
+  border-color: var(--color-accion);
 }

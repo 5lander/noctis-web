@@ -1,7 +1,7 @@
+import { Logo } from '@/components/brand/logo';
 import { Container } from '@/components/layout/container';
 import { ModeToggle } from '@/components/theme/mode-toggle';
 import { Button } from '@/components/ui/button';
-import { SITE } from '@/content/site';
 import { NAV_CTA, NAV_LINKS } from '@/content/site-copy';
 import { UI_TEXT } from '@/content/ui';
 
@@ -21,7 +21,9 @@ export function NavBar() {
     <header className={styles['bar']} data-nav-bar>
       <Container>
         <div className={styles['inner']}>
-          <span className={styles['logo']}>{SITE.name}</span>
+          <span className={styles['brand']}>
+            <Logo />
+          </span>
           <nav className={styles['nav']}>
             {NAV_LINKS.map((link) => (
               <a key={link.id} href={link.href}>
