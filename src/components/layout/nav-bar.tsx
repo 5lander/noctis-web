@@ -18,7 +18,7 @@ import styles from './nav-bar.module.css';
  */
 export function NavBar() {
   return (
-    <header className={styles['bar']}>
+    <header className={styles['bar']} data-nav-bar>
       <Container>
         <div className={styles['inner']}>
           <span className={styles['logo']}>{SITE.name}</span>

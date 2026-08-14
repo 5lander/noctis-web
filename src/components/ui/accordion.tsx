@@ -22,9 +22,9 @@ export function Accordion({ items }: { readonly items: readonly AccordionItem[] 
   return (
     <div>
       {items.map((item) => (
-        <details key={item.id} className={styles['item']}>
+        <details key={item.id} className={styles['item']} data-accordion-item>
           <summary className={styles['summary']}>{item.question}</summary>
-          <div className={styles['body']}>
+          <div className={styles['body']} data-accordion-body>
             <p>{item.answer}</p>
           </div>
         </details>

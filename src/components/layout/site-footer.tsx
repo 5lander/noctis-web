@@ -10,9 +10,9 @@ import styles from './site-footer.module.css';
  */
 export function SiteFooter() {
   return (
-    <footer className={styles['footer']}>
+    <footer className={styles['footer']} data-reveal-root>
       <Container>
-        <p className={styles['phrase']}>{FOOTER.phrase}</p>
+        <p className={styles['phrase']} data-anim>{FOOTER.phrase}</p>
         <div className={styles['inner']}>
           <span className={styles['logo']}>{SITE.name}</span>
           <span>{FOOTER.company}</span>

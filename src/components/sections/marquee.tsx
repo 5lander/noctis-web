@@ -12,7 +12,7 @@ import styles from './marquee.module.css';
 export function Marquee() {
   return (
     <div className={styles['marquee']} aria-hidden="true">
-      <div className={styles['track']}>
+      <div className={styles['track']} data-marquee-track>
         {MARQUEE_ITEMS.map((item) => (
           <span key={item}>{item}</span>
         ))}

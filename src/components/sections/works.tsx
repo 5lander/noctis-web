@@ -53,7 +53,7 @@ function Cover({ cover }: { readonly cover: WorkCover }) {
 
 function WorkCard({ work }: { readonly work: Work }) {
   return (
-    <a className={styles['work']} href={work.href}>
+    <a className={styles['work']} href={work.href} data-anim>
       <div className={canvasClassName(work.cover)}>
         <Cover cover={work.cover} />
         <span className={styles['kind']}>{work.kind}</span>

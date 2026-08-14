@@ -17,7 +17,7 @@ export function Services() {
     <Section id="servicios" heading={HEADINGS.services} inverted>
       <div className={styles['grid']}>
         {SERVICES.map((service) => (
-          <div key={service.id} className={styles['service']}>
+          <div key={service.id} className={styles['service']} data-anim>
             <Label>{service.number}</Label>
             <div>
               <h3>{service.name}</h3>

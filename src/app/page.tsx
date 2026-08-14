@@ -1,3 +1,4 @@
+import { AnimationLayer } from '@/components/animation/animation-layer';
 import { NavBar } from '@/components/layout/nav-bar';
 import { SiteFooter } from '@/components/layout/site-footer';
 import { Contact } from '@/components/sections/contact';
@@ -35,6 +36,7 @@ export default function HomePage() {
         <Contact />
       </main>
       <SiteFooter />
+      <AnimationLayer />
     </>
   );
 }

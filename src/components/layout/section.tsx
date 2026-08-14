@@ -24,9 +24,9 @@ export function Section({ id, heading, children, inverted = false }: SectionProp
   const className = inverted ? `inv ${styles['section']}` : `${styles['section']}`;
 
   return (
-    <section id={id} className={className}>
+    <section id={id} className={className} data-reveal-root>
       <Container>
-        <div className={styles['heading']}>
+        <div className={styles['heading']} data-anim>
           <Label>{heading.label}</Label>
           <div>
             <h2>{heading.title}</h2>

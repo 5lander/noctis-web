@@ -16,7 +16,7 @@ import styles from './products.module.css';
  */
 function ProductRow({ product }: { readonly product: Product }) {
   return (
-    <article className={styles['product']}>
+    <article className={styles['product']} data-anim>
       <Label>{product.scope}</Label>
       <div>
         <h3>{product.name}</h3>

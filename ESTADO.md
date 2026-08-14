@@ -5,8 +5,8 @@
 
 ## Dónde va el proyecto
 
-**Paquete actual:** P3 — Capa de animación GSAP
-**Último commit de paquete:** `{hash-p2}` — P2 Contenido y secciones
+**Paquete actual:** P4 — Puertos, adaptadores simulados y selector de modo
+**Último commit de paquete:** `{hash-p3}` — P3 Capa de animación
 **Fecha de última actualización:** 2026-08-14
 **Modo:** 🤖 **autónomo hasta P5**, activado por el usuario. Avanza solo entre paquetes; el resto del protocolo se cumple igual.
 
@@ -16,9 +16,9 @@
 |---|---|---|
 | P0 | Fundación | ✅ Cerrado · 2026-08-14 · `6d69dc7` |
 | P1 | Sistema de diseño y modo claro/oscuro | ✅ Cerrado · 2026-08-14 · `e8466b9` |
-| P2 | Contenido tipado y secciones estáticas | ✅ Cerrado · 2026-08-14 · `{hash-p2}` |
-| P3 | Capa de animación GSAP | 🔄 En curso |
-| P4 | Puertos, adaptadores simulados y selector de modo | ⬜ Pendiente |
+| P2 | Contenido tipado y secciones estáticas | ✅ Cerrado · 2026-08-14 · `65eb06d` |
+| P3 | Capa de animación GSAP | ✅ Cerrado · 2026-08-14 · `{hash-p3}` |
+| P4 | Puertos, adaptadores simulados y selector de modo | 🔄 En curso |
 | P5 | Motor de disponibilidad (dominio puro) | ⬜ Pendiente |
 | P6 | API de agendamiento | ⬜ Pendiente |
 | P7 | Agendador en la interfaz | ⬜ Pendiente |
@@ -43,6 +43,7 @@ Estados: ⬜ Pendiente · 🔄 En curso · ✅ Cerrado
 | 2026-08-14 | `GET /api/estado` devuelve el modo de servicios, para poder verificar RN10 tras desplegar | [0007](docs/decisiones/ADR-0007-endpoint-de-estado.md) |
 | 2026-08-14 | Componentes en inglés (`Button`, `Field`, `Label`, `Status`, `Accordion`), nombres de token en español porque son el contrato compartido con Commerce y Care | [0008](docs/decisiones/ADR-0008-nombres-de-componentes-en-ingles-y-tokens-en-espanol.md) |
 | 2026-08-14 | Contraste calculado por prueba. Los dos fallos que encontró se corrigieron **en el uso, no en la paleta** | [0009](docs/decisiones/ADR-0009-contraste-verificado-y-dos-desvios-del-prototipo.md) |
+| 2026-08-14 | El estado inicial de la animación cuelga de `html.animation-ready`: el CSS del prototipo dejaba la página en blanco sin JavaScript | [0010](docs/decisiones/ADR-0010-estado-inicial-de-animacion-invertido.md) |
 
 ## Dudas abiertas
 
@@ -58,6 +59,26 @@ Estados: ⬜ Pendiente · 🔄 En curso · ✅ Cerrado
 - **El camino crítico del proyecto es P5.** El motor de disponibilidad es el componente central del dominio: si queda mal, la prueba de arquitectura falla y P6, P7 y P8 se construyen sobre arena. Se prueba sin base de datos, sin red y sin Google Calendar
 - **Este proyecto construye completo primero y endurece en Pf.** Ver la adaptación deliberada en `CLAUDE.md` §0
 - **Los adaptadores simulados no se descartan.** Son el entorno de pruebas y el modo demostración comercial
+
+### Lo que dejó P3 y hay que usar, no reinventar
+
+| Necesito… | Ya existe en |
+|---|---|
+| Animar algo nuevo | `components/animation/animation-layer.tsx`, dentro del `gsap.context()` que ya está. Los parámetros van a `animation-settings.ts`, no sueltos |
+| Que una sección se revele al entrar | `data-reveal-root` en la sección y `data-anim` en cada pieza. Ya lo hace `layout/section.tsx` |
+| Un script en línea en el `<head>` | `components/head/inline-head-script.tsx`. **No crees otro**: cada uno es una excepción a la prohibición de HTML crudo. Agrega el tuyo a los que ya están |
+
+### Trampas de P3
+
+- **El estado inicial de la animación cuelga de `html.animation-ready`.** Si
+  agregas un `[data-anim]` y no se anima nunca, queda invisible. En móvil por eso
+  se muestran de una vez en vez de simplemente no animar
+- Hay un temporizador de rescate de tres segundos en el script del `<head>`; la
+  capa lo cancela al arrancar. Si escribes otra capa, cancélalo también
+- D15 (licencia de GSAP) **sigue en 🔴**. No se usaron `SplitText` ni
+  `ScrollSmoother`; si alguien los quiere, hay que resolver D15 antes
+- La altura del acordeón es la **única** excepción autorizada a animar solo
+  `transform` y `opacity`
 
 ### Lo que dejó P2 y hay que usar, no reinventar
 

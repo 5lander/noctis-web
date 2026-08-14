@@ -3,13 +3,14 @@ import { Inter, Inter_Tight } from 'next/font/google';
 import { headers } from 'next/headers';
 import type { ReactNode } from 'react';
 
+import { InlineHeadScript } from '@/components/head/inline-head-script';
 import { FALLBACK_MODE } from '@/components/theme/theme';
-import { ThemeScript } from '@/components/theme/theme-script';
 import { SITE } from '@/content/site';
 import { NONCE_HEADER } from '@/shared/infrastructure/http/security-headers';
 
 import '@/styles/tokens.css';
 import '@/styles/base.css';
+import '@/styles/animation.css';
 
 /**
  * Las fuentes se descargan en el build y se sirven desde el propio dominio.
@@ -64,7 +65,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       className={`${displayFont.variable} ${textFont.variable}`}
     >
       <head>
-        <ThemeScript nonce={nonce} />
+        <InlineHeadScript nonce={nonce} />
       </head>
       <body>{children}</body>
     </html>

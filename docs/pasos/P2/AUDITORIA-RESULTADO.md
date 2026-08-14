@@ -2,7 +2,7 @@
 
 | Fecha | Auditor | Commit auditado |
 |---|---|---|
-| 2026-08-14 | Claude Code | `{hash}` |
+| 2026-08-14 | Claude Code | `65eb06d` |
 
 > Checklist completa de `docs/AUDITORIA.md`. Las filas del sistema base —cuentas,
 > tenants, base de datos, pagos, uploads, webhooks— siguen sin aplicar por la
