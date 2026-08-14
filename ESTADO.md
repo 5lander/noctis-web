@@ -5,10 +5,10 @@
 
 ## Dónde va el proyecto
 
-**Paquete actual:** P5 — Motor de disponibilidad (dominio puro)
-**Último commit de paquete:** `{hash-p4}` — P4 Puertos y adaptadores simulados
+**Paquete actual:** P6 — API de agendamiento (siguiente; el modo autónomo llegaba hasta P5)
+**Último commit de paquete:** `{hash-p5}` — P5 Motor de disponibilidad
 **Fecha de última actualización:** 2026-08-14
-**Modo:** 🤖 **autónomo hasta P5**, activado por el usuario. Avanza solo entre paquetes; el resto del protocolo se cumple igual.
+**Modo:** ⏸️ **corrida autónoma terminada** en P5, como se pidió. P6 en adelante espera confirmación del usuario.
 
 ## Paquetes
 
@@ -18,8 +18,8 @@
 | P1 | Sistema de diseño y modo claro/oscuro | ✅ Cerrado · 2026-08-14 · `e8466b9` |
 | P2 | Contenido tipado y secciones estáticas | ✅ Cerrado · 2026-08-14 · `65eb06d` |
 | P3 | Capa de animación GSAP | ✅ Cerrado · 2026-08-14 · `c4fc55f` |
-| P4 | Puertos, adaptadores simulados y selector de modo | ✅ Cerrado · 2026-08-14 · `{hash-p4}` |
-| P5 | Motor de disponibilidad (dominio puro) | 🔄 En curso |
+| P4 | Puertos, adaptadores simulados y selector de modo | ✅ Cerrado · 2026-08-14 · `b0a4789` |
+| P5 | Motor de disponibilidad (dominio puro) | ✅ Cerrado · 2026-08-14 · `{hash-p5}` |
 | P6 | API de agendamiento | ⬜ Pendiente |
 | P7 | Agendador en la interfaz | ⬜ Pendiente |
 | P8 | Bot conversacional | ⬜ Pendiente |
@@ -59,6 +59,28 @@ Estados: ⬜ Pendiente · 🔄 En curso · ✅ Cerrado
 - **El camino crítico del proyecto es P5.** El motor de disponibilidad es el componente central del dominio: si queda mal, la prueba de arquitectura falla y P6, P7 y P8 se construyen sobre arena. Se prueba sin base de datos, sin red y sin Google Calendar
 - **Este proyecto construye completo primero y endurece en Pf.** Ver la adaptación deliberada en `CLAUDE.md` §0
 - **Los adaptadores simulados no se descartan.** Son el entorno de pruebas y el modo demostración comercial
+
+### Lo que dejó P5 y hay que usar, no reinventar
+
+| Necesito… | Ya existe en |
+|---|---|
+| Espacios libres | `freeSlots({ policy, busy, now })` de `modules/availability/domain/availability-engine.ts`. **Recibe todo por parámetro**: no lee reloj, ni zona, ni configuración |
+| Las reglas de negocio | `config/scheduling.ts`. Cambiar el horario real (B4) es editar ese archivo; el motor no se toca |
+| Hora de pared de una zona | `domain/local-time.ts`. **Nunca uses la zona del servidor** |
+| Identificar un espacio | `slotOf(range)`. El identificador sale del instante de inicio, así que es estable entre peticiones — que es lo que P6 necesita para verificar que el espacio elegido es el que se reserva |
+
+### Trampas de P5
+
+- **El margen es un mínimo.** Un espacio que deja exactamente diez minutos
+  cumple. Está en `casos-conocidos.md` M8 porque es lo que se lee al revés
+- **La ventana de diez días hábiles cuenta desde hoy**, no desde el primer día
+  agendable: con el aviso mínimo, el visitante ve nueve días. M5. Si el usuario
+  lo quiere al revés, es una línea en `workdaysFrom` y hay que actualizar M5 y M6
+- El tope diario cuenta **todo bloque ocupado del día**, no solo reuniones con
+  prospectos: es lo único que el motor puede saber, y se equivoca ofreciendo de
+  menos
+- `docs/pruebas/casos-conocidos.md` se actualiza **antes** de tocar el motor, no
+  después. Ya encontró cuatro errores míos
 
 ### Lo que dejó P4 y hay que usar, no reinventar
 

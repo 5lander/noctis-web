@@ -48,6 +48,12 @@ export default tseslint.config(
     },
   },
   {
+    // `config/` es una tabla de valores, no lógica: un horario de atención se
+    // lee mejor como `minutesOf(9)` que como una constante con nombre por hora.
+    files: ['src/config/**/*.ts'],
+    rules: { 'no-magic-numbers': 'off' },
+  },
+  {
     // Las pruebas describen casos con números concretos: exigirles constantes
     // con nombre esconde el dato que hace legible la prueba.
     files: ['**/*.spec.ts', '**/*.spec.tsx'],
