@@ -6,7 +6,7 @@
 |---|---|
 | Paquete | P0 — Fundación |
 | Fecha inicio / fin | 2026-08-14 / 2026-08-14 |
-| Commit final | `{hash}` |
+| Commit final | `6d69dc7` |
 | Secciones del SPEC implementadas | §2 stack · §3 estructura · §8 accesibilidad (base) · §9 rendimiento (presupuestos declarados) |
 | Estado | ✅ completado |
 

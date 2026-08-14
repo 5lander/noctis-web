@@ -1,0 +1,60 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.field label {
+  font-family: var(--display);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--texto-2);
+}
+
+.field input,
+.field select,
+.field textarea {
+  font-family: var(--texto-f);
+  font-size: 16px;
+  color: var(--texto);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--linea);
+  padding: 8px 0;
+  transition: border-color 0.3s ease;
+}
+
+/*
+ * El prototipo usa `--texto-3` acá. Es el único punto donde ese token cae sobre
+ * texto de verdad, y en modo claro da 2.8:1 — por debajo de AA. `--texto-3`
+ * queda para lo decorativo (puntos, separadores, filas del registro nocturno,
+ * que va oculto al lector de pantalla) y el marcador de posición sube a
+ * `--texto-2`, que sí cumple. Una prueba fija esta línea.
+ */
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--texto-2);
+}
+
+.field select option {
+  background: var(--fondo);
+  color: var(--texto);
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-bottom-color: var(--texto);
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 74px;
+}

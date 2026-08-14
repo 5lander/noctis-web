@@ -32,7 +32,21 @@ Nada de relojes falsos donde se pueda evitar: lo que depende del tiempo recibe
 `now` por parámetro y se prueba con aritmética. El limitador de P0 ya se prueba
 así, y el motor de disponibilidad de P5 hará lo mismo.
 
-## Qué hay cubierto hoy — P0, 56 pruebas
+## Qué hay cubierto hoy — 76 pruebas
+
+### P1 — capa visual, 20 pruebas
+
+| Archivo | Qué fija |
+|---|---|
+| `styles/contrast.spec.ts` | Lee `tokens.css` y **calcula** la razón WCAG: AA de `--texto` y `--texto-2` sobre los dos fondos, en los cuatro contextos. Además, que `.inv` invierta `--fondo-2` y que el marcador de posición no use el token decorativo |
+| `components/theme/theme-script-source.spec.ts` | **Ejecuta** el script del modo con `node:vm` contra un documento falso: respeta lo elegido, sigue al sistema en la primera visita, ignora un valor inválido, sobrevive a un almacenamiento roto y nunca deja la página sin modo |
+| `components/theme/theme.spec.ts` | El contrato del modo |
+
+Los componentes no llevan prueba de render. No se trajo entorno de DOM ni
+biblioteca de pruebas de React: la interfaz se cubre con recorridos reales en P7
+y Pf, que es donde `CLAUDE.md` §7 la pone.
+
+### P0 — infraestructura, 56 pruebas
 
 | Archivo | Qué fija |
 |---|---|

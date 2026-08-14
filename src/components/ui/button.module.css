@@ -1,0 +1,34 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  font-size: 14.5px;
+  font-weight: 500;
+  padding: 11px 20px;
+  border-radius: 2px;
+  border: 1px solid var(--texto);
+  background: var(--texto);
+  color: var(--fondo);
+  cursor: pointer;
+  transition:
+    background 0.26s var(--curva),
+    color 0.26s var(--curva);
+}
+
+.button:hover {
+  background: transparent;
+  color: var(--texto);
+}
+
+.outline {
+  background: transparent;
+  color: var(--texto);
+  border-color: var(--linea);
+}
+
+.outline:hover {
+  background: var(--texto);
+  color: var(--fondo);
+  border-color: var(--texto);
+}
