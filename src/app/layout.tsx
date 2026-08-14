@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, Inter_Tight } from 'next/font/google';
+import { Inter, Source_Serif_4 } from 'next/font/google';
 import { headers } from 'next/headers';
 import type { ReactNode } from 'react';
 
@@ -14,20 +14,28 @@ import '@/styles/animation.css';
 
 /**
  * Las fuentes se descargan en el build y se sirven desde el propio dominio.
- * El prototipo las trae de Google Fonts; acá no puede ser: la CSP no admite
- * orígenes externos, y una fuente de un tercero es un salto de red antes de
- * poder pintar texto. Solo los pesos que el sistema usa (`SPEC.md` §4.2).
+ * El spec de marca §2 las nombra en Google Fonts; acá no se enlazan desde ahí:
+ * la CSP no admite orígenes externos, y una fuente de un tercero es un salto de
+ * red antes de poder pintar texto.
+ *
+ * Solo los pesos que el sistema usa, que es lo que pide el spec §2: 600 de
+ * Source Serif 4 para los títulos, 400/500/600 de Inter para texto e interfaz.
+ * La cursiva de 600 entra porque el tratamiento `italic` de la grilla de
+ * trabajos está vivo hoy: sin ella el navegador inclina la redonda por su
+ * cuenta, y una serif falsamente cursiva es justo la deformación que el manual
+ * de marca prohíbe.
  */
-const displayFont = Inter_Tight({
+const displayFont = Source_Serif_4({
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
+  weight: ['600'],
+  style: ['normal', 'italic'],
   display: 'swap',
   variable: '--fuente-display',
 });
 
 const textFont = Inter({
   subsets: ['latin'],
-  weight: ['400', '500'],
+  weight: ['400', '500', '600'],
   display: 'swap',
   variable: '--fuente-texto',
 });

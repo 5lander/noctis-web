@@ -5,10 +5,10 @@
 
 .quote blockquote {
   font-family: var(--display);
-  font-weight: 400;
+  font-weight: 600;
   font-size: clamp(25px, 3.4vw, 40px);
-  letter-spacing: -0.035em;
-  line-height: 1.18;
+  letter-spacing: -0.015em;
+  line-height: 1.24;
   max-width: 24ch;
   margin: 0 auto;
   text-align: center;

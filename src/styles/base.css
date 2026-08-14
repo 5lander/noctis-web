@@ -41,14 +41,20 @@ a {
   outline-offset: 4px;
 }
 
+/*
+ * Los títulos son Source Serif 4 en 600, el único peso cargado (spec de marca
+ * §2). El interletrado y el interlineado se aflojan respecto de lo que había:
+ * -0.035em y 1.03 estaban calibrados para una sans estrecha, y sobre una serif
+ * con serifas y descendentes juntan los trazos hasta ensuciar la palabra.
+ */
 h1,
 h2,
 h3,
 h4 {
   font-family: var(--display);
-  font-weight: 500;
-  letter-spacing: -0.035em;
-  line-height: 1.03;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
 }
 
 /*

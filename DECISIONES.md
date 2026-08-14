@@ -20,7 +20,7 @@
 | D12 | Idioma de identificadores en código | Inglés · archivos `kebab-case` con sufijo de rol · puertos sin prefijo `I`. Verificado contra el **código** de Commerce, no su documentación | ✅ 2026-08-14 | Convención · [ADR-0001](docs/decisiones/ADR-0001-idioma-y-convencion-de-identificadores.md) | — |
 | D13 | Precios públicos en el sitio | No se muestran | 🟡 | `content/` | — |
 | D14 | Versión en inglés del sitio | No en v1 | 🟡 | Rutas | — |
-| D15 | Licencia de GSAP y plugins | **Verificar términos vigentes antes de instalar SplitText o ScrollSmoother** | 🔴 | — | P3 si se usan plugins |
+| D15 | Licencia de GSAP y plugins | **Gratuito por completo desde 2025, plugins incluidos y sin restricción comercial.** El paquete de npm los trae; se sirven desde el propio dominio | ✅ 2026-08-14 | [ADR-0012](docs/decisiones/ADR-0012-licencia-de-gsap-resuelta.md) | — |
 
 ## Contenido pendiente del usuario
 

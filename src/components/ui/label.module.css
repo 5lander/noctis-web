@@ -1,5 +1,6 @@
+/* Rótulo de interfaz: Inter, no la serif de títulos (spec de marca §2). */
 .label {
-  font-family: var(--display);
+  font-family: var(--texto-f);
   font-size: 11.5px;
   font-weight: 500;
   letter-spacing: 0.18em;

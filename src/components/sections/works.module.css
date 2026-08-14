@@ -1,4 +1,6 @@
+/* La inclinación por velocidad (RA-10) necesita un origen estable. */
 .grid {
+  transform-origin: center center;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 28px;
@@ -24,9 +26,9 @@
   font-family: var(--display);
   font-weight: 600;
   font-size: clamp(20px, 2.4vw, 34px);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.015em;
   text-align: center;
-  line-height: 1.05;
+  line-height: 1.12;
   transition: transform 0.7s var(--curva);
 }
 
@@ -65,9 +67,10 @@
   color: var(--inv-texto);
 }
 
+/* 600 y no 400: es el único peso de la serif que se carga (spec de marca §2). */
 .italic .mark {
   font-style: italic;
-  font-weight: 400;
+  font-weight: 600;
 }
 
 .uppercase {

@@ -1,5 +1,4 @@
-import { ANIMATION_READY_SCRIPT } from '@/components/animation/animation-ready-source';
-import { THEME_SCRIPT } from '@/components/theme/theme-script-source';
+import { HEAD_SCRIPT } from './head-script-source';
 
 /**
  * El único script en línea del sitio, en el `<head>` y bloqueante.
@@ -11,13 +10,12 @@ import { THEME_SCRIPT } from '@/components/theme/theme-script-source';
  *
  * Van juntos a propósito. Cada script en línea es una excepción a la prohibición
  * de HTML crudo, y una excepción sale más barata que dos: `audit:forbidden` la
- * tiene declarada y la imprime en cada corrida.
+ * tiene declarada y la imprime en cada corrida. Cómo se unen —y por qué el
+ * separador importa— está en `head-script-source.ts`.
  *
  * El contenido son dos constantes del repositorio, no algo que haya escrito una
  * persona — que es lo que prohíbe `CLAUDE.md` §8. Lleva el nonce de la petición.
  */
 export function InlineHeadScript({ nonce }: { readonly nonce: string }) {
-  return (
-    <script nonce={nonce} dangerouslySetInnerHTML={{ __html: THEME_SCRIPT + ANIMATION_READY_SCRIPT }} />
-  );
+  return <script nonce={nonce} dangerouslySetInnerHTML={{ __html: HEAD_SCRIPT }} />;
 }

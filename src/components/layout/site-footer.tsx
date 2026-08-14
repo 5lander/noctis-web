@@ -1,5 +1,5 @@
+import { Logo } from '@/components/brand/logo';
 import { Container } from '@/components/layout/container';
-import { SITE } from '@/content/site';
 import { FOOTER } from '@/content/site-copy';
 
 import styles from './site-footer.module.css';
@@ -14,7 +14,7 @@ export function SiteFooter() {
       <Container>
         <p className={styles['phrase']} data-anim>{FOOTER.phrase}</p>
         <div className={styles['inner']}>
-          <span className={styles['logo']}>{SITE.name}</span>
+          <Logo />
           <span>{FOOTER.company}</span>
           <span className={styles['rights']}>{FOOTER.rights}</span>
         </div>

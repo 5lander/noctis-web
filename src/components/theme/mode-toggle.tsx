@@ -1,5 +1,8 @@
 'use client';
 
+import type { MouseEvent } from 'react';
+
+import { sweepFrom } from './mode-sweep';
 import { FALLBACK_MODE, THEME_ATTRIBUTE, THEME_STORAGE_KEY, isThemeMode, oppositeOf } from './theme';
 
 import styles from './mode-toggle.module.css';
@@ -12,11 +15,15 @@ import styles from './mode-toggle.module.css';
  * renderiza el servidor y lo que espera el cliente, que es de donde salen los
  * parpadeos al hidratar.
  *
+ * El cambio entra con un barrido circular desde el propio botón (RA-06). Quien
+ * decide si el barrido ocurre es `mode-sweep.ts`: sin soporte del navegador o
+ * con movimiento reducido, el modo cambia igual y sin barrido.
+ *
  * Es el único uso de `localStorage` del sitio, y guarda una preferencia de
  * presentación: nada sensible (`CLAUDE.md` §10).
  */
 export function ModeToggle({ label }: { readonly label: string }) {
-  function toggleMode(): void {
+  function applyNextMode(): void {
     const root = document.documentElement;
     const current = root.getAttribute(THEME_ATTRIBUTE);
     const next = oppositeOf(isThemeMode(current) ? current : FALLBACK_MODE);
@@ -30,6 +37,10 @@ export function ModeToggle({ label }: { readonly label: string }) {
       // recuerde para la próxima visita (navegación privada, almacenamiento
       // lleno). No hay nada que decirle al visitante ni dónde registrarlo.
     }
+  }
+
+  function toggleMode(event: MouseEvent<HTMLButtonElement>): void {
+    sweepFrom(event.currentTarget.getBoundingClientRect(), applyNextMode);
   }
 
   return (

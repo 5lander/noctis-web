@@ -1,5 +1,5 @@
 /*
- * Estados iniciales de la animación.
+ * Estados iniciales de la animación y lo que la animación necesita del CSS.
  *
  * **Todo cuelga de `html.animation-ready`**, que solo pone JavaScript. Sin
  * JavaScript no hay clase, no hay estado inicial y la página se ve entera
@@ -16,20 +16,94 @@ html.animation-ready [data-anim] {
   transform: translateY(18px);
 }
 
-/* RA-01: cada palabra del titular, enmascarada y esperando abajo. */
-.word {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: top;
+/*
+ * RA-01: el titular espera escondido hasta que `SplitText` lo parte en líneas.
+ * Se oculta el bloque entero y no cada línea porque las líneas todavía no
+ * existen: las crea el plugin al arrancar la capa.
+ */
+html.animation-ready [data-hero-headline] {
+  opacity: 0;
 }
 
-html.animation-ready .word > span {
-  display: inline-block;
-  transform: translateY(105%);
+/*
+ * RA-01: aire dentro de la máscara de cada línea del titular.
+ *
+ * `SplitText` recorta a la altura de la caja de línea. Source Serif 4 a 104px se
+ * sale de esa caja por arriba y por abajo, así que sin este relleno el titular
+ * entra con las mayúsculas y los descendentes cortados.
+ *
+ * El relleno hace el bloque un poco más alto, y así se queda: compensarlo con
+ * margen negativo encoge la máscara y la última línea se monta sobre el párrafo.
+ */
+.hero-line {
+  padding: 0.12em 0 0.3em;
 }
 
-.word > span {
-  display: inline-block;
+/*
+ * RA-08: con el suavizado activo el salto nativo del navegador estorba —lo
+ * atiende `ScrollSmoother`, que sabe dónde está el contenido desfasado.
+ */
+html.smoother-active {
+  scroll-behavior: auto;
+}
+
+/*
+ * RA-14: el círculo que acompaña al puntero sobre la grilla.
+ *
+ * No reemplaza al cursor del sistema, lo acompaña: si la capa no arranca no se
+ * pierde nada, y quien navegue con teclado nunca lo ve. Lo crea JavaScript, así
+ * que su clase es global y no de módulo.
+ */
+.noctis-cursor {
+  opacity: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 90;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border: 1px solid var(--color-acento);
+  border-radius: 50%;
+  pointer-events: none;
+  mix-blend-mode: difference;
+  transition: background 0.3s var(--curva);
+}
+
+.noctis-cursor.is-ready {
+  opacity: 1;
+}
+
+.noctis-cursor.is-active {
+  background: color-mix(in srgb, var(--color-acento) 35%, transparent);
+}
+
+/*
+ * RA-06: el barrido circular del cambio de modo.
+ *
+ * El navegador toma una captura del antes y del después; acá solo se dice que la
+ * nueva se descubra en círculo desde el botón. Las cuatro variables las escribe
+ * `mode-sweep.ts` sobre el `<html>` justo antes de disparar la transición.
+ *
+ * `::view-transition-old(root)` se queda quieto a propósito: si las dos capturas
+ * se movieran, el cruce se vería sucio en el borde del círculo.
+ */
+::view-transition-old(root) {
+  animation: none;
+}
+
+::view-transition-new(root) {
+  animation: barrido-de-modo var(--barrido-duracion, 0.6s) var(--curva);
+}
+
+@keyframes barrido-de-modo {
+  from {
+    clip-path: circle(0 at var(--barrido-x, 50%) var(--barrido-y, 0));
+  }
+
+  to {
+    clip-path: circle(var(--barrido-r, 150vmax) at var(--barrido-x, 50%) var(--barrido-y, 0));
+  }
 }
 
 /*
@@ -44,7 +118,15 @@ html.animation-ready .word > span {
     transform: none;
   }
 
-  html.animation-ready .word > span {
-    transform: none;
+  html.animation-ready [data-hero-headline] {
+    opacity: 1;
+  }
+
+  .noctis-cursor {
+    display: none;
+  }
+
+  ::view-transition-new(root) {
+    animation: none;
   }
 }

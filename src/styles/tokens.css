@@ -2,19 +2,28 @@
  * Tokens del sistema visual. Un solo juego, dos modos, conmutados por
  * `data-mode` en <html>.
  *
- * Los valores y **los nombres de las variables** salen tal cual de
- * `prototipo/noctis-v4.html`, que es la fuente de verdad visual. Los nombres se
- * mantienen en español a propósito, contra la convención de identificadores
- * (ADR-0001): son el contrato de tokens que se comparte con Commerce y Care
- * (`CLAUDE.md` §1). Renombrarlos acá rompería esa capa común para nadie.
+ * La paleta y las dos familias tipográficas salen de
+ * `docs/identidad-de-marca-noctis/spec-rebrand-noctis.md` §1 y §2, que a partir
+ * de este pase reemplaza al prototipo como fuente de verdad de color y de
+ * tipografía. Los siete `--color-*` de cada modo son transcripción literal del
+ * spec: se pueden diffear contra él sin interpretar nada.
  *
- * Paleta monocroma, sin colores de acento. El interés visual sale del contraste,
- * del tamaño tipográfico y del aire. No se agregan colores de marca sin
- * aprobación explícita (`SPEC.md` §4.1).
+ * El resto —línea, texto decorativo y franja invertida— son derivados que el
+ * spec no cubre y que el sitio ya tenía. Sus valores se eligen dentro de la
+ * misma familia de grises del spec para no meter un tono ajeno a la marca.
+ *
+ * Los componentes siguen consumiendo los alias cortos (`--fondo`, `--texto`,
+ * `--linea`): son el contrato de tokens que se comparte con Commerce y Care
+ * (`CLAUDE.md` §1) y por eso se mantienen en español, contra la convención de
+ * identificadores (ADR-0001). La paleta de marca se consume por su nombre del
+ * spec, `--color-accion` y `--color-acento`.
+ *
+ * El spec conmuta con `[data-theme]`; acá el atributo sigue siendo `data-mode`
+ * porque el propio spec §4 pide mantener el toggle existente.
  */
 
 :root {
-  --display: var(--fuente-display), system-ui, sans-serif;
+  --display: var(--fuente-display), Georgia, 'Times New Roman', serif;
   --texto-f: var(--fuente-texto), system-ui, sans-serif;
   --ancho: 1280px;
   --borde: 24px;
@@ -22,65 +31,85 @@
 }
 
 html[data-mode='dark'] {
-  --fondo: #0b0b0d;
-  --fondo-2: #131316;
-  --texto: #f5f5f4;
-  --texto-2: #96969e;
-  --texto-3: #63636b;
-  --linea: rgba(255, 255, 255, 0.13);
-  --inv-fondo: #f5f5f4;
-  --inv-texto: #0b0b0d;
+  --color-fondo: #0a0a12;
+  --color-superficie: #14131f;
+  --color-texto-primario: #f4f4f5;
+  --color-texto-secundario: #a1a1aa;
+  --color-marca: #4338ca;
+  --color-accion: #c4b5fd;
+  --color-acento: #c4b5fd;
+
+  --fondo: var(--color-fondo);
+  --fondo-2: var(--color-superficie);
+  --texto: var(--color-texto-primario);
+  --texto-2: var(--color-texto-secundario);
+  --texto-3: #52525b;
+  --linea: rgba(244, 244, 245, 0.12);
+  --inv-fondo: #fafafa;
+  --inv-texto: #18181b;
 }
 
 html[data-mode='light'] {
-  --fondo: #ffffff;
-  --fondo-2: #f3f3f1;
-  --texto: #0b0b0d;
-  --texto-2: #6c6c74;
-  --texto-3: #9a9aa2;
-  --linea: rgba(0, 0, 0, 0.13);
-  --inv-fondo: #0b0b0d;
-  --inv-texto: #f5f5f4;
+  --color-fondo: #fafafa;
+  --color-superficie: #ffffff;
+  --color-texto-primario: #18181b;
+  --color-texto-secundario: #52525b;
+  --color-marca: #3730a3;
+  --color-accion: #3730a3;
+  --color-acento: #c4b5fd;
+
+  --fondo: var(--color-fondo);
+  --fondo-2: var(--color-superficie);
+  --texto: var(--color-texto-primario);
+  --texto-2: var(--color-texto-secundario);
+  --texto-3: #a1a1aa;
+  --linea: rgba(24, 24, 27, 0.12);
+  --inv-fondo: #0a0a12;
+  --inv-texto: #f4f4f5;
 }
 
 /*
  * Franja invertida: la sección usa el esquema contrario al modo activo.
- * Los sobrescritos anidados de --texto-2, --texto-3 y --linea son la parte
- * fácil de romper (`SPEC.md` §4.1): sin ellos el texto secundario de una franja
- * invertida queda con el contraste del modo equivocado.
+ * Los sobrescritos anidados son la parte fácil de romper (`SPEC.md` §4.1): sin
+ * ellos, dentro de una franja invertida el texto secundario y —desde este
+ * rebrand— el color de acción quedan con el contraste del modo equivocado.
+ * Índigo sobre el fondo oscuro da 1.98:1: un botón de marca dentro de una
+ * franja invertida sería invisible si `--color-accion` no se volteara acá.
  */
 .inv {
   --fondo: var(--inv-fondo);
   --texto: var(--inv-texto);
+  --color-fondo: var(--inv-fondo);
+  --color-texto-primario: var(--inv-texto);
 
   background: var(--fondo);
   color: var(--texto);
 }
 
 html[data-mode='dark'] .inv {
-  --fondo-2: #f3f3f1;
-  --texto-2: #5c5c64;
-  --texto-3: #87878f;
-  --linea: rgba(0, 0, 0, 0.14);
-  --inv-fondo: #0b0b0d;
-  --inv-texto: #f5f5f4;
+  --color-superficie: #ffffff;
+  --color-texto-secundario: #52525b;
+  --color-marca: #3730a3;
+  --color-accion: #3730a3;
+
+  --fondo-2: var(--color-superficie);
+  --texto-2: var(--color-texto-secundario);
+  --texto-3: #a1a1aa;
+  --linea: rgba(24, 24, 27, 0.12);
+  --inv-fondo: #0a0a12;
+  --inv-texto: #f4f4f5;
 }
 
 html[data-mode='light'] .inv {
-  --fondo-2: #131316;
-  --texto-2: #96969e;
-  --texto-3: #63636b;
-  --linea: rgba(255, 255, 255, 0.13);
-  --inv-fondo: #ffffff;
-  --inv-texto: #0b0b0d;
+  --color-superficie: #14131f;
+  --color-texto-secundario: #a1a1aa;
+  --color-marca: #4338ca;
+  --color-accion: #c4b5fd;
+
+  --fondo-2: var(--color-superficie);
+  --texto-2: var(--color-texto-secundario);
+  --texto-3: #52525b;
+  --linea: rgba(244, 244, 245, 0.12);
+  --inv-fondo: #fafafa;
+  --inv-texto: #18181b;
 }
-
-/*
- * `--fondo-2` dentro de `.inv` es el único añadido respecto al prototipo, y no
- * es una decisión estética: el prototipo invierte el texto pero no el fondo
- * secundario, así que un componente que use `--fondo-2` dentro de una franja
- * invertida quedaría con texto secundario a 2.8:1 — ilegible. Hoy ninguno lo
- * usa ahí; la línea existe para que el día que alguno lo haga, no se rompa en
- * silencio. La prueba de contraste cubre también este par.
- */
-
