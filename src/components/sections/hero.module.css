@@ -1,0 +1,40 @@
+.hero {
+  padding: 180px 0 0;
+}
+
+.hero h1 {
+  font-size: clamp(44px, 7.6vw, 104px);
+  letter-spacing: -0.045em;
+  max-width: 15ch;
+}
+
+.support {
+  margin-top: 30px;
+  font-size: 19px;
+  color: var(--texto-2);
+  max-width: 50ch;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 38px;
+  flex-wrap: wrap;
+}
+
+.foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+  margin-top: 92px;
+  padding: 20px 0 24px;
+  border-top: 1px solid var(--linea);
+}
+
+@media (max-width: 1000px) {
+  .hero {
+    padding-top: 120px;
+  }
+}

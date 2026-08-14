@@ -6,7 +6,7 @@
 |---|---|
 | Paquete | P1 — Sistema de diseño y modo claro/oscuro |
 | Fecha inicio / fin | 2026-08-14 / 2026-08-14 |
-| Commit final | `{hash}` |
+| Commit final | `e8466b9` |
 | Secciones del SPEC implementadas | §4 sistema de diseño completo · §8.3 foco · §8.5 contraste · §8.7 rótulo del botón de modo |
 | Estado | ✅ completado |
 

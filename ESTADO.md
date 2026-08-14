@@ -5,8 +5,8 @@
 
 ## Dónde va el proyecto
 
-**Paquete actual:** P2 — Contenido tipado y secciones estáticas
-**Último commit de paquete:** `{hash-p1}` — P1 Sistema de diseño
+**Paquete actual:** P3 — Capa de animación GSAP
+**Último commit de paquete:** `{hash-p2}` — P2 Contenido y secciones
 **Fecha de última actualización:** 2026-08-14
 **Modo:** 🤖 **autónomo hasta P5**, activado por el usuario. Avanza solo entre paquetes; el resto del protocolo se cumple igual.
 
@@ -15,9 +15,9 @@
 | # | Paquete | Estado |
 |---|---|---|
 | P0 | Fundación | ✅ Cerrado · 2026-08-14 · `6d69dc7` |
-| P1 | Sistema de diseño y modo claro/oscuro | ✅ Cerrado · 2026-08-14 · `{hash-p1}` |
-| P2 | Contenido tipado y secciones estáticas | 🔄 En curso |
-| P3 | Capa de animación GSAP | ⬜ Pendiente |
+| P1 | Sistema de diseño y modo claro/oscuro | ✅ Cerrado · 2026-08-14 · `e8466b9` |
+| P2 | Contenido tipado y secciones estáticas | ✅ Cerrado · 2026-08-14 · `{hash-p2}` |
+| P3 | Capa de animación GSAP | 🔄 En curso |
 | P4 | Puertos, adaptadores simulados y selector de modo | ⬜ Pendiente |
 | P5 | Motor de disponibilidad (dominio puro) | ⬜ Pendiente |
 | P6 | API de agendamiento | ⬜ Pendiente |
@@ -59,16 +59,15 @@ Estados: ⬜ Pendiente · 🔄 En curso · ✅ Cerrado
 - **Este proyecto construye completo primero y endurece en Pf.** Ver la adaptación deliberada en `CLAUDE.md` §0
 - **Los adaptadores simulados no se descartan.** Son el entorno de pruebas y el modo demostración comercial
 
-### Lo primero que tiene que hacer P2
+### Lo que dejó P2 y hay que usar, no reinventar
 
-**Borrar la vista del sistema de diseño de P1**, que era para poder mirar los dos
-modos de un vistazo y ya cumplió:
-
-- `src/app/page.tsx` y `src/app/page.module.css` → se reemplazan por las once
-  secciones de `SPEC.md` §6.
-- `src/content/design-system-preview.ts` → se borra entero.
-
-Si queda, `knip` lo va a señalar como código muerto en la auditoría.
+| Necesito… | Ya existe en |
+|---|---|
+| Un texto del sitio | `src/content/`. **Hay una prueba** que recorre `src/components` y `src/app` buscando texto suelto en JSX: si escribes una palabra en un componente, falla |
+| Una sección con encabezado | `components/layout/section.tsx`. Recibe el encabezado de `content/site-copy.ts` y `inverted` para la franja `.inv` |
+| El ancho máximo del prototipo | `components/layout/container.tsx` |
+| Poner un trabajo real (C1) | Cambiar `content/works.ts`: `cover` pasa a `{ kind: 'image', src, alt }`. **El componente no se toca** |
+| Publicar el testimonio (C2) | `QUOTE.pending` a `false` en `content/site-copy.ts`. El componente no se toca |
 
 ### Lo que dejó P1 y hay que usar, no reinventar
 
@@ -112,6 +111,19 @@ Si queda, `knip` lo va a señalar como código muerto en la auditoría.
   `--texto-2`
 - Los umbrales de complejidad muerden de verdad: una página de vista previa con
   cinco secciones pasó de 40 líneas y hubo que partirla
+
+### Trampas de P2
+
+- **El registro nocturno de la portada no existe todavía.** En el prototipo lo
+  genera JavaScript; entra en P3 con la capa de animación. No se dejó un
+  contenedor vacío esperándolo
+- **El formulario de contacto apunta a `/api/contacto` y responde 404** hasta
+  P10. Es deliberado: un `<form>` sin destino envía por `GET` y deja lo que
+  escribió el visitante en la barra de direcciones
+- Los atributos `data-anim` del prototipo **no se portaron**: P3 decide cómo
+  marca los elementos que anima, y copiarlos antes sería adivinar
+- `content/` no puede importar nada. Si necesitas derivar algo del contenido,
+  se deriva en el componente que lo usa
 
 ### Cómo se verifica lo construido, en un minuto
 

@@ -4,6 +4,40 @@ Una entrada por commit de paquete. Formato: qué se construyó, qué quedó fuer
 
 ## [Sin publicar]
 
+### P2 — Contenido tipado y secciones estáticas · 2026-08-14
+
+**Qué se construyó**
+
+- `content/` tipado y hoja: productos, trabajos, servicios, proceso, preguntas y
+  todos los textos del sitio. `WorkCover` es unión discriminada —portada
+  tipográfica **o** imagen— desde el primer día, para que el componente de
+  trabajos no haya que reescribirlo cuando lleguen las capturas reales.
+- Las once secciones de `SPEC.md` §6, más barra y pie. `app/page.tsx` es solo
+  composición: once líneas, ni un texto.
+- 17 pruebas nuevas, 93 en total.
+
+**El criterio de aceptación es una prueba**
+
+"Ningún texto de cara al usuario vive dentro de un componente" no se comprueba
+leyendo: la prueba recorre `src/components` y `src/app`, quita los comentarios y
+busca texto suelto entre etiquetas JSX. Igual RN8: busca la cadena sobre todo el
+texto del sitio aplanado, y también se verificó sobre el HTML servido.
+
+**Dos decisiones de contenido**
+
+- **El testimonio no se publica** mientras no haya nombre real (C2). Una cita
+  firmada por `[Nombre del cliente]` dice que el sitio se armó con relleno.
+- **El formulario apunta a `/api/contacto`** desde ya. Un `<form>` sin destino
+  envía por `GET` y deja lo que escribió el visitante en la barra de direcciones
+  y en el historial. Hasta P10 responde 404, que es una señal honesta.
+
+**Corregido durante la construcción**
+
+- Un fallo real de `audit:secrets`: reventaba con archivos borrados del árbol
+  pero todavía en el índice. Lo destapó este mismo paquete al borrar la vista de
+  P1.
+- Un `eslint-disable` que se había colado para usar `<img>` → `next/image`.
+
 ### P1 — Sistema de diseño y modo claro/oscuro · 2026-08-14
 
 **Qué se construyó**

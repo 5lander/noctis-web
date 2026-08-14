@@ -1,0 +1,22 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 54px;
+}
+
+.step h3 {
+  font-size: 22px;
+  margin: 14px 0 9px;
+}
+
+.step p {
+  font-size: 15.5px;
+  color: var(--texto-2);
+}
+
+@media (max-width: 1000px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}

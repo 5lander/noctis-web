@@ -9,7 +9,7 @@
  */
 
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 const SELF = 'scripts/audit-secrets.mjs';
 const EXCLUDED_FILES = new Set([SELF, '.env.example', 'package-lock.json']);
@@ -55,9 +55,14 @@ function scanStagedDiff(stagedFiles) {
 }
 
 function scannableFiles() {
-  return git(['ls-files'])
-    .split('\n')
-    .filter((file) => file !== '' && !EXCLUDED_FILES.has(file) && !EXCLUDED_EXTENSIONS.test(file));
+  return (
+    git(['ls-files'])
+      .split('\n')
+      .filter((file) => file !== '' && !EXCLUDED_FILES.has(file) && !EXCLUDED_EXTENSIONS.test(file))
+      // `git ls-files` lista lo que está en el índice, incluido lo que ya se
+      // borró del árbol y todavía no se commiteó. Leerlo revienta.
+      .filter((file) => existsSync(file))
+  );
 }
 
 function scanTrackedFiles() {
