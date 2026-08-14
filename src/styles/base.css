@@ -1,0 +1,15 @@
+/*
+ * Base mínima. Sin un solo valor de diseño: los tokens de color, tipografía y
+ * espaciado llegan en P1 desde `tokens.css`, y ningún componente escribe uno
+ * literal (CLAUDE.md §10).
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}

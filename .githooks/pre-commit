@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# Auditoría rápida antes de cada commit (CLAUDE.md §0 y §13).
+# Bloquea: tipos, lint, prohibidos, arquitectura y secretos.
+#
+# Se activa solo: `npm install` corre `prepare`, que apunta core.hooksPath acá.
+# No hay dependencia de husky para cuatro líneas de shell.
+
+set -e
+
+echo "pre-commit · npm run audit:fast"
+npm run --silent audit:fast

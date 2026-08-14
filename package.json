@@ -1,0 +1,51 @@
+{
+  "name": "noctis-web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Sitio de productos, portafolio, agendamiento y bot conversacional de Noctis",
+  "engines": {
+    "node": ">=24.19.0 <25"
+  },
+  "type": "module",
+  "scripts": {
+    "prepare": "git config core.hooksPath .githooks || exit 0",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "audit:types": "tsc --noEmit",
+    "audit:lint": "eslint .",
+    "audit:forbidden": "node scripts/audit-forbidden.mjs",
+    "audit:arch": "depcruise src --config .dependency-cruiser.cjs",
+    "audit:secrets": "node scripts/audit-secrets.mjs",
+    "audit:fast": "npm run audit:types && npm run audit:lint && npm run audit:forbidden && npm run audit:arch && npm run audit:secrets",
+    "audit:complexity": "eslint . --config eslint.complexity.config.mjs",
+    "audit:deadcode": "knip",
+    "audit:duplication": "jscpd",
+    "audit:deps": "npm audit --audit-level=high",
+    "audit": "npm run audit:fast && npm run audit:complexity && npm run audit:deadcode && npm run audit:duplication && npm run audit:deps && npm run test"
+  },
+  "dependencies": {
+    "next": "16.3.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "@types/node": "26.2.0",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
+    "dependency-cruiser": "18.2.0",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.3.1",
+    "jscpd": "5.0.15",
+    "knip": "6.32.2",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.67.0",
+    "vitest": "4.1.10"
+  }
+}

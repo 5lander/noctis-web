@@ -28,10 +28,14 @@
 
 | # | Qué | Bloquea | Estado |
 |---|---|---|---|
-| C1 | Qué se extrae de Care como paquete compartido (motor de disponibilidad, máquina de estados) | **Estructura del proyecto** | ⬜ |
-| C2 | Convención de idioma de identificadores, alineada con Commerce (D12) | P0 | ⬜ |
+| C1 | Qué se extrae de Care como paquete compartido (motor de disponibilidad, máquina de estados) | **Estructura del proyecto** | ✅ resuelto en P0 · **pendiente de ratificación** |
+| C2 | Convención de idioma de identificadores, alineada con Commerce (D12) | P0 | ✅ resuelto en P0 |
 
 > C1 es la más importante de esta lista. Care ya resuelve agendamiento con calendario real. Decidir esto **después** de P5 significa mantener dos motores distintos con los mismos errores.
+
+**C1 — resuelto en P0, [ADR-0002](decisiones/ADR-0002-motor-de-disponibilidad-propio.md).** Se revisó el motor real de Care (`Care/Carebot/apps/api/src/domain/availability/`): modela múltiples recursos, compatibilidad servicio↔recurso y desempate entre profesionales. Noctis Web tiene un calendario único, una reunión a la vez y tope diario. Decisión: **motor propio**. Es barata de revertir porque el dominio es puro. **Si el usuario prefiere el paquete compartido, se decide antes de P5**; después sale caro.
+
+**C2 — resuelto en P0, [ADR-0001](decisiones/ADR-0001-idioma-y-convencion-de-identificadores.md).** Inglés, verificado en el código de Commerce. D12 pasó a ✅.
 
 ## D. Automatizaciones internas
 

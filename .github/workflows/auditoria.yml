@@ -1,0 +1,29 @@
+name: auditoría
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  auditoria:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # `audit:secrets` sin diff preparado revisa los archivos versionados;
+          # el historial completo permite ampliarlo a los commits del PR.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # La auditoría completa: rápida + complejidad + código muerto +
+      # duplicación + dependencias + toda la batería de pruebas.
+      - run: npm run audit
+
+      - run: npm run build
