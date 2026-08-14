@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es" data-mode="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laboratorio GSAP — Noctis</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --fondo:#0B0B0D; --fondo-2:#131316;
+    --texto:#F5F5F4; --texto-2:#96969E; --texto-3:#63636B;
+    --linea:rgba(255,255,255,.13);
+    --display:"Inter Tight",system-ui,sans-serif;
+    --tf:"Inter",system-ui,sans-serif;
+    --mono:"JetBrains Mono",monospace;
+    --curva:cubic-bezier(.22,.61,.36,1);
+  }
+  html[data-mode="light"]{
+    --fondo:#FFF; --fondo-2:#F3F3F1;
+    --texto:#0B0B0D; --texto-2:#6C6C74; --texto-3:#9A9AA2;
+    --linea:rgba(0,0,0,.13);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--fondo);color:var(--texto);font-family:var(--tf);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background .5s var(--curva),color .5s var(--curva)}
+  .env{max-width:1180px;margin:0 auto;padding:0 24px}
+  h1,h2,h3{font-family:var(--display);font-weight:500;letter-spacing:-.035em;line-height:1.03}
+  .eti{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--texto-2)}
+
+  /* cabecera */
+  .top{padding:88px 0 56px;border-bottom:1px solid var(--linea)}
+  .top h1{font-size:clamp(38px,6vw,76px);max-width:16ch;margin:18px 0 20px}
+  .top p{color:var(--texto-2);max-width:60ch}
+  .modo{position:fixed;top:18px;right:18px;z-index:99;width:38px;height:38px;border-radius:50%;border:1px solid var(--linea);background:var(--fondo);color:var(--texto);cursor:pointer;font-size:15px}
+
+  /* bloques de demo */
+  .demo{padding:96px 0;border-bottom:1px solid var(--linea)}
+  .demo-cab{display:grid;grid-template-columns:56px 1fr 260px;gap:28px;align-items:start;margin-bottom:44px}
+  .demo-num{font-family:var(--mono);font-size:13px;color:var(--texto-3);padding-top:6px}
+  .demo-cab h2{font-size:clamp(22px,2.6vw,32px)}
+  .demo-cab .desc{color:var(--texto-2);font-size:15px;margin-top:10px;max-width:52ch}
+  .ficha{font-size:13.5px;color:var(--texto-2);border-left:1px solid var(--linea);padding-left:18px}
+  .ficha b{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--texto-3);margin:0 0 4px}
+  .ficha p+b{margin-top:14px}
+  .lienzo{background:var(--fondo-2);border:1px solid var(--linea);padding:56px 40px;overflow:hidden;position:relative}
+
+  /* 01 */
+  #d1 .fr{font-family:var(--display);font-weight:500;font-size:clamp(28px,4.6vw,58px);letter-spacing:-.04em;line-height:1.06}
+  .ln{display:block;overflow:hidden}
+  .ln>span{display:block;transform:translateY(105%)}
+  /* 02 */
+  #d2 .txt{font-family:var(--mono);font-size:clamp(15px,2.4vw,26px);letter-spacing:.02em;min-height:2.4em}
+  /* 03 */
+  .cifras{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+  .cifra{font-family:var(--display);font-weight:600;font-size:clamp(34px,5vw,62px);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+  .cifra+.eti{margin-top:4px;display:block}
+  /* 04 */
+  .horiz{height:300vh;position:relative}
+  .horiz-pin{height:100vh;display:flex;align-items:center;overflow:hidden}
+  .horiz-pista{display:flex;gap:24px;padding:0 24px}
+  .tarj{flex:0 0 320px;height:380px;background:var(--fondo-2);border:1px solid var(--linea);padding:28px;display:flex;flex-direction:column;justify-content:space-between}
+  .tarj h3{font-size:24px}
+  /* 05 */
+  .para{position:relative;height:340px;display:grid;place-items:center}
+  .capa{position:absolute;font-family:var(--display);font-weight:600;letter-spacing:-.04em;white-space:nowrap}
+  .c1{font-size:clamp(60px,14vw,180px);color:var(--texto-3);opacity:.28}
+  .c2{font-size:clamp(34px,7vw,88px);color:var(--texto-2);opacity:.6}
+  .c3{font-size:clamp(20px,3.4vw,42px);color:var(--texto)}
+  /* 06 */
+  #d6 svg{width:100%;height:auto;display:block}
+  #d6 path{fill:none;stroke:var(--texto);stroke-width:1.4}
+  /* 07 */
+  .marq{overflow:hidden;white-space:nowrap;border-block:1px solid var(--linea);padding:18px 0}
+  .marq-p{display:inline-flex;gap:40px;will-change:transform}
+  .marq-p span{font-family:var(--display);font-size:clamp(24px,4vw,52px);font-weight:500;letter-spacing:-.03em;color:var(--texto-2)}
+  /* 08 */
+  .grid{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}
+  .celda{aspect-ratio:1;background:var(--texto);opacity:.14;border-radius:1px}
+  /* 09 */
+  .iman-zona{display:grid;place-items:center;height:220px}
+  .iman{padding:18px 34px;border:1px solid var(--texto);border-radius:2px;font-family:var(--display);font-weight:500;font-size:16px;cursor:pointer;background:transparent;color:var(--texto);will-change:transform}
+  /* 10 */
+  .cortinas{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .cort{aspect-ratio:3/4;background:var(--fondo);border:1px solid var(--linea);display:grid;place-items:center;clip-path:inset(0 0 100% 0)}
+  .cort span{font-family:var(--display);font-weight:600;font-size:clamp(16px,2vw,26px);letter-spacing:-.03em;text-align:center;padding:12px}
+  /* 11 */
+  .cruce{height:280vh;position:relative}
+  .cruce-pin{height:100vh;display:grid;place-items:center;text-align:center}
+  .cruce-item{position:absolute;max-width:22ch;font-family:var(--display);font-weight:500;font-size:clamp(24px,3.4vw,44px);letter-spacing:-.035em;line-height:1.1;opacity:0}
+  /* 12 */
+  .skew{display:grid;gap:14px}
+  .skew p{font-family:var(--display);font-size:clamp(20px,3.4vw,42px);font-weight:500;letter-spacing:-.035em;color:var(--texto-2)}
+  /* cursor */
+  .punto{position:fixed;top:0;left:0;width:9px;height:9px;border-radius:50%;background:var(--texto);pointer-events:none;z-index:200;mix-blend-mode:difference;opacity:0}
+  .anillo{position:fixed;top:0;left:0;width:34px;height:34px;border-radius:50%;border:1px solid var(--texto);pointer-events:none;z-index:199;opacity:0}
+
+  .pie{padding:64px 0 96px;color:var(--texto-2);font-size:15px}
+  @media(max-width:900px){
+    .demo-cab{grid-template-columns:1fr;gap:12px}
+    .demo-num{padding:0}
+    .ficha{border-left:none;border-top:1px solid var(--linea);padding:16px 0 0}
+    .cifras,.cortinas{grid-template-columns:1fr}
+    .grid{grid-template-columns:repeat(6,1fr)}
+    .punto,.anillo{display:none}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition-duration:.01ms!important}
+    .ln>span{transform:none}
+    .cort{clip-path:none}
+    .cruce-item{opacity:1;position:static}
+  }
+</style>
+</head>
+<body>
+
+<button class="modo" id="modo" aria-label="Cambiar modo">◐</button>
+<div class="punto" id="punto"></div>
+<div class="anillo" id="anillo"></div>
+
+<header class="top">
+  <div class="env">
+    <span class="eti">Laboratorio · Noctis</span>
+    <h1 id="titularTop">Doce formas de que una página se sienta viva.</h1>
+    <p>Cada bloque es una técnica funcionando de verdad, con los mismos tokens del sitio. La ficha de la derecha dice qué cuesta y si encaja con la identidad minimalista de Noctis. Bajá despacio: casi todo se dispara con el scroll.</p>
+  </div>
+</header>
+
+<main>
+
+  <!-- 01 -->
+  <section class="demo" id="d1">
+    <div class="env">
+      <div class="demo-cab">
+        <span class="demo-num">01</span>
+        <div><h2>Revelado por líneas con máscara</h2><p class="desc">El titular sube desde detrás de un borde invisible, línea por línea. Es el efecto más rentable que existe: cuesta poco y cambia por completo la primera impresión.</p></div>
+        <div class="ficha"><b>Técnica</b><p>Máscara con overflow + stagger. Con SplitText es una línea; acá está hecho a mano.</p><b>Para Noctis</b><p>Sí. Ya está en el sitio.</p></div>
+      </div>
+      <div class="lienzo"><div class="fr" id="fr1"><span class="ln"><span>Su negocio no cierra</span></span><span class="ln"><span>a las seis de la tarde.</span></span></div></div>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section class="demo" id="d2">
+    <div class="env">
+      <div class="demo-cab">
+        <span class="demo-num">02</span>
+        <div><h2>Texto que se decodifica</h2><p class="desc">Las letras giran como una cerradura hasta encontrar su lugar. Da una sensación de sistema trabajando.</p></div>
+        <div class="ficha"><b>Técnica</b><p>Interpolación de caracteres. El plugin ScrambleText lo hace solo; acá es JavaScript propio.</p><b>Para Noctis</b><p>Con moderación: en una etiqueta corta, no en un párrafo.</p></div>
+      </div>
+      <div class="lienzo"><div class="txt" id="scr">automatización · agenda · inventario</div></div>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section class="demo" id="d3">
+    <div class="env">
+      <div class="demo-cab">
+        <span class="demo-num">03</span>
+        <div><h2>Cifras que suben al entrar</h2><p class="desc">Los números cuentan desde cero cuando aparecen. Squarespace lo usa en su franja de estadísticas.</p></div>
+        <div class="ficha"><b>Técnica</b><p>Tween sobre un objeto + <code>onUpdate</code>. Sin plugin.</p><b>Para Noctis</b><p>Sí, cuando tengas cifras reales que mostrar.</p></div>
+      </div>
+      <div class="lienzo"><div class="cifras">
+        <div><div class="cifra num" data-fin="4">0</div><span class="eti">productos</span></div>
+        <div><div class="cifra num" data-fin="12" data-suf="+">0</div><span class="eti">proyectos</span></div>
+        <div><div class="cifra num" data-fin="98" data-suf="%">0</div><span class="eti">satisfacción</span></div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section class="demo" id="d4">
+    <div class="env">
+      <div class="demo-cab">
+        <span class="demo-num">04</span>
+        <div><h2>Scroll horizontal con anclaje</h2><p class="desc">La sección se queda fija y el contenido se mueve de lado mientras bajás. Es el recurso estrella de las agencias.</p></div>
+        <div class="ficha"><b>Técnica</b><p>ScrollTrigger con <code>pin</code> y <code>scrub</code>.</p><b>Para Noctis</b><p>Quizá para el portafolio. Ojo: en móvil confunde y hay que desactivarlo.</p></div>
+      </div>
+    </div>
+    <div class="horiz" id="horiz">
+      <div class="horiz-pin">
+        <div class="horiz-pista" id="pista">
+          <div class="tarj"><span class="eti">Comercio</span><h3>Noctis Commerce</h3></div>
+          <div class="tarj"><span class="eti">Salud</span><h3>Care</h3></div>
+          <div class="tarj"><span class="eti">Ventas</span><h3>Automatización</h3></div>
+          <div class="tarj"><span class="eti">Talento</span><h3>Reclutamiento</h3></div>
+          <div class="tarj"><span class="eti">Web</span><h3>Mejora de sitios</h3></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section class="demo" id="d5">
+    <div class="env">
+      <div class="demo-cab">
+        <span class="demo-num">05</span>
+        <div><h2>Parallax por capas</h2><p class="desc">Tres planos que se mueven a distinta velocidad y generan profundidad sin una sola imagen.</p></div>
+        <div class="ficha"><b>Técnica</b><p><code>yPercent</code> distinto por capa con <code>scrub</code>.</p><b>Para Noctis</b><p>En dosis pequeña. Mucho parallax pelea con el minimalismo.</p></div>
+      </div>
+      <div class="lienzo"><div class="para">
+        <span class="capa c1" data-vel="-18">NOCTIS</span>
+        <span class="capa c2" data-vel="10">de noche</span>
+        <span class="capa c3" data-vel="-30">sigue trabajando</span>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- 06 -->
+  <section class="demo" id="d6">
+    <div class="env">
+      <div class="demo-cab">
+        <span class="demo-num">06</span>
+        <div><h2>Trazo que se dibuja con el scroll</h2><p class="desc">Una línea que se va escribiendo a medida que bajás. Sirve para diagramas de proceso.</p></div>
+        <div class="ficha"><b>Técnica</b><p><code>stroke-dashoffset</code> con <code>scrub</code>. Sin plugin: DrawSVG no hace falta.</p><b>Para Noctis</b><p>Encaja bien con la sección de proceso.</p></div>
+      </div>
+      <div class="lienzo">
+        <svg viewBox="0 0 900 160" id="svg6"><path d="M10 130 C 160 130, 180 24, 320 24 S 520 130, 660 130 S 840 30, 890 30"/></svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 -->
+  <section class="demo" id="d7">
+    <div class="env">
+      <div class="demo-cab">
+        <span class="demo-num">07</span>
+        <div><h2>Marquesina que reacciona al scroll</h2><p class="desc">Corre sola, acelera con el scroll e invierte el sentido si subís. Detalle chico, efecto grande.</p></div>
+        <div class="ficha"><b>Técnica</b><p>Bucle infinito + <code>timeScale</code> según velocidad y dirección.</p><b>Para Noctis</b><p>Sí. Es la mejora natural de la marquesina actual.</p></div>
+      </div>
+    </div>
+    <div class="marq"><div class="marq-p" id="marq"><span>Páginas web</span><span>·</span><span>Automatización</span><span>·</span><span>Agenda</span><span>·</span><span>Inventario</span><span>·</span><span>CRM</span><span>·</span></div></div>
+  </section>
+
+  <!-- 08 -->
+  <section class="demo" id="d8">
+    <div class="env">
+      <div class="demo-cab">
+        <span class="demo-num">08</span>
+        <div><h2>Grilla con onda desde el centro</h2><p class="desc">Los elementos no entran en fila: entran como una onda que se propaga. Pasá el mouse para relanzarla.</p></div>
+        <div class="ficha"><b>Técnica</b><p><code>stagger</code> con <code>grid</code> y <code>from:"center"</code>. Una propiedad, no un algoritmo.</p><b>Para Noctis</b><p>Sí, para la grilla de trabajos.</p></div>
+      </div>
+      <div class="lienzo"><div class="grid" id="grid"></div></div>
+    </div>
+  </section>
+
+  <!-- 09 -->
+  <section class="demo" id="d9">
+    <div class="env">
+      <div class="demo-cab">
+        <span class="demo-num">09</span>
+        <div><h2>Botón magnético</h2><p class="desc">El botón se inclina hacia el cursor cuando te acercás. Se siente antes de verse.</p></div>
+        <div class="ficha"><b>Técnica</b><p><code>quickTo</code> sobre la distancia del puntero. Muy barato.</p><b>Para Noctis</b><p>Sí, en el botón principal. No en todos.</p></div>
+      </div>
+      <div class="lienzo"><div class="iman-zona"><button class="iman" id="iman">Agendar una llamada</button></div></div>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="demo" id="d10">
+    <div class="env">
+      <div class="demo-cab">
+        <span class="demo-num">10</span>
+        <div><h2>Cortina con clip-path</h2><p class="desc">La pieza se descubre como si se levantara un telón, en vez de aparecer por opacidad.</p></div>
+        <div class="ficha"><b>Técnica</b><p>Animación de <code>clip-path: inset()</code>.</p><b>Para Noctis</b><p>Sí, para las capturas del portafolio cuando existan.</p></div>
+      </div>
+      <div class="lienzo"><div class="cortinas">
+        <div class="cort"><span>Lubricadora del Sur</span></div>
+        <div class="cort"><span>Arrocera Andina</span></div>
+        <div class="cort"><span>Papelería Central</span></div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- 11 -->
+  <section class="demo" id="d11">
+    <div class="env">
+      <div class="demo-cab">
+        <span class="demo-num">11</span>
+        <div><h2>Panel fijo con cruce de contenido</h2><p class="desc">La sección se ancla y las frases se relevan una a otra sin que la página avance. Sirve para contar un proceso paso a paso.</p></div>
+        <div class="ficha"><b>Técnica</b><p><code>pin</code> + timeline con <code>scrub</code>.</p><b>Para Noctis</b><p>Buen candidato para la sección Proceso.</p></div>
+      </div>
+    </div>
+    <div class="cruce" id="cruce"><div class="cruce-pin">
+      <p class="cruce-item">Primero entendemos cómo trabaja hoy.</p>
+      <p class="cruce-item">Después arrancamos por la parte que más duele.</p>
+      <p class="cruce-item">Y queda funcionando, con soporte.</p>
+    </div></div>
+  </section>
+
+  <!-- 12 -->
+  <section class="demo" id="d12">
+    <div class="env">
+      <div class="demo-cab">
+        <span class="demo-num">12</span>
+        <div><h2>Inclinación por velocidad</h2><p class="desc">El texto se deforma levemente según qué tan rápido movés el scroll, y se endereza al frenar. Casi nadie lo nota, y por eso funciona.</p></div>
+        <div class="ficha"><b>Técnica</b><p><code>ScrollTrigger.getVelocity()</code> mapeado a <code>skewY</code>.</p><b>Para Noctis</b><p>Sutil, sí. Exagerado, marea.</p></div>
+      </div>
+      <div class="lienzo"><div class="skew" id="skew">
+        <p>Software que se usa todos los días.</p>
+        <p>Construido para negocios reales.</p>
+        <p>Desde Guayaquil, Ecuador.</p>
+      </div></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pie"><div class="env">
+  <p>Todas las técnicas usan solo GSAP y ScrollTrigger — ningún plugin de pago, así que no dependen de resolver la licencia. Las que necesitarían plugin (SplitText, DrawSVG, ScrambleText) están resueltas a mano acá para demostrar que se puede.</p>
+</div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  var quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(typeof gsap === 'undefined'){ return; }
+  gsap.registerPlugin(ScrollTrigger);
+
+  document.getElementById('modo').addEventListener('click',function(){
+    var r=document.documentElement; r.dataset.mode = r.dataset.mode==='dark'?'light':'dark';
+  });
+
+  // grilla 08
+  var grid=document.getElementById('grid');
+  for(var g=0;g<40;g++){ var c=document.createElement('div'); c.className='celda'; grid.appendChild(c); }
+
+  if(quieto){ return; }
+
+  var ent={scrollTrigger:{start:'top 80%'}};
+
+  // 01 — líneas con máscara
+  gsap.to('#fr1 .ln>span',{y:'0%',duration:1.05,stagger:.09,ease:'power3.out',scrollTrigger:{trigger:'#d1',start:'top 75%'}});
+  gsap.to('#titularTop',{opacity:1,duration:.6});
+
+  // 02 — decodificado
+  var el2=document.getElementById('scr'), final=el2.textContent, chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&/';
+  ScrollTrigger.create({trigger:'#d2',start:'top 72%',once:true,onEnter:function(){
+    var o={p:0};
+    gsap.to(o,{p:1,duration:1.8,ease:'power2.inOut',onUpdate:function(){
+      var n=Math.floor(final.length*o.p), s='';
+      for(var i=0;i<final.length;i++){
+        s += i<n ? final[i] : (final[i]===' '? ' ' : chars[Math.floor(Math.random()*chars.length)]);
+      }
+      el2.textContent=s;
+    },onComplete:function(){ el2.textContent=final; }});
+  }});
+
+  // 03 — contadores
+  gsap.utils.toArray('.num').forEach(function(n){
+    var fin=parseFloat(n.dataset.fin), suf=n.dataset.suf||'', o={v:0};
+    gsap.to(o,{v:fin,duration:1.8,ease:'power2.out',
+      scrollTrigger:{trigger:n,start:'top 85%',once:true},
+      onUpdate:function(){ n.textContent=Math.round(o.v)+suf; }});
+  });
+
+  // 04 — scroll horizontal con pin
+  var pista=document.getElementById('pista');
+  var mm=gsap.matchMedia();
+  mm.add('(min-width: 900px)',function(){
+    var d=pista.scrollWidth - window.innerWidth + 48;
+    gsap.to(pista,{x:-d,ease:'none',scrollTrigger:{trigger:'#horiz',start:'top top',end:'+='+d,pin:'.horiz-pin',scrub:1,invalidateOnRefresh:true}});
+  });
+
+  // 05 — parallax
+  gsap.utils.toArray('.capa').forEach(function(c){
+    gsap.to(c,{yPercent:parseFloat(c.dataset.vel),ease:'none',scrollTrigger:{trigger:'#d5',start:'top bottom',end:'bottom top',scrub:.8}});
+  });
+
+  // 06 — trazo
+  var path=document.querySelector('#svg6 path'), L=path.getTotalLength();
+  gsap.set(path,{strokeDasharray:L,strokeDashoffset:L});
+  gsap.to(path,{strokeDashoffset:0,ease:'none',scrollTrigger:{trigger:'#d6',start:'top 70%',end:'bottom 60%',scrub:.6}});
+
+  // 07 — marquesina reactiva
+  var mp=document.getElementById('marq'); mp.innerHTML+=mp.innerHTML;
+  var bucle=gsap.to(mp,{xPercent:-50,duration:18,ease:'none',repeat:-1});
+  ScrollTrigger.create({start:0,end:'max',onUpdate:function(self){
+    var v=self.getVelocity();
+    var t=gsap.utils.clamp(-4,4, v/380);
+    if(Math.abs(t)<.25) t = (t<0?-1:1)*1;
+    gsap.to(bucle,{timeScale:t||1,duration:.5,overwrite:true});
+  }});
+
+  // 08 — onda en grilla
+  function onda(){
+    gsap.fromTo('.celda',{opacity:.06,scale:.6},
+      {opacity:.45,scale:1,duration:.9,ease:'power2.out',
+       stagger:{amount:.9,grid:[5,8],from:'center'}});
+  }
+  ScrollTrigger.create({trigger:'#d8',start:'top 70%',onEnter:onda});
+  grid.addEventListener('mouseenter',onda);
+
+  // 09 — botón magnético
+  var b=document.getElementById('iman');
+  var xTo=gsap.quickTo(b,'x',{duration:.5,ease:'power3'}), yTo=gsap.quickTo(b,'y',{duration:.5,ease:'power3'});
+  b.parentElement.addEventListener('mousemove',function(e){
+    var r=b.getBoundingClientRect();
+    var dx=e.clientX-(r.left+r.width/2), dy=e.clientY-(r.top+r.height/2);
+    if(Math.abs(dx)<220&&Math.abs(dy)<120){ xTo(dx*.35); yTo(dy*.5); }
+  });
+  b.parentElement.addEventListener('mouseleave',function(){ xTo(0); yTo(0); });
+
+  // 10 — cortinas
+  gsap.to('.cort',{clipPath:'inset(0 0 0% 0)',duration:1.1,ease:'power3.inOut',stagger:.14,
+    scrollTrigger:{trigger:'#d10',start:'top 68%'}});
+
+  // 11 — cruce con pin
+  var items=gsap.utils.toArray('.cruce-item');
+  var tl=gsap.timeline({scrollTrigger:{trigger:'#cruce',start:'top top',end:'bottom bottom',pin:'.cruce-pin',scrub:.6}});
+  items.forEach(function(it,i){
+    tl.fromTo(it,{opacity:0,y:26},{opacity:1,y:0,duration:1});
+    if(i<items.length-1) tl.to(it,{opacity:0,y:-26,duration:1},'+=.6');
+  });
+
+  // 12 — skew por velocidad
+  var skewTo=gsap.quickTo('#skew p','skewY',{duration:.55,ease:'power3'});
+  ScrollTrigger.create({start:0,end:'max',onUpdate:function(self){
+    skewTo(gsap.utils.clamp(-7,7,self.getVelocity()/-320));
+  }});
+
+  // cursor
+  var pt=document.getElementById('punto'), an=document.getElementById('anillo');
+  var px=gsap.quickTo(pt,'x',{duration:.12}), py=gsap.quickTo(pt,'y',{duration:.12});
+  var ax=gsap.quickTo(an,'x',{duration:.5,ease:'power3'}), ay=gsap.quickTo(an,'y',{duration:.5,ease:'power3'});
+  window.addEventListener('mousemove',function(e){
+    gsap.to([pt,an],{opacity:1,duration:.3});
+    px(e.clientX-4); py(e.clientY-4); ax(e.clientX-17); ay(e.clientY-17);
+  });
+})();
+</script>
+</body>
+</html>

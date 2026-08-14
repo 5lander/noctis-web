@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="es" data-mode="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noctis — Software y páginas web para negocios que trabajan todos los días</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     TOKENS — un solo juego, dos modos. Igual que el sistema de
+     Commerce: el tema se cambia con data-mode en <html>.
+     ============================================================ */
+  :root{
+    --display:"Inter Tight",system-ui,sans-serif;
+    --texto-f:"Inter",system-ui,sans-serif;
+    --ancho:1280px;
+    --borde:24px;
+    --curva:cubic-bezier(.22,.61,.36,1);
+  }
+  html[data-mode="dark"]{
+    --fondo:#0B0B0D;
+    --fondo-2:#131316;
+    --texto:#F5F5F4;
+    --texto-2:#96969E;
+    --texto-3:#63636B;
+    --linea:rgba(255,255,255,.13);
+    --inv-fondo:#F5F5F4;
+    --inv-texto:#0B0B0D;
+  }
+  html[data-mode="light"]{
+    --fondo:#FFFFFF;
+    --fondo-2:#F3F3F1;
+    --texto:#0B0B0D;
+    --texto-2:#6C6C74;
+    --texto-3:#9A9AA2;
+    --linea:rgba(0,0,0,.13);
+    --inv-fondo:#0B0B0D;
+    --inv-texto:#F5F5F4;
+  }
+  /* Franja invertida: usa el esquema contrario al modo activo */
+  .inv{
+    --fondo:var(--inv-fondo);
+    --texto:var(--inv-texto);
+    background:var(--fondo);
+    color:var(--texto);
+  }
+  html[data-mode="dark"] .inv{--texto-2:#5C5C64;--texto-3:#87878F;--linea:rgba(0,0,0,.14);--inv-fondo:#0B0B0D;--inv-texto:#F5F5F4}
+  html[data-mode="light"] .inv{--texto-2:#96969E;--texto-3:#63636B;--linea:rgba(255,255,255,.13);--inv-fondo:#FFFFFF;--inv-texto:#0B0B0D}
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--fondo);color:var(--texto);
+    font-family:var(--texto-f);font-size:17px;line-height:1.55;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+    transition:background .5s var(--curva),color .5s var(--curva);
+  }
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:2px solid currentColor;outline-offset:4px}
+  .env{width:100%;max-width:var(--ancho);margin:0 auto;padding:0 var(--borde)}
+  h1,h2,h3,h4{font-family:var(--display);font-weight:500;letter-spacing:-.035em;line-height:1.03}
+  .eti{font-family:var(--display);font-size:11.5px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--texto-2)}
+
+  /* ---------- Barra ---------- */
+  .barra{position:fixed;top:0;left:0;right:0;z-index:80;background:color-mix(in srgb,var(--fondo) 88%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--linea);transition:transform .45s var(--curva),background .5s var(--curva)}
+  .barra-int{display:flex;align-items:center;gap:32px;height:66px}
+  .logo{font-family:var(--display);font-weight:600;font-size:19px;letter-spacing:-.03em;margin-right:auto}
+  .barra-nav{display:flex;gap:26px;font-size:14.5px;color:var(--texto-2)}
+  .barra-nav a{position:relative;padding-bottom:3px}
+  .barra-nav a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--texto);transition:width .32s var(--curva)}
+  .barra-nav a:hover{color:var(--texto)}
+  .barra-nav a:hover::after{width:100%}
+  .modo{width:36px;height:36px;border-radius:50%;border:1px solid var(--linea);background:transparent;color:var(--texto);cursor:pointer;display:grid;place-items:center;transition:border-color .3s ease}
+  .modo:hover{border-color:var(--texto)}
+  .modo svg{width:16px;height:16px}
+  html[data-mode="dark"] .modo .sol{display:block}
+  html[data-mode="dark"] .modo .luna{display:none}
+  html[data-mode="light"] .modo .sol{display:none}
+  html[data-mode="light"] .modo .luna{display:block}
+  .btn{display:inline-flex;align-items:center;justify-content:center;font-family:var(--display);font-size:14.5px;font-weight:500;padding:11px 20px;border-radius:2px;border:1px solid var(--texto);background:var(--texto);color:var(--fondo);cursor:pointer;transition:background .26s var(--curva),color .26s var(--curva)}
+  .btn:hover{background:transparent;color:var(--texto)}
+  .btn-linea{background:transparent;color:var(--texto);border-color:var(--linea)}
+  .btn-linea:hover{background:var(--texto);color:var(--fondo);border-color:var(--texto)}
+
+  /* ---------- Portada ---------- */
+  .portada{padding:180px 0 0}
+  .portada h1{font-size:clamp(44px,7.6vw,104px);letter-spacing:-.045em;max-width:15ch}
+  .pal{display:inline-block;overflow:hidden;vertical-align:top}
+  .pal>span{display:inline-block;transform:translateY(105%)}
+  .portada .sub{margin-top:30px;font-size:19px;color:var(--texto-2);max-width:50ch}
+  .acciones{display:flex;gap:12px;margin-top:38px;flex-wrap:wrap}
+  .portada-pie{display:flex;align-items:flex-end;justify-content:space-between;gap:40px;flex-wrap:wrap;margin-top:92px;padding:20px 0 24px;border-top:1px solid var(--linea)}
+  .registro{display:flex;flex-direction:column;gap:3px;min-width:320px;font-size:13.5px}
+  .registro-fila{display:grid;grid-template-columns:50px 1fr;gap:14px;color:var(--texto-3)}
+  .registro-fila.activa{color:var(--texto)}
+  .registro-fila span:first-child{font-variant-numeric:tabular-nums;color:var(--texto-3)}
+
+  /* ---------- Marquesina ---------- */
+  .marquesina{border-block:1px solid var(--linea);padding:16px 0;overflow:hidden;white-space:nowrap}
+  .marq-pista{display:inline-flex;gap:44px;will-change:transform}
+  .marq-pista span{font-family:var(--display);font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:var(--texto-2)}
+  .marq-pista span::after{content:"·";margin-left:44px;color:var(--texto-3)}
+
+  /* ---------- Secciones ---------- */
+  .sec{padding:118px 0;border-top:1px solid var(--linea)}
+  .sec-cab{display:grid;grid-template-columns:170px 1fr;gap:40px;margin-bottom:68px}
+  .sec-cab h2{font-size:clamp(29px,4vw,48px);max-width:20ch}
+  .sec-cab .apoyo{margin-top:18px;color:var(--texto-2);max-width:56ch}
+
+  /* ---------- Productos ---------- */
+  .prod{display:grid;grid-template-columns:170px 1fr 200px;gap:40px;padding:38px 0;border-top:1px solid var(--linea)}
+  .prod:last-of-type{border-bottom:1px solid var(--linea)}
+  .prod h3{font-size:31px;margin-bottom:11px}
+  .prod .uno{font-size:18px;color:var(--texto);opacity:.82;max-width:48ch;margin-bottom:20px}
+  .prod ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:7px 32px;max-width:620px}
+  .prod li{font-size:15px;color:var(--texto-2);padding-left:16px;position:relative}
+  .prod li::before{content:"";position:absolute;left:0;top:10px;width:7px;height:1px;background:var(--texto-3)}
+  .derecha{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+  .estado{display:inline-flex;align-items:center;gap:8px;font-family:var(--display);font-size:11.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--texto-2)}
+  .estado i{width:5px;height:5px;border-radius:50%;background:var(--texto-3);font-style:normal}
+  .estado.on{color:var(--texto)}
+  .estado.on i{background:var(--texto)}
+  .publico{font-size:14.5px;color:var(--texto-2)}
+
+  /* ---------- Trabajos ---------- */
+  .trabajos{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+  .trabajo{display:block;cursor:pointer}
+  .lienzo{
+    position:relative;aspect-ratio:4/3;overflow:hidden;border:1px solid var(--linea);
+    display:grid;place-items:center;padding:24px;
+  }
+  .lienzo .marca{font-family:var(--display);font-weight:600;font-size:clamp(20px,2.4vw,34px);letter-spacing:-.03em;text-align:center;line-height:1.05;transition:transform .7s var(--curva)}
+  .lienzo .pie-l{position:absolute;left:16px;bottom:14px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;opacity:.55}
+  .lienzo .flecha{position:absolute;right:16px;top:14px;font-size:15px;opacity:0;transform:translate(-6px,6px);transition:all .5s var(--curva)}
+  .trabajo:hover .lienzo .marca{transform:scale(1.04)}
+  .trabajo:hover .lienzo .flecha{opacity:.7;transform:none}
+  /* cuatro tratamientos, sin imágenes: todo tipografía y contraste */
+  .l1{background:var(--fondo-2)}
+  .l2{background:var(--inv-fondo);color:var(--inv-texto)}
+  .l3{background:var(--fondo-2)}
+  .l3 .marca{font-style:italic;font-weight:400}
+  .l4{background:var(--fondo);border-width:1px}
+  .l4 .marca{text-transform:uppercase;letter-spacing:.02em;font-size:clamp(16px,1.9vw,24px)}
+  .trab-info{display:flex;justify-content:space-between;gap:16px;margin-top:14px;font-size:14.5px}
+  .trab-info b{font-weight:500}
+  .trab-info span{color:var(--texto-2)}
+
+  /* ---------- Servicios ---------- */
+  .servicios{display:grid;grid-template-columns:repeat(2,1fr);gap:0 68px}
+  .serv{padding:28px 0;border-top:1px solid var(--linea);display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:baseline}
+  .serv h4{font-size:21px}
+  .serv p{font-size:15.5px;color:var(--texto-2);margin-top:7px}
+
+  /* ---------- Proceso ---------- */
+  .proceso{display:grid;grid-template-columns:repeat(3,1fr);gap:54px}
+  .paso h4{font-size:22px;margin:14px 0 9px}
+  .paso p{font-size:15.5px;color:var(--texto-2)}
+
+  /* ---------- Cita ---------- */
+  .cita{padding:104px 0;border-top:1px solid var(--linea)}
+  .cita blockquote{font-family:var(--display);font-weight:400;font-size:clamp(25px,3.4vw,40px);letter-spacing:-.035em;line-height:1.18;max-width:24ch;margin:0 auto;text-align:center}
+  .cita footer{margin-top:28px;text-align:center;font-size:14.5px;color:var(--texto-2)}
+  .cita footer b{display:block;font-weight:500;color:var(--texto)}
+
+  /* ---------- Acordeón ---------- */
+  .acor details{border-top:1px solid var(--linea)}
+  .acor details:last-child{border-bottom:1px solid var(--linea)}
+  .acor summary{cursor:pointer;list-style:none;padding:26px 0;font-family:var(--display);font-weight:500;font-size:clamp(19px,2.1vw,26px);letter-spacing:-.025em;display:flex;align-items:center;gap:20px}
+  .acor summary::-webkit-details-marker{display:none}
+  .acor summary::after{content:"+";margin-left:auto;font-size:22px;color:var(--texto-2);transition:transform .35s var(--curva)}
+  .acor details[open] summary::after{transform:rotate(45deg)}
+  .acor .cuerpo{overflow:hidden}
+  .acor .cuerpo p{padding:0 0 26px;color:var(--texto-2);max-width:68ch}
+
+  /* ---------- Contacto ---------- */
+  .cont-grid{display:grid;grid-template-columns:1fr 1fr;gap:68px;align-items:start}
+  .cont-grid h2{font-size:clamp(30px,4.4vw,52px);max-width:15ch;margin-bottom:18px}
+  .cont-grid .apoyo{color:var(--texto-2);max-width:42ch}
+  .form{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .campo{display:flex;flex-direction:column;gap:8px}
+  .campo.ancho{grid-column:1/-1}
+  .campo label{font-family:var(--display);font-size:11.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--texto-2)}
+  .campo input,.campo select,.campo textarea{font-family:var(--texto-f);font-size:16px;color:var(--texto);background:transparent;border:none;border-bottom:1px solid var(--linea);padding:8px 0;transition:border-color .3s ease}
+  .campo input::placeholder,.campo textarea::placeholder{color:var(--texto-3)}
+  .campo select option{background:var(--fondo);color:var(--texto)}
+  .campo input:focus,.campo select:focus,.campo textarea:focus{outline:none;border-bottom-color:var(--texto)}
+  .campo textarea{resize:vertical;min-height:74px}
+  .form .btn{grid-column:1/-1;justify-self:start;margin-top:4px}
+  .aviso{grid-column:1/-1;font-size:14.5px;color:var(--texto-2);display:none}
+  .aviso.visible{display:block}
+
+  /* ---------- Pie ---------- */
+  .pie{border-top:1px solid var(--linea);padding:72px 0 40px}
+  .pie-frase{font-family:var(--display);font-weight:500;font-size:clamp(24px,3.6vw,44px);letter-spacing:-.035em;max-width:16ch;margin-bottom:56px}
+  .pie-int{display:flex;flex-wrap:wrap;gap:24px;align-items:center;padding-top:28px;border-top:1px solid var(--linea);font-size:14px;color:var(--texto-2)}
+  .pie-der{margin-left:auto;font-size:13px}
+
+  /* ---------- Estado inicial de animación ---------- */
+  [data-anim]{opacity:0;transform:translateY(18px)}
+  .no-js [data-anim],.sin-anim [data-anim]{opacity:1;transform:none}
+  .sin-anim .pal>span{transform:none}
+
+  /* ---------- Adaptable ---------- */
+  @media (max-width:1000px){
+    .sec-cab{grid-template-columns:1fr;gap:14px;margin-bottom:44px}
+    .prod{grid-template-columns:1fr;gap:16px}
+    .prod ul{grid-template-columns:1fr}
+    .derecha{flex-direction:row;gap:26px;align-items:center;flex-wrap:wrap}
+    .trabajos{grid-template-columns:repeat(2,1fr);gap:20px}
+    .servicios,.proceso{grid-template-columns:1fr}
+    .proceso{gap:40px}
+    .cont-grid{grid-template-columns:1fr;gap:44px}
+    .barra-nav{display:none}
+    .portada{padding-top:120px}
+    .registro{min-width:0;width:100%}
+  }
+  @media (max-width:620px){
+    :root{--borde:20px}
+    .sec,.cita{padding:76px 0}
+    .trabajos{grid-template-columns:1fr}
+    .form{grid-template-columns:1fr}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition-duration:.01ms!important}
+    [data-anim]{opacity:1;transform:none}
+    .pal>span{transform:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="barra" id="barra">
+  <div class="env barra-int">
+    <span class="logo">Noctis</span>
+    <nav class="barra-nav">
+      <a href="#productos">Productos</a>
+      <a href="#trabajos">Trabajos</a>
+      <a href="#servicios">Servicios</a>
+      <a href="#proceso">Proceso</a>
+    </nav>
+    <button class="modo" id="modo" aria-label="Cambiar entre modo claro y oscuro">
+      <svg class="sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>
+      <svg class="luna" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5z"/></svg>
+    </button>
+    <a class="btn" href="#contacto">Hablemos</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- PORTADA -->
+  <section class="portada">
+    <div class="env">
+      <h1 id="titular">Su negocio no cierra a las seis.</h1>
+      <p class="sub" data-anim>Construimos software y páginas web para negocios que siguen vendiendo, agendando y contestando cuando el local ya cerró.</p>
+      <div class="acciones" data-anim>
+        <a class="btn" href="#trabajos">Ver trabajos</a>
+        <a class="btn btn-linea" href="#contacto">Conversemos</a>
+      </div>
+      <div class="portada-pie">
+        <span class="eti" data-anim>Guayaquil, Ecuador · Meridian Holding</span>
+        <div class="registro" id="registro" aria-hidden="true"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUESINA -->
+  <div class="marquesina">
+    <div class="marq-pista" id="marq">
+      <span>Páginas web</span><span>Automatización</span><span>WhatsApp</span><span>CRM</span><span>Infraestructura</span><span>Agenda de citas</span><span>Gestión comercial</span><span>Soporte</span>
+    </div>
+  </div>
+
+  <!-- PRODUCTOS -->
+  <section class="sec" id="productos">
+    <div class="env">
+      <div class="sec-cab" data-anim>
+        <span class="eti">Productos</span>
+        <div>
+          <h2>Cuatro problemas que un negocio arrastra todos los días.</h2>
+          <p class="apoyo">Cada uno resuelve uno solo, completo. Le decimos en qué punto está cada producto para que sepa qué puede usar hoy.</p>
+        </div>
+      </div>
+
+      <article class="prod" data-anim>
+        <span class="eti">Comercio</span>
+        <div>
+          <h3>Noctis Commerce</h3>
+          <p class="uno">Qué tiene, a qué precio y cuánto salió. La gestión de un negocio que vende todos los días.</p>
+          <ul><li>Catálogo con variantes y listas de precios</li><li>Inventario por bodega con aviso de mínimos</li><li>Ventas y cierre de caja</li><li>Varios locales en una sola cuenta</li></ul>
+        </div>
+        <div class="derecha">
+          <span class="estado"><i></i>En desarrollo</span>
+          <p class="publico">Tiendas y distribuidoras que ya no alcanzan con cuaderno y Excel.</p>
+        </div>
+      </article>
+
+      <article class="prod" data-anim>
+        <span class="eti">Salud</span>
+        <div>
+          <h3>Care</h3>
+          <p class="uno">La agenda del consultorio, atendida por WhatsApp a la hora que el paciente escriba.</p>
+          <ul><li>Agenda contra la disponibilidad real</li><li>Confirma y recuerda antes de la cita</li><li>Panel de agenda, pacientes y métricas</li><li>Funciona también desde el celular</li></ul>
+        </div>
+        <div class="derecha">
+          <span class="estado"><i></i>En pruebas</span>
+          <p class="publico">Consultorios independientes que hoy llevan la agenda en papel.</p>
+        </div>
+      </article>
+
+      <article class="prod" data-anim>
+        <span class="eti">Ventas</span>
+        <div>
+          <h3>Automatización</h3>
+          <p class="uno">Un solo asistente que responde en WhatsApp, Instagram, Messenger, TikTok y Telegram.</p>
+          <ul><li>Contesta precios y preguntas repetidas</li><li>Toma pedidos y agenda en el mismo chat</li><li>Pasa a una persona cuando hace falta</li><li>Se monta sobre lo que ya tiene</li></ul>
+        </div>
+        <div class="derecha">
+          <span class="estado on"><i></i>Disponible</span>
+          <p class="publico">Negocios que reciben más mensajes de los que pueden contestar.</p>
+        </div>
+      </article>
+
+      <article class="prod" data-anim>
+        <span class="eti">Talento</span>
+        <div>
+          <h3>Reclutamiento por chat</h3>
+          <p class="uno">Los candidatos se registran conversando y la empresa recibe perfiles comparables.</p>
+          <ul><li>Sin formularios largos</li><li>Datos ordenados, no hojas sueltas</li><li>Filtrado por lo que necesita</li><li>Todo en un solo lugar</li></ul>
+        </div>
+        <div class="derecha">
+          <span class="estado"><i></i>Proyecto futuro</span>
+          <p class="publico">Empresas que reciben hojas de vida por todos lados y no logran compararlas.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- TRABAJOS -->
+  <section class="sec" id="trabajos">
+    <div class="env">
+      <div class="sec-cab" data-anim>
+        <span class="eti">Trabajos</span>
+        <div>
+          <h2>Páginas y sistemas que ya están en línea.</h2>
+          <p class="apoyo">Marcadores de posición: cuando tengas las capturas reales, cada cuadro se reemplaza por la imagen del sitio y el nombre del cliente.</p>
+        </div>
+      </div>
+      <div class="trabajos">
+        <a class="trabajo" href="#" data-anim>
+          <div class="lienzo l1"><span class="marca">Lubricadora<br>del Sur</span><span class="pie-l">Sitio + WhatsApp</span><span class="flecha">↗</span></div>
+          <div class="trab-info"><b>Lubricadora del Sur</b><span>2026</span></div>
+        </a>
+        <a class="trabajo" href="#" data-anim>
+          <div class="lienzo l2"><span class="marca">ARROCERA<br>ANDINA</span><span class="pie-l">Catálogo y pedidos</span><span class="flecha">↗</span></div>
+          <div class="trab-info"><b>Arrocera Andina</b><span>2026</span></div>
+        </a>
+        <a class="trabajo" href="#" data-anim>
+          <div class="lienzo l3"><span class="marca">Papelería<br>Central</span><span class="pie-l">Tienda en línea</span><span class="flecha">↗</span></div>
+          <div class="trab-info"><b>Papelería Central</b><span>2026</span></div>
+        </a>
+        <a class="trabajo" href="#" data-anim>
+          <div class="lienzo l4"><span class="marca">Consultorio<br>Vera</span><span class="pie-l">Agenda con Care</span><span class="flecha">↗</span></div>
+          <div class="trab-info"><b>Consultorio Vera</b><span>2026</span></div>
+        </a>
+        <a class="trabajo" href="#" data-anim>
+          <div class="lienzo l1"><span class="marca">Distribuidora<br>Bahía</span><span class="pie-l">Inventario y ventas</span><span class="flecha">↗</span></div>
+          <div class="trab-info"><b>Distribuidora Bahía</b><span>2025</span></div>
+        </a>
+        <a class="trabajo" href="#" data-anim>
+          <div class="lienzo l2"><span class="marca">ESTUDIO<br>MARINO</span><span class="pie-l">Rediseño de sitio</span><span class="flecha">↗</span></div>
+          <div class="trab-info"><b>Estudio Marino</b><span>2025</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICIOS -->
+  <section class="sec inv" id="servicios">
+    <div class="env">
+      <div class="sec-cab" data-anim>
+        <span class="eti">Servicios</span>
+        <div><h2>Trabajo puntual, cuando no hace falta un producto entero.</h2></div>
+      </div>
+      <div class="servicios">
+        <div class="serv" data-anim><span class="eti">01</span><div><h4>CRM sencillo</h4><p>Sus clientes, sus seguimientos y sus ventas en un solo lugar. Sin campos que nadie llena.</p></div></div>
+        <div class="serv" data-anim><span class="eti">02</span><div><h4>Mejora de páginas web</h4><p>Tomamos el sitio que ya tiene y lo dejamos rápido, claro y presentable. Sin empezar de cero si no hace falta.</p></div></div>
+        <div class="serv" data-anim><span class="eti">03</span><div><h4>Automatizaciones</h4><p>Atención multicanal, reportes que se arman solos y tareas repetitivas que consumen horas.</p></div></div>
+        <div class="serv" data-anim><span class="eti">04</span><div><h4>Infraestructura</h4><p>Servidores, respaldos y monitoreo. Su sistema queda en línea y con alguien mirando.</p></div></div>
+        <div class="serv" data-anim><span class="eti">05</span><div><h4>Acompañamiento</h4><p>Plan mensual con horas de desarrollo, corrección de errores y cambios a medida que el negocio crece.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESO -->
+  <section class="sec" id="proceso">
+    <div class="env">
+      <div class="sec-cab" data-anim>
+        <span class="eti">Proceso</span>
+        <div><h2>Primero entendemos el negocio. Después escribimos código.</h2></div>
+      </div>
+      <div class="proceso">
+        <div class="paso" data-anim><span class="eti">Levantamiento</span><h4>Vemos cómo trabaja hoy</h4><p>Una conversación para entender el flujo real: quién hace qué, dónde se pierde tiempo y qué se rompe cuando hay más trabajo del normal.</p></div>
+        <div class="paso" data-anim><span class="eti">Piloto</span><h4>Arrancamos por una parte</h4><p>Ponemos a andar el pedazo que más duele, con su información y sus clientes reales. Si no sirve, se ajusta antes de seguir.</p></div>
+        <div class="paso" data-anim><span class="eti">Operación</span><h4>Queda funcionando</h4><p>Pasa a producción con soporte y mejoras periódicas. Suscripción mensual, no una licencia eterna.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CITA -->
+  <section class="cita">
+    <div class="env" data-anim>
+      <blockquote>“Hablo directo con quien programó el sistema. Se pide un cambio y a los días está.”</blockquote>
+      <footer><b>[Nombre del cliente]</b>Gerente · distribuidora</footer>
+    </div>
+  </section>
+
+  <!-- PREGUNTAS -->
+  <section class="sec">
+    <div class="env">
+      <div class="sec-cab" data-anim>
+        <span class="eti">Preguntas</span>
+        <div><h2>Lo que todos preguntan antes de decidir.</h2></div>
+      </div>
+      <div class="acor">
+        <details data-anim><summary>¿Cuánto cuesta?</summary><div class="cuerpo"><p>Depende del alcance. Los productos van por suscripción mensual según el tamaño del negocio; el trabajo puntual se cotiza por fases con un valor cerrado por fase. Antes de que se comprometa a nada recibe una proforma con el detalle.</p></div></details>
+        <details data-anim><summary>¿En cuánto tiempo lo tengo funcionando?</summary><div class="cuerpo"><p>Una página o un piloto de automatización arranca en semanas. Los sistemas más grandes se entregan por partes: la primera versión útil sale primero y el resto se suma sobre algo que ya está en uso.</p></div></details>
+        <details data-anim><summary>¿Mis datos quedan mezclados con los de otros clientes?</summary><div class="cuerpo"><p>No. Cada cliente tiene sus datos aislados a nivel de base de datos, con permisos por usuario y respaldos periódicos.</p></div></details>
+        <details data-anim><summary>¿Qué pasa si mañana quiero dejar de trabajar con ustedes?</summary><div class="cuerpo"><p>Su información es suya. Se la entregamos exportada en formatos estándar, sin retenerla ni cobrar por liberarla.</p></div></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section class="sec inv" id="contacto">
+    <div class="env cont-grid">
+      <div data-anim>
+        <h2>Cuéntenos qué se le complica todos los días.</h2>
+        <p class="apoyo">Veinte minutos alcanzan para saber si algo de lo que hacemos le sirve. Si no le sirve, se lo decimos ahí mismo.</p>
+      </div>
+      <form class="form" id="form" novalidate data-anim>
+        <div class="campo"><label for="nombre">Nombre</label><input id="nombre" type="text" placeholder="Su nombre" required></div>
+        <div class="campo"><label for="negocio">Negocio</label><input id="negocio" type="text" placeholder="Nombre del negocio"></div>
+        <div class="campo"><label for="correo">Correo</label><input id="correo" type="email" placeholder="nombre@correo.com" required></div>
+        <div class="campo"><label for="whatsapp">WhatsApp</label><input id="whatsapp" type="tel" placeholder="09 9999 9999"></div>
+        <div class="campo ancho"><label for="interes">Qué le interesa</label>
+          <select id="interes">
+            <option>Página web nueva o rediseño</option>
+            <option>Automatización de atención y ventas</option>
+            <option>Agenda de citas (Care)</option>
+            <option>Gestión comercial (Commerce)</option>
+            <option>CRM sencillo</option>
+            <option>Infraestructura y soporte</option>
+            <option>Todavía no lo tengo claro</option>
+          </select>
+        </div>
+        <div class="campo ancho"><label for="mensaje">Qué se le complica hoy</label><textarea id="mensaje" placeholder="En pocas líneas, cómo lo resuelve hoy."></textarea></div>
+        <button class="btn" type="submit">Enviar mensaje</button>
+        <p class="aviso" id="aviso">Mensaje recibido. Le respondemos el mismo día hábil.</p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pie">
+  <div class="env">
+    <p class="pie-frase" data-anim>Su negocio no cierra a las seis.</p>
+    <div class="pie-int">
+      <span class="logo">Noctis</span>
+      <span>Meridian Holding · Ecuador</span>
+      <span class="pie-der">© 2026</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  var quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hayGsap = typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
+  if(hayGsap){ gsap.registerPlugin(ScrollTrigger); }
+
+  /* ---- Modo claro / oscuro ---- */
+  var raiz = document.documentElement;
+  if(window.matchMedia('(prefers-color-scheme: light)').matches){ raiz.dataset.mode = 'light'; }
+  document.getElementById('modo').addEventListener('click', function(){
+    raiz.dataset.mode = raiz.dataset.mode === 'dark' ? 'light' : 'dark';
+  });
+
+  /* ---- Partir el titular en palabras enmascaradas ---- */
+  var tit = document.getElementById('titular');
+  tit.innerHTML = tit.textContent.trim().split(/\s+/)
+    .map(function(p){ return '<span class="pal"><span>'+p+'</span></span>'; }).join(' ');
+
+  /* ---- Registro nocturno ---- */
+  var lineas = [
+    ['22:41','Instagram: consulta de precios respondida'],
+    ['23:12','Cita confirmada para el jueves 09:30'],
+    ['00:04','Cierre de caja del local Norte'],
+    ['01:35','12 mensajes contestados, 3 pasaron a una persona'],
+    ['02:50','Aviso de stock bajo el mínimo'],
+    ['04:18','Recordatorio enviado a 6 pacientes'],
+    ['06:30','Reporte de ventas listo antes de abrir']
+  ];
+  var caja = document.getElementById('registro'), i = 0, tope = 4;
+  function pintar(l){
+    var f = document.createElement('div');
+    f.className = 'registro-fila activa';
+    f.innerHTML = '<span>'+l[0]+'</span><span>'+l[1]+'</span>';
+    caja.appendChild(f);
+    var t = caja.children;
+    for(var k=0;k<t.length-1;k++){ t[k].classList.remove('activa'); }
+    while(caja.children.length > tope){ caja.removeChild(caja.firstChild); }
+    if(hayGsap && !quieto){ gsap.from(f,{opacity:0,y:8,duration:.5,ease:'power2.out'}); }
+  }
+  for(i=0;i<tope;i++){ pintar(lineas[i]); }
+  if(!quieto){ setInterval(function(){ pintar(lineas[i % lineas.length]); i++; }, 3400); }
+
+  /* ---- Sin GSAP o con movimiento reducido: todo visible ---- */
+  if(!hayGsap || quieto){
+    document.body.classList.add('sin-anim');
+  }else{
+
+    /* Entrada de portada */
+    var tl = gsap.timeline({defaults:{ease:'power3.out'}});
+    tl.to('#titular .pal>span',{y:'0%',duration:1.05,stagger:.055})
+      .to('.portada .sub',{opacity:1,y:0,duration:.9},'-=.65')
+      .to('.portada .acciones',{opacity:1,y:0,duration:.9},'-=.7')
+      .to('.portada-pie .eti',{opacity:1,y:0,duration:.8},'-=.7');
+
+    /* Revelado por bloque, en cascada */
+    gsap.utils.toArray('.sec, .cita, .pie').forEach(function(sec){
+      var piezas = sec.querySelectorAll('[data-anim]');
+      if(!piezas.length) return;
+      gsap.to(piezas,{
+        opacity:1,y:0,duration:1,stagger:.09,ease:'power3.out',
+        scrollTrigger:{trigger:sec,start:'top 78%'}
+      });
+    });
+
+    /* Marquesina en bucle */
+    var pista = document.getElementById('marq');
+    pista.innerHTML += pista.innerHTML;
+    gsap.to(pista,{xPercent:-50,duration:26,ease:'none',repeat:-1});
+
+    /* Barra que se esconde al bajar */
+    var ultimo = 0;
+    ScrollTrigger.create({
+      start:0,end:'max',
+      onUpdate:function(self){
+        var y = self.scroll();
+        if(y > 140 && y > ultimo){ gsap.to('#barra',{yPercent:-100,duration:.4,ease:'power2.out'}); }
+        else{ gsap.to('#barra',{yPercent:0,duration:.4,ease:'power2.out'}); }
+        ultimo = y;
+      }
+    });
+
+    /* Acordeón con altura animada */
+    document.querySelectorAll('.acor details').forEach(function(d){
+      var cuerpo = d.querySelector('.cuerpo');
+      gsap.set(cuerpo,{height:0});
+      d.querySelector('summary').addEventListener('click', function(ev){
+        ev.preventDefault();
+        var abierto = d.hasAttribute('open');
+        if(abierto){
+          gsap.to(cuerpo,{height:0,duration:.45,ease:'power2.inOut',onComplete:function(){ d.removeAttribute('open'); }});
+        }else{
+          d.setAttribute('open','');
+          gsap.fromTo(cuerpo,{height:0},{height:'auto',duration:.5,ease:'power2.out'});
+        }
+      });
+    });
+  }
+
+  /* ---- Formulario ---- */
+  var form = document.getElementById('form');
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var n = document.getElementById('nombre'), c = document.getElementById('correo');
+    if(!n.value.trim() || !c.value.trim()){ (n.value.trim() ? c : n).focus(); return; }
+    document.getElementById('aviso').classList.add('visible');
+    form.reset();
+  });
+})();
+</script>
+</body>
+</html>
