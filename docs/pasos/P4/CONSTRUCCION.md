@@ -6,7 +6,7 @@
 |---|---|
 | Paquete | P4 — Puertos, adaptadores simulados y selector de modo |
 | Fecha inicio / fin | 2026-08-14 / 2026-08-14 |
-| Commit final | `{hash}` |
+| Commit final | `b0a4789` |
 | Secciones implementadas | `BUILD.md` §2 y §3 completas · `CLAUDE.md` §12 |
 | Estado | ✅ completado |
 

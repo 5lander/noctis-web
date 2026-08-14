@@ -4,6 +4,37 @@ Una entrada por commit de paquete. Formato: qué se construyó, qué quedó fuer
 
 ## [Sin publicar]
 
+### P5 — Motor de disponibilidad · 2026-08-14 · **camino crítico**
+
+**Qué se construyó**
+
+- El motor: entran bloques ocupados y una política, salen espacios libres. Nada
+  más. No sabe que existen Google Calendar, una base de datos ni una petición
+  HTTP, y **por eso sus 24 pruebas corren sin levantar nada**.
+- Las siete reglas de D1, D2 y D3, cada una con sus pruebas de borde.
+- Conversión de zona horaria explícita con `Intl`. El motor **nunca** lee la zona
+  del servidor: un despliegue en Virginia ofrece las mismas horas que uno en
+  Guayaquil, y hay una prueba que lo comprueba corriendo la misma consulta con
+  `Europe/Madrid`.
+- Tipos de dominio: `TimeSlot`, `SlotId` (cadena marcada), `SchedulingPolicy`.
+- `config/scheduling.ts` con los valores de D1–D3, versionados. El dominio no
+  importa la configuración: la recibe.
+- 24 pruebas nuevas, 159 en total.
+
+**Los casos conocidos hicieron su trabajo**
+
+`docs/pruebas/casos-conocidos.md` tiene M1–M21 con el resultado esperado escrito
+a mano **antes de ejecutar**. Cuatro de esas expectativas estaban mal y el motor
+tenía razón:
+
+- Un espacio que deja **exactamente** los diez minutos de margen sí cumple: el
+  margen es un mínimo, no algo que superar.
+- La ventana de diez días hábiles cuenta desde hoy, y hoy queda fuera por el
+  aviso mínimo: se ofrecen nueve días, no diez.
+
+Las dos lecturas quedaron registradas como decisión, con la nota de qué cambiar
+si el usuario las prefiere al revés.
+
 ### P4 — Puertos, adaptadores simulados y selector de modo · 2026-08-14
 
 **Qué se construyó**
