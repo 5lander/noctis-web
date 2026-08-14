@@ -1,26 +1,66 @@
 # Configuración
 
+Todo lo de abajo se valida por esquema al cargar la aplicación, en
+`src/shared/infrastructure/config/environment.ts`. Es el **único** lugar del
+sistema donde se lee `process.env`: si la configuración está mal, la aplicación
+no arranca en vez de fallar en la cara de un visitante.
+
+Plantilla versionada: `.env.example`. Los archivos `.env*` reales nunca se
+versionan (`SEGURIDAD.md` §9) y `audit:forbidden` falla si alguno aparece
+rastreado por git.
+
 ## Selectores de adaptador
 
-| Variable | Valores | Efecto |
-|---|---|---|
-| `MODO_SERVICIOS` | `demo` \| `real` | Selector global |
-| `CALENDARIO_ADAPTER` | `fake` \| `real` | Sobrescribe el global |
-| `CORREO_ADAPTER` | `fake` \| `real` | Sobrescribe el global |
-| `CHAT_ADAPTER` | `fake` \| `real` | Sobrescribe el global |
-| `ALMACEN_ADAPTER` | `memoria` \| `postgres` | Sobrescribe el global |
+| Variable | Valores | Por defecto | Efecto |
+|---|---|---|---|
+| `MODO_SERVICIOS` | `demo` \| `real` | `demo` | Selector global |
+| `CALENDARIO_ADAPTER` | `fake` \| `real` | sigue al global | Sobrescribe el global |
+| `CORREO_ADAPTER` | `fake` \| `real` | sigue al global | Sobrescribe el global |
+| `CHAT_ADAPTER` | `fake` \| `real` | sigue al global | Sobrescribe el global |
+| `ALMACEN_ADAPTER` | `memoria` \| `postgres` | sigue al global | Sobrescribe el global |
 
 Los selectores individuales permiten pasar a real **un servicio a la vez** (P12).
+La resolución de cada selector contra el global llega en P4, junto con los
+puertos; hoy el esquema los acepta y los tipa.
 
 ## Interruptores
 
-| Variable | Efecto |
-|---|---|
-| `BOT_ACTIVO` | Oculta el widget sin desplegar |
-| `AGENDADOR_ACTIVO` | Oculta el agendador y deja el formulario |
+| Variable | Valores | Por defecto | Efecto |
+|---|---|---|---|
+| `BOT_ACTIVO` | `true` \| `false` | `false` | Oculta el widget sin desplegar |
+| `AGENDADOR_ACTIVO` | `true` \| `false` | `true` | Oculta el agendador y deja el formulario |
 
 ## Regla
 
-Con `MODO_SERVICIOS=real`, si falta una credencial la aplicación **no arranca** y nombra la que falta. **Jamás cae a simulado en silencio.**
+Con `MODO_SERVICIOS=real`, si falta una credencial la aplicación **no arranca** y
+nombra la que falta. **Jamás cae a simulado en silencio** (RN10). Las
+credenciales aparecen en P4; el mecanismo que las exige ya está puesto.
 
-Configuración de negocio (horario, duración, márgenes, topes) en `config/`, versionada. Valores en `DECISIONES.md`.
+Se comprueba después de desplegar con `GET /api/estado`, que devuelve el modo
+activo (ADR-0007).
+
+Configuración de negocio (horario, duración, márgenes, topes) en `config/`,
+versionada. Valores en `DECISIONES.md`. Llega con P5.
+
+## Comandos
+
+| Comando | Qué hace | Cuándo corre |
+|---|---|---|
+| `npm run dev` | Servidor de desarrollo | — |
+| `npm run build` · `npm start` | Build y servidor de producción | Despliegue |
+| `npm test` | Pruebas | Cada cambio, y dentro de `audit` |
+| `npm run audit:fast` | Tipos · lint · prohibidos · arquitectura · secretos | **Pre-commit, bloquea** |
+| `npm run audit` | Lo anterior + complejidad, código muerto, duplicación, dependencias y pruebas | CI y Pf |
+
+Detalle de cada check en `CLAUDE.md` §13.
+
+### Cómo se hacen cumplir los umbrales de `OPTIMIZACION.md` §8
+
+| Check de la auditoría | Herramienta | Dónde corre |
+|---|---|---|
+| I1 código muerto | `knip` | `audit:deadcode` |
+| I2 complejidad ≤10, profundidad ≤3, funciones ≤40 líneas, ≤3 parámetros | ESLint | `audit:complexity` **y además** `audit:lint`, o sea en cada commit |
+| I3 duplicación < 3 % | `jscpd` | `audit:duplication` |
+
+Los umbrales de I2 viven una sola vez, en `eslint.complexity-rules.mjs`, y los
+usan las dos configuraciones. Duplicarlos era garantizar que un día se separen.

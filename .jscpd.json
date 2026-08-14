@@ -1,0 +1,10 @@
+{
+  "threshold": 3,
+  "minLines": 8,
+  "minTokens": 60,
+  "reporters": ["console"],
+  "absolute": false,
+  "gitignore": true,
+  "format": ["typescript", "tsx", "javascript"],
+  "ignore": ["**/node_modules/**", "**/.next/**", "**/coverage/**", "**/report/**"]
+}

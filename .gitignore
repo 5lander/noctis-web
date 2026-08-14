@@ -1,0 +1,25 @@
+# Dependencias
+node_modules/
+
+# Build de Next
+.next/
+out/
+next-env.d.ts
+
+# Secretos — nunca versionados (SEGURIDAD.md §9)
+.env
+.env.*
+!.env.example
+
+# Salidas de auditoría
+coverage/
+report/
+.tsbuildinfo
+*.tsbuildinfo
+
+# Sistema operativo y editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json

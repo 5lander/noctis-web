@@ -17,7 +17,7 @@
 | D9 | Hosting y dominio | Por definir | 🔴 | — | Despliegue en P12 |
 | D10 | Analítica | Ninguna en v1 | 🟡 | — | — |
 | D11 | Idioma del bot | Solo español | 🟡 | `config/chat.ts` | — |
-| D12 | Idioma de identificadores en código | Inglés — **confirmar contra Commerce antes de P0** | 🟡 | Convención | — |
+| D12 | Idioma de identificadores en código | Inglés · archivos `kebab-case` con sufijo de rol · puertos sin prefijo `I`. Verificado contra el **código** de Commerce, no su documentación | ✅ 2026-08-14 | Convención · [ADR-0001](docs/decisiones/ADR-0001-idioma-y-convencion-de-identificadores.md) | — |
 | D13 | Precios públicos en el sitio | No se muestran | 🟡 | `content/` | — |
 | D14 | Versión en inglés del sitio | No en v1 | 🟡 | Rutas | — |
 | D15 | Licencia de GSAP y plugins | **Verificar términos vigentes antes de instalar SplitText o ScrollSmoother** | 🔴 | — | P3 si se usan plugins |
