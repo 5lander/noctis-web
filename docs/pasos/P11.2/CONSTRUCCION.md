@@ -154,7 +154,7 @@ Pedida por el usuario después de ver el pase visual.
 
 | Cambio | Por qué |
 |---|---|
-| **Fuera «Reclutamiento por chat»** | Es un proyecto aparte, no uno de los productos que esta página vende. Los productos bajan de cuatro a tres y `content.spec.ts` fija el número nuevo. `SPEC.md` §5.1 todavía dice cuatro y hay que corregirlo ahí |
+| **Fuera «Reclutamiento por chat»** | Es un proyecto aparte, no uno de los productos que esta página vende. Los productos bajan de cuatro a tres y `content.spec.ts` fija el número nuevo. `SPEC.md` §5.1 ya dice tres |
 | **Care enlaza a su sitio vivo** | `https://care.noctisdev.online` responde 200. El nombre del producto **es** el enlace, con flecha de salida; no hay botón aparte |
 | `Product.href` no es opcional | Obliga a decidirlo producto por producto. Un enlace que promete una demostración y no lleva a ninguna parte es la trampa en la que ya cayó «Ver trabajos» |
 
@@ -316,7 +316,7 @@ sin flecha parece una tarjeta rota.
 
 ## Deuda y pendientes
 
-- **`SPEC.md` §5.1 sigue diciendo cuatro productos.** Hay que bajarlo a tres.
+- ~~**`SPEC.md` §5.1 sigue diciendo cuatro productos.**~~ Cerrado: §5.1 dice tres y §5.2 dice seis.
 - **Burnout no lleva enlace** hasta que su DNS apunte. El usuario lo está
   desplegando; el día que resuelva, se pone el `href` desde el panel y la tarjeta
   pasa a enlazar sola.
@@ -537,12 +537,24 @@ código, y cuando la decisión cambia, la prueba cambia con ella y deja constanc
 
 ### Lo que queda abierto
 
-**El titular promete lo que la lista de servicios no vende.** «Software hecho a
-la medida» es la frase más grande de la página, y el software a medida quedó
-fuera del alcance comercial en `SPEC.md` §5.2, con una prueba que lo vigila sobre
-`SERVICES`. No rompe nada porque el guardián solo mira la lista, pero es el mismo
-error que este paquete acaba de corregir con «Página web nueva», del revés. O se
-abre el alcance, o el titular baja a lo que sí se contrata.
+~~**El titular promete lo que la lista de servicios no vende.**~~ **Cerrado el 3
+de septiembre de 2026, y no eligiendo entre las dos opciones que se plantearon.**
+
+Ninguna hacía falta. «Software hecho a la medida de cómo trabaja su negocio» es
+una afirmación sobre **cómo se construye**, no un servicio que se pueda encargar,
+y los seis servicios la sostienen uno por uno: la página con el lenguaje visual
+que le sirva, el CRM sin campos que nadie llena, la automatización montada sobre
+el número que ya tiene, y el proceso empezando por mirar cómo trabaja hoy. Lo que
+sigue fuera de alcance es el encargo abierto: «constrúyanme un sistema desde cero
+para lo que se me ocurra».
+
+La distinción es entre **método y catálogo**, y ahora está escrita en `SPEC.md`
+§5.2 en vez de vivir en la cabeza de quien la resolvió. Como es una frontera fina
+—basta reescribir el titular como «desarrollamos el sistema a la medida que usted
+necesite» para cruzarla— tiene tres pruebas: que el titular no ofrezca desarrollo
+a medida, que la bajada tampoco, y que los servicios sigan sosteniendo la promesa
+de ajuste. La expresión regular se verificó contra cinco casos, tres que debe
+bloquear y dos que debe permitir, antes de darla por buena.
 
 **Los tres puntos de RUC y régimen tributario** quedan en `ESTADO.md` y como C5
 en `DECISIONES.md`. Bloquean facturar el primer proyecto, no publicar la página,

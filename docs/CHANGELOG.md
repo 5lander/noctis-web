@@ -102,7 +102,7 @@ Una entrada por commit de paquete. Formato: qué se construyó, qué quedó fuer
   textos legales y la indexación está bloqueada.
 - Las capturas de producto son **ejemplos compuestos**; la de Burnout, en cambio,
   es una captura real. Se reemplazan cambiando una ruta en `content/products.ts`.
-- `SPEC.md` §5.1 sigue diciendo cuatro productos y hay que bajarlo a tres.
+- ~~`SPEC.md` §5.1 sigue diciendo cuatro productos.~~ Corregido el 3 de septiembre de 2026: §5.1 dice tres y §5.2 dice seis, con la nota de por qué cambiaron.
 - El ritmo vertical idéntico de las secciones (hallazgo 12) y las violaciones de
   `style-src` (hallazgo 14): los dos de gravedad baja, los dos para Pf.
 

@@ -52,6 +52,45 @@ describe('RN8 — el sitio no menciona lo que todavía no existe', () => {
   });
 });
 
+/**
+ * La distinción entre método y catálogo, fijada.
+ *
+ * El titular dice «Software hecho a la medida de cómo trabaja su negocio», que es
+ * una afirmación sobre cómo se construye. La lista de servicios no vende el
+ * encargo abierto, y `SPEC.md` §5.2 lo deja fuera del alcance comercial.
+ *
+ * Las dos cosas conviven, pero la frontera es fina: basta con que alguien
+ * reescriba el titular como «desarrollamos el sistema a la medida que usted
+ * necesite» para que la página empiece a prometer lo que nadie vende. Esta prueba
+ * es la que avisa.
+ *
+ * Lo que se prohíbe es el **ofrecimiento**, no la palabra: «a la medida de cómo
+ * trabaja su negocio» describe el ajuste; «software a medida» a secas, precedido
+ * de un verbo de oferta, es el servicio que quedó fuera.
+ */
+describe('el titular describe un método, no ofrece un encargo abierto', () => {
+  const OFRECIMIENTO = /(?:hacemos|desarrollamos|creamos|construimos|ofrecemos)[^.]{0,40}\b(?:software|sistemas?|desarrollos?) a (?:la )?medida/i;
+
+  it('el titular no ofrece desarrollo a medida como servicio', () => {
+    expect(HERO.headline).not.toMatch(OFRECIMIENTO);
+  });
+
+  it('la bajada tampoco lo ofrece', () => {
+    expect(HERO.support).not.toMatch(OFRECIMIENTO);
+  });
+
+  /*
+   * La otra mitad de la afirmación: si el titular dice que el software se ajusta
+   * al negocio, la lista tiene que sostenerlo. Con servicios genéricos —«página
+   * web», «CRM», a secas— el titular sería una promesa que nada respalda.
+   */
+  it('los servicios sostienen la promesa de ajuste', () => {
+    const offered = SERVICES.map((service) => service.description).join(' ').toLowerCase();
+
+    expect(offered).toMatch(/su negocio|que ya tiene|le sirva|nadie llena/);
+  });
+});
+
 describe('alcance comercial — SPEC §5.2', () => {
   it('no se ofrece software a medida ni integraciones', () => {
     const offered = SERVICES.map((s) => `${s.name} ${s.description}`)
@@ -114,9 +153,7 @@ describe('precios — RN5 y la primera pregunta', () => {
 /*
  * Los productos bajaron de cuatro a tres: «Reclutamiento por chat» salió del
  * catálogo por decisión del usuario, porque es un proyecto aparte y no uno de los
- * productos que esta página vende. `SPEC.md` §5.1 todavía dice cuatro y hay que
- * corregirlo ahí; mientras tanto, esta prueba manda sobre el número, que es lo
- * que se pinta.
+ * productos que esta página vende. `SPEC.md` §5.1 ya lo refleja.
  *
  * Los servicios subieron de cinco a seis y las preguntas de cuatro a siete, en
  * la pasada de textos del 3 de septiembre de 2026. El servicio nuevo es «Página

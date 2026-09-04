@@ -114,24 +114,29 @@ Respeta `prefers-color-scheme` en la primera visita. **Requiere script inline en
 
 ## 5. Contenido
 
-### 5.1 Productos — cuatro, con su estado real
+### 5.1 Productos — tres, con su estado real
 
-| Producto | Ámbito | Estado | Para quién |
-|---|---|---|---|
-| Noctis Commerce | Comercio | En desarrollo | Tiendas y distribuidoras que ya no alcanzan con cuaderno y Excel |
-| Care | Salud | En pruebas | Consultorios independientes con agenda en papel |
-| Automatización | Ventas | **Disponible** | Negocios con más mensajes de los que pueden contestar |
-| Reclutamiento por chat | Talento | Proyecto futuro | Empresas que reciben hojas de vida por todos lados |
+| Producto | Estado | Para quién |
+|---|---|---|
+| Noctis Commerce | En desarrollo | Tiendas y distribuidoras que ya no alcanzan con cuaderno y Excel |
+| Care | En pruebas | Consultorios independientes con agenda en papel |
+| Automatización | **Disponible** | Negocios con más mensajes de los que pueden contestar |
 
-Los textos y las capacidades de cada uno están en el prototipo, ya redactados y revisados. Copiarlos tal cual.
+> **Eran cuatro.** «Reclutamiento por chat» salió del catálogo el 2 de septiembre de 2026 por decisión del usuario: es un proyecto aparte y no uno de los productos que esta página vende. El ámbito («Comercio», «Salud», «Ventas») también se retiró: era un rótulo más de los diecisiete que hacían que la página se leyera como plantilla.
+
+Los textos ya no se copian del prototipo. Se reescribieron en la pasada del 3 de septiembre de 2026 con una regla: **lo que el dueño deja de hacer, no lo que el sistema tiene.** «Inventario por bodega con aviso de mínimos» describe cómo está construido; «le avisa antes de que se acabe» describe lo que le pasa a él. La fuente de verdad es `src/content/products.ts`.
 
 > **No mencionar facturación electrónica SRI en ninguna parte del sitio.** Todavía no está disponible. Se agrega cuando exista.
 
-### 5.2 Servicios — cinco
+### 5.2 Servicios — seis
 
-CRM sencillo · Mejora de páginas web · Automatizaciones · Infraestructura · Acompañamiento
+Página web nueva · CRM sencillo · Rediseño de páginas web · Automatizaciones · Infraestructura · Acompañamiento
 
-> **No ofrecer software a medida ni integraciones.** Quedaron fuera del alcance comercial.
+> **Eran cinco y faltaba el principal.** «Página web nueva» entró el 3 de septiembre de 2026. Era la incoherencia más cara del sitio: la banda de cifras cuenta seis páginas entregadas, la marquesina abre con «Páginas web», los dos trabajos publicados son páginas y el formulario ofrece «Página web nueva o rediseño», pero la lista de servicios solo vendía mejorar una existente. Lo que más se enseñaba no estaba a la venta. «Mejora» pasó a «Rediseño», que es la palabra que escribe quien busca.
+
+> **No ofrecer desarrollo a medida como servicio abierto, ni integraciones.** Quedaron fuera del alcance comercial y `content.spec.ts` lo vigila sobre `SERVICES`.
+>
+> **Esto no contradice el titular de la portada**, y conviene dejarlo escrito porque parece que sí. El titular dice «Software hecho a la medida de cómo trabaja su negocio», y eso es una afirmación sobre **cómo se construye**, no un servicio que se pueda encargar. Los seis servicios se entregan ajustados al cliente —la página con el lenguaje visual que le sirva, el CRM sin campos que nadie llena, la automatización montada sobre el número que ya tiene, y el proceso empieza mirando cómo trabaja hoy—. Lo que sigue fuera de alcance es el encargo abierto: «constrúyanme un sistema desde cero para lo que se me ocurra». La diferencia es entre un método y un catálogo, y la lista de servicios es el catálogo.
 
 ### 5.3 Trabajos
 
