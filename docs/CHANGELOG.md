@@ -4,6 +4,20 @@ Una entrada por commit de paquete. Formato: qué se construyó, qué quedó fuer
 
 ## [Sin publicar]
 
+### Favicon legible en pestaña oscura · 2026-09-04
+
+`src/app/icon.svg` era el archivo del paquete de marca en su versión para fondo
+claro: la luna no estaba recortada, estaba **tapada con un círculo opaco
+`#FAFAFA`**. Eso funciona sobre una página blanca, pero un favicon vive en la
+barra de pestañas del navegador, cuyo fondo no decidimos: en pestaña oscura la
+tapa se veía como un disco blanco encima de la luna.
+
+Ahora el mordisco se recorta con una máscara, así que es hueco de verdad y el
+icono sirve sobre cualquier fondo. **Ni un centro ni un radio cambian** respecto
+al archivo de marca; lo único distinto es cómo se produce el vacío. El trazo pasa
+al `#818CF8` de la variante oscura del logotipo, que es la única de las dos
+tintas oficiales legible sobre los dos fondos.
+
 ### P10 — Formulario de contacto y cierre público · 2026-09-04
 
 **Qué se construyó**

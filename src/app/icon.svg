@@ -1,5 +1,28 @@
 <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="30" cy="32" r="24" fill="#3730A3"/>
-  <circle cx="41" cy="22" r="24" fill="#FAFAFA"/>
-  <circle cx="41" cy="22" r="10.5" fill="#C4B5FD"/>
+  <!--
+    La luna se recorta con transparencia, no con pintura.
+
+    El archivo del paquete de marca tapa el círculo grande con otro opaco del
+    color del fondo para el que fue hecho: #FAFAFA en la versión clara, #0A0A12
+    en la oscura. Eso funciona sobre una página, donde el fondo se conoce. Un
+    favicon no tiene esa suerte: vive en la barra de pestañas del navegador, que
+    puede ser clara u oscura y no la decidimos nosotros. Con el círculo opaco, en
+    una pestaña oscura la tapa blanca se veía como una mancha pálida encima de la
+    luna.
+
+    Con la máscara, el mordisco es hueco de verdad y el icono queda igual de
+    correcto sobre cualquier fondo. Ni un centro ni un radio cambian respecto al
+    archivo de marca: lo único distinto es cómo se produce el vacío.
+
+    El trazo va en #818CF8, que es la tinta de la variante oscura del logotipo y
+    no un color inventado. Es la única de las dos que se lee en los dos fondos:
+    el índigo #3730A3 de la versión clara desaparece contra una pestaña oscura,
+    que es donde estaba el problema.
+  -->
+  <mask id="mordisco">
+    <rect width="64" height="64" fill="#FFFFFF" />
+    <circle cx="41" cy="22" r="24" fill="#000000" />
+  </mask>
+  <circle cx="30" cy="32" r="24" fill="#818CF8" mask="url(#mordisco)" />
+  <circle cx="41" cy="22" r="10.5" fill="#C4B5FD" />
 </svg>
