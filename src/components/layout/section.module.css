@@ -7,7 +7,11 @@
  */
 .section {
   position: relative;
-  padding: 118px 0;
+  /*
+   * La mitad arriba y la mitad abajo: entre dos secciones consecutivas el hueco
+   * es `--ritmo`, no su doble. Ver la nota de la escala en `tokens.css`.
+   */
+  padding: calc(var(--ritmo) / 2) 0;
 }
 
 .section::before {
@@ -72,6 +76,6 @@
 
 @media (max-width: 620px) {
   .section {
-    padding: 76px 0;
+    padding: calc(var(--ritmo) / 2 - 24px) 0;
   }
 }

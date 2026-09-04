@@ -50,8 +50,46 @@ function styleDirective(options: CspOptions): string {
   return `style-src ${sources.join(' ')}`;
 }
 
+/**
+ * El único atributo `style` que el sitio emite, permitido por su hash exacto.
+ *
+ * `next/image` pone `style="color:transparent"` en cada `<img>` para que el
+ * texto alternativo no se vea mientras la imagen carga. No hay forma de
+ * desactivarlo, y no se puede cambiar a `<img>` a secas porque la regla
+ * `no-img-element` lo prohíbe y `CLAUDE.md` §8 no admite silenciar el linter.
+ *
+ * Sin esta directiva, `style-src-attr` cae en `style-src`, que lleva nonce, y
+ * los nonces **no aplican a atributos**: las siete imágenes de la portada
+ * quedaban bloqueadas. Costaba dos cosas, y ninguna era grave por separado: el
+ * texto alternativo asomaba un instante antes de que cargara cada imagen, y
+ * cada carga de página dejaba siete errores en consola. Lo segundo es lo que de
+ * verdad importa: siete errores fijos son ruido donde después se busca uno real.
+ *
+ * **`'unsafe-hashes'` acá es más restrictivo que no declarar nada, no menos.**
+ * El nombre asusta y hay que leer qué hace: sin la directiva, los atributos
+ * heredan `style-src` completo; con ella, lo único admitido en un atributo
+ * `style` de todo el sitio es la cadena exacta `color:transparent`. Cualquier
+ * otra, incluida una inyectada, sigue bloqueada.
+ *
+ * El hash es de la cadena literal. No se exporta: la prueba lo **recalcula** a
+ * partir de `color:transparent` y comprueba que la política lo contenga, que es
+ * más fuerte que comparar dos constantes escritas a mano. Si Next cambia ese
+ * estilo, las imágenes vuelven a fallar y la corrida lo detecta antes que el
+ * navegador.
+ */
+const IMAGE_STYLE_HASH = "'sha256-zlqnbDt84zf1iSefLU/ImC54isoprH/MRiVZGskwexk='";
+
+function styleAttributeDirective(): string {
+  return `style-src-attr 'unsafe-hashes' ${IMAGE_STYLE_HASH}`;
+}
+
 export function buildContentSecurityPolicy(options: CspOptions): string {
-  return [scriptDirective(options), styleDirective(options), ...STATIC_DIRECTIVES].join('; ');
+  return [
+    scriptDirective(options),
+    styleDirective(options),
+    styleAttributeDirective(),
+    ...STATIC_DIRECTIVES,
+  ].join('; ');
 }
 
 /**

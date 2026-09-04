@@ -8,14 +8,22 @@
 > Están ordenadas por **qué desbloquean**, no por número. Las primeras tres frenan
 > el paquete que sigue; las últimas pueden esperar meses sin costo.
 >
-> Última actualización: 2026-08-14
+> Última actualización: 2026-09-03
+>
+> **Repaso del 3 de septiembre de 2026.** El archivo llevaba tres semanas sin
+> tocarse y había envejecido mal: daba por abiertas cosas ya cerradas y mandaba a
+> archivos que se borraron (`content/works.ts`, `components/theme/theme.ts`).
+> Las respondidas quedan tachadas con su fecha, como dice la cabecera, en vez de
+> desaparecer: sirve saber qué se decidió y cuándo.
 
 ---
 
 ## Bloque 1 — Frenan P10a, el paquete que sigue
 
-### Q1 · ¿Con qué dirección se pide el borrado de datos?
-**Frena:** el aviso de privacidad del formulario · **Origen:** C4, FASE0 A6, `CLAUDE.md` §4
+### ~~Q1 · ¿Con qué dirección se pide el borrado de datos?~~ · CERRADA 2026-09-03
+**Respuesta:** `slander@noctisdev.online`. El aviso de privacidad existe en
+`/privacidad`, con las seis secciones, el plazo de doce meses y la vía de
+borrado real. El pie enlaza ahí. Lo de abajo queda como estaba escrito.
 
 El sitio va a recoger nombre, negocio, correo, WhatsApp y mensaje. La LOPDP exige
 aviso visible y una vía real de borrado. **Hoy no hay ni un texto de privacidad en
@@ -53,8 +61,12 @@ Cambiar de (a) a (b) más adelante es un archivo. Al revés también.
 
 ## Bloque 2 — Frenan publicar el sitio
 
-### Q4 · Los precios, ¿entran o se quedan fuera?
-**Frena:** publicación · **Origen:** D13, `SPEC.md` §11 · **Hoy:** 🟡 no se muestran
+### ~~Q4 · Los precios, ¿entran o se quedan fuera?~~ · CERRADA 2026-09-03
+**Respuesta: opción (c), entran como pisos.** Página nueva desde USD 890,
+cotizada por fases con valor cerrado por fase. Productos desde USD 39 al mes más
+USD 90 de puesta en marcha por única vez. Siguen derivando a proforma. D13 en
+verde. Las dos pruebas que menciona el texto de abajo se rehicieron: la del
+precio ahora comprueba los tres montos y que sigan siendo pisos.
 
 Mencionaste que los tenés desde el principio, así que esta es la que más conviene
 cerrar. **Tiene más consecuencias de las que parece:**
@@ -72,14 +84,20 @@ pero sí obliga a rehacer esas dos pruebas y la respuesta del acordeón.
 - [ ] **b)** Entran. Pasame la tabla: qué paquetes, qué incluye cada uno, qué cifra
 - [ ] **c)** Entran como "desde X", sin cerrar alcance
 
-### Q5 · Los seis trabajos reales
-**Frena:** publicar la sección Trabajos · **Origen:** C1, FASE0 B1 · **Hoy:** seis marcadores de posición
+### Q5 · Los trabajos reales · PARCIAL, y el mecanismo cambió
+**Frena:** nada · **Origen:** C1 · **Hoy:** dos publicados, Care y Burnout
 
-De cada uno hace falta: **nombre autorizado por el cliente**, tipo de trabajo, año,
-enlace y captura. El componente ya acepta imagen: cuando lleguen, se cambia
-`content/works.ts` y no se toca una línea de código.
+**`content/works.ts` ya no existe.** Los trabajos viven en SQLite y se cargan
+desde `/admin`, así que agregar uno no toca ni una línea de código
+([ADR-0015](decisiones/ADR-0015-portafolio-en-sqlite-sin-orm.md)). Si no hay
+ninguno publicado, la sección no se pinta y su enlace del menú tampoco: dejó de
+ser un bloqueo.
 
-- [ ] Los tengo · [ ] Tengo algunos (¿cuántos?: ___) · [ ] Ninguno todavía
+Lo que sigue abierto es el permiso. Se entregaron catorce proyectos y casi todos
+los clientes pidieron no salir publicados, así que la banda de cifras cuenta más
+de lo que el portafolio enseña.
+
+- [ ] ¿Hay alguno más que sí autorice salir? Nombre, tipo, año, enlace y captura.
 
 ### Q6 · El testimonio
 **Frena:** publicación · **Origen:** C2, FASE0 B2 · **Hoy:** escrito, con el nombre entre corchetes y la sección oculta
@@ -90,15 +108,20 @@ los días está."* Falta nombre y cargo reales.
 - [ ] **a)** Nombre: `____________` Cargo: `____________`
 - [ ] **b)** Se retira la sección
 
-### Q7 · El WhatsApp
-**Frena:** publicación · **Origen:** C3, FASE0 B3
+### ~~Q7 · El WhatsApp~~ · CERRADA 2026-09-03
+**Respuesta:** `+593 98 010 5699`, con el texto previo «Hola, vi la página de
+Noctis y quiero contarles qué necesito». Vive en `content/site.ts` y no en una
+variable de entorno: es un dato público que la página pinta, no una credencial
+de despliegue.
 
-Número y **texto previo** del mensaje (lo que aparece ya escrito al abrir el chat).
-
-- [ ] Número: `____________` · Texto previo: `____________`
-
-### Q8 · El mensaje "todo bajo una sola relación"
+### Q8 · El mensaje "todo bajo una sola relación" · SIGUE ABIERTA, con el contexto cambiado
 **Frena:** cumplir el spec de marca · **Origen:** spec de rebrand §6 y §7.5
+
+**El titular que menciona abajo ya no existe.** Hoy la portada dice «Software
+hecho a la medida de cómo trabaja su negocio», con la bajada «Páginas web,
+sistemas de gestión y atención automatizada. Construidos en Loja, no comprados
+hechos», que nombra tres de las cuatro patas. Falta el acompañamiento y falta la
+idea de que van juntas. El resto del planteo sigue valiendo.
 
 Es uno de los **cinco activos distintivos no negociables** de la marca, y hoy **no
 está en el sitio**. El spec pide que aparezca en la portada o cerca: la idea de web,
@@ -178,7 +201,7 @@ archivo, no reescribir código.
 | **Q20** | Conservación de datos | 12 meses | Hoy no aplica: no se almacena nada |
 | **Q21** | Idioma del bot | Solo español | `config/chat.ts` |
 | **Q22** | Versión en inglés del sitio | No en v1 | Afecta la arquitectura de rutas |
-| **Q23** | Modo por defecto | Respeta el sistema; si no expresa preferencia, oscuro | `components/theme/theme.ts` |
+| ~~**Q23**~~ | ~~Modo por defecto~~ | **Sin objeto desde 2026-09-03: el sitio tiene un solo esquema, oscuro.** El conmutador y `components/theme/` se retiraron; la paleta clara sobrevive como franja invertida | `styles/tokens.css` |
 
 Q17 es la que más conviene mirar: es tu agenda real (FASE0 B4).
 Q22 es la única cara de revertir — cambiar de idea después obliga a rehacer las rutas.
@@ -191,6 +214,11 @@ Q22 es la única cara de revertir — cambiar de idea después obliga a rehacer 
 |---|---|---|
 | D12 | Identificadores en inglés, archivos `kebab-case` | ADR-0001 |
 | D15 | GSAP es gratuito por completo desde 2025, plugins incluidos | ADR-0012 |
+| D13 | Los precios entran como pisos, derivando a proforma | `DECISIONES.md`, 2026-09-03 |
+| D16 | El portafolio vive en SQLite tras un puerto | ADR-0015 |
+| C3 | Número de WhatsApp y su texto previo | `content/site.ts`, 2026-09-03 |
+| C4 | Aviso de privacidad publicado en `/privacidad` | 2026-09-03 |
+| — | El sitio tiene un solo esquema de color, oscuro | 2026-09-03 |
 | — | Agendador propio contra calendario real, no un servicio de terceros | `SPEC-AGENDAMIENTO-BOT.md` |
 | — | Los imanes valen en la portada **y** en el pie, y en ningún otro lado | Tu decisión, 2026-08-14 |
 
