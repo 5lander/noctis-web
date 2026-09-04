@@ -4,6 +4,53 @@ Una entrada por commit de paquete. Formato: qué se construyó, qué quedó fuer
 
 ## [Sin publicar]
 
+### Pendientes de P11.2 cerrados · 2026-09-03
+
+**Qué se construyó**
+
+- **Cero violaciones de CSP en producción** (hallazgo 14). Eran cuarenta en
+  desarrollo y el diagnóstico las dio por un solo problema; medidas con
+  `securitypolicyviolation` resultaron ser dos. Treinta y tres son del overlay de
+  Next y no existen fuera de desarrollo. Las siete reales eran el
+  `style="color:transparent"` que `next/image` pone en cada imagen, bloqueado
+  porque los nonces no aplican a atributos. Se admite por su hash exacto en una
+  directiva `style-src-attr` propia, que es **más restrictivo que no declararla**:
+  sin ella los atributos heredan `style-src` entero; con ella, lo único admitido
+  en todo el sitio es la cadena `color:transparent`.
+- **El ritmo vertical deja de ser una sola cifra repetida** (hallazgo 12). Las
+  siete secciones llevaban 118 px arriba y abajo, así que entre dos consecutivas
+  quedaban 236 px: más de un cuarto de un visor de 900 px, siete veces. Ahora hay
+  dos tokens con criterio: `--ritmo` es el hueco **entre** secciones y se reparte
+  a la mitad, y `--ritmo-banda` es el aire **dentro** de una franja con fondo
+  propio. El hueco entre secciones baja de 236 px a 148 px y la franja de cierre
+  pasa a leerse como el momento distinto que es.
+- **`SPEC.md` §5.3 y §5.4 al día.** §5.3 describía seis marcadores de posición y
+  mandaba a `content/works.ts`, que se borró hace dos paquetes: los trabajos
+  viven en SQLite y se cargan desde `/admin`. De §5.4 quedan tres marcadores en
+  uno: solo el testimonio sigue pendiente.
+- **`PREGUNTAS-ABIERTAS.md` repasado.** Llevaba tres semanas sin tocarse y daba
+  por abiertas cinco cosas ya cerradas, mandando a dos archivos borrados. Las
+  respondidas quedan tachadas con su fecha en vez de desaparecer.
+
+**Qué se decidió**
+
+- **La auditoría de prohibidos tenía razón y se reescribió el comentario, no la
+  regla.** Una nota nueva contenía la cadena `eslint` + `-disable` explicando por
+  qué no se usa, y el grep la marcó. Aflojar el patrón para admitir menciones en
+  comentarios habría abierto la puerta a la supresión real: la frase se reescribió.
+- **El hash del estilo no se exporta.** La prueba lo recalcula desde
+  `color:transparent` y comprueba que la política lo contenga, que es más fuerte
+  que comparar dos constantes escritas a mano y no añade superficie que knip
+  tenga que juzgar.
+
+**Qué quedó fuera**
+
+- **`knip` no se pudo correr**, ni antes ni después. El parser de `oxc` falla al
+  reservar su buffer con 1,4 GB libres de 15 en la máquina. Es memoria, no
+  código: el diff no añade ni un `export`.
+
+
+
 ### P11.2 y P11.3 — Pase visual, esquema único y textos · 2026-09-02 y 03 · **fuera de la numeración**
 
 > Van en una sola entrada porque van en un solo commit. El árbol de trabajo tenía
@@ -103,8 +150,9 @@ Una entrada por commit de paquete. Formato: qué se construyó, qué quedó fuer
 - Las capturas de producto son **ejemplos compuestos**; la de Burnout, en cambio,
   es una captura real. Se reemplazan cambiando una ruta en `content/products.ts`.
 - ~~`SPEC.md` §5.1 sigue diciendo cuatro productos.~~ Corregido el 3 de septiembre de 2026: §5.1 dice tres y §5.2 dice seis, con la nota de por qué cambiaron.
-- El ritmo vertical idéntico de las secciones (hallazgo 12) y las violaciones de
-  `style-src` (hallazgo 14): los dos de gravedad baja, los dos para Pf.
+- ~~El ritmo vertical idéntico de las secciones (hallazgo 12) y las violaciones de
+  `style-src` (hallazgo 14).~~ Los dos cerrados el 3 de septiembre de 2026, sin
+  esperar a Pf. Ver la entrada de abajo.
 
 **Qué se decidió**
 

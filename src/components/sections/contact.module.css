@@ -5,7 +5,13 @@
  */
 .section {
   position: relative;
-  padding: 118px 0;
+  /*
+   * La franja usa `--ritmo-banda` y no la mitad de `--ritmo` como las demás: acá
+   * el relleno no es el hueco entre dos secciones, es el aire de una banda con
+   * fondo propio. Que sea mayor es lo que la separa del resto en vez de dejarla
+   * como una sección más con otro color.
+   */
+  padding: var(--ritmo-banda) 0;
 }
 
 .section::before {
@@ -83,7 +89,7 @@
 
 @media (max-width: 620px) {
   .section {
-    padding: 76px 0;
+    padding: calc(var(--ritmo-banda) - 42px) 0;
   }
 
   .form {

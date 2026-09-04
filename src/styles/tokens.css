@@ -71,6 +71,28 @@
   --borde-circulo: 50%;
 
   /*
+   * El ritmo vertical, y por qué son dos valores y no uno.
+   *
+   * Las siete secciones llevaban 118 px arriba y 118 abajo, todas iguales. Dos
+   * consecutivas dejaban 236 px de nada entre ellas: en un visor de 900 px eso
+   * es más de un cuarto de pantalla vacío, repetido siete veces. Y como todas
+   * pesaban lo mismo, ninguna se leía como más importante que otra: la página
+   * era una pila de bloques equivalentes.
+   *
+   * - `--ritmo` es el aire **entre** dos secciones que se apoyan en el fondo de
+   *   la página. Se reparte medio arriba y medio abajo, así que el hueco entre
+   *   dos consecutivas es exactamente este valor y no su doble.
+   * - `--ritmo-banda` es el aire **dentro** de una franja con fondo propio, que
+   *   es otra cosa: ahí el relleno no separa dos secciones, sostiene la banda.
+   *   Por eso es mayor, y por eso no se derivó del primero.
+   *
+   * Lo que se gana no es solo espacio: al dejar de ser todas idénticas, la
+   * franja de cierre pasa a leerse como el momento distinto que es.
+   */
+  --ritmo: 148px;
+  --ritmo-banda: 118px;
+
+  /*
    * El borde de un control —campo, desplegable, botón de contorno— no es una
    * línea decorativa: WCAG 2.1 §1.4.11 le exige 3:1 contra lo que tenga al lado,
    * porque es lo único que dice dónde se escribe. `--linea` está muy por debajo

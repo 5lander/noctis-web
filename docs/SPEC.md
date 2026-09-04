@@ -140,16 +140,23 @@ Página web nueva · CRM sencillo · Rediseño de páginas web · Automatizacion
 
 ### 5.3 Trabajos
 
-Seis proyectos. En el prototipo son marcadores de posición con nombres inventados y portadas tipográficas.
+**Ya no son contenido escrito a mano ni marcadores de posición.** Los trabajos viven en SQLite detrás de un puerto y se cargan desde `/admin` ([ADR-0015](decisiones/ADR-0015-portafolio-en-sqlite-sin-orm.md)): agregar uno no toca una línea de código. `content/works.ts` se borró.
 
-**Pendiente del cliente:** nombre real autorizado, tipo de trabajo, año, enlace y captura de cada proyecto. Hasta que lleguen, la sección queda con los marcadores. El componente debe aceptar tanto una portada tipográfica como una imagen, para no reescribirlo después.
+Cada trabajo se enseña de una de tres formas, en este orden: **recorrido en vídeo** de la página entregada, portada fija, o portada tipográfica. La última es el respaldo, para que un trabajo real cuya captura no esté lista se publique igual y se vea como pieza y no como imagen rota.
+
+**Si no hay ninguno publicado, la sección no se pinta**, y su enlace del menú tampoco: un ancla hacia un `id` que no está en el documento no lleva a ninguna parte. Dejó de ser un bloqueo de publicación.
+
+Hoy hay dos publicados, Care y Burnout. Se entregaron catorce proyectos en total; casi todos los clientes pidieron no salir publicados, así que la banda de cifras cuenta más de lo que el portafolio enseña.
 
 ### 5.4 Textos con marcador de posición
 
-Estos tres no se publican hasta tener el dato real:
-- Testimonio: `[Nombre del cliente]` y su cargo
-- Enlace de WhatsApp
-- Enlace para agendar llamada
+Eran tres. Queda uno:
+
+- **Testimonio:** `[Nombre del cliente]` y su cargo. Sigue pendiente (C2). `QUOTE.pending` está en `true` y con eso la sección **no se pinta**: publicar un testimonio con corchetes es peor que no tener testimonio.
+- ~~Enlace de WhatsApp~~ · Cerrado el 3 de septiembre de 2026. Número y texto previo en `content/site.ts`, con botón flotante propio.
+- ~~Enlace para agendar llamada~~ · No es un marcador pendiente: llega con el agendador, que es P6 y P7. Mientras tanto la acción de la portada es el formulario, y eso es deliberado.
+
+La regla que los gobernaba no cambia y vale para lo que venga: **ningún texto de cara al usuario se publica con un corchete adentro.** El componente omite la línea vacía en vez de pintar el marcador.
 
 ---
 
