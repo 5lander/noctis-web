@@ -55,12 +55,19 @@ export const NAV_CTA = CONTACT_ACTION;
  * después qué se gana. Es un cambio de posicionamiento, no de redacción, así que
  * la prueba cambió con él en vez de borrarse.
  *
- * **Ojo con lo que promete «a la medida».** Es lo más grande que dice la página,
- * y la lista de servicios no vende software a medida: quedó fuera del alcance
- * comercial en `SPEC.md` §5.2 y hay una prueba que lo vigila sobre `SERVICES`.
- * Hoy conviven porque el titular habla de cómo se construye y la lista de qué se
- * contrata, pero es una tensión real y está anotada para resolverla: o se abre
- * el alcance, o el titular baja a lo que sí se vende.
+ * **«A la medida» es un método, no un servicio del catálogo.** Parece chocar con
+ * `SPEC.md` §5.2, que deja el desarrollo a medida fuera del alcance comercial y
+ * tiene una prueba vigilándolo sobre `SERVICES`. No choca, y §5.2 ahora lo dice
+ * por escrito: el titular afirma **cómo se construye** —la página con el lenguaje
+ * visual que le sirva, el CRM sin campos que nadie llena, la automatización
+ * montada sobre el número que ya tiene, el proceso empezando por mirar cómo
+ * trabaja hoy— y no ofrece el encargo abierto de «constrúyanme un sistema para lo
+ * que se me ocurra». Lo que sigue fuera de alcance es eso segundo.
+ *
+ * La distinción es fina y por eso está probada: `content.spec.ts` comprueba que
+ * el titular no ofrezca desarrollo a medida como servicio, y que la lista de
+ * servicios tampoco. Si alguien reescribe el titular hacia el encargo abierto, la
+ * corrida avisa en vez de dejar que la página prometa lo que no se vende.
  */
 export const HERO = {
   /*
