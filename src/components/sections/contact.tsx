@@ -21,19 +21,32 @@ import styles from './contact.module.css';
 
 const FIELDS = CONTACT.fields;
 
+/**
+ * `autocomplete` no es una comodidad: es el criterio **WCAG 2.1 AA 1.3.5,
+ * identificar el propósito de la entrada**, y era el único incumplimiento de
+ * nivel AA que quedaba en la página. Declararlo permite además que el navegador
+ * rellene los cuatro campos de una pasada en celular, que es donde el formulario
+ * se abandona.
+ *
+ * `inputMode` en el teléfono saca el teclado numérico. Va junto con `type="tel"`
+ * y no en su lugar: uno describe el dato, el otro el teclado.
+ */
 interface TextInputProps {
   readonly field: { readonly id: string; readonly label: string; readonly placeholder: string };
   readonly type: 'text' | 'email' | 'tel';
+  readonly autoComplete: string;
   readonly required?: boolean;
 }
 
-function TextInput({ field, type, required = false }: TextInputProps) {
+function TextInput({ field, type, autoComplete, required = false }: TextInputProps) {
   return (
     <Field htmlFor={field.id} label={field.label}>
       <input
         id={field.id}
         name={field.id}
         type={type}
+        autoComplete={autoComplete}
+        inputMode={type === 'tel' ? 'tel' : undefined}
         placeholder={field.placeholder}
         required={required}
       />
@@ -44,10 +57,10 @@ function TextInput({ field, type, required = false }: TextInputProps) {
 function ContactForm() {
   return (
     <form className={styles['form']} method="post" action="/api/contacto" data-anim>
-      <TextInput field={FIELDS.name} type="text" required />
-      <TextInput field={FIELDS.business} type="text" />
-      <TextInput field={FIELDS.email} type="email" required />
-      <TextInput field={FIELDS.whatsapp} type="tel" />
+      <TextInput field={FIELDS.name} type="text" autoComplete="name" required />
+      <TextInput field={FIELDS.business} type="text" autoComplete="organization" />
+      <TextInput field={FIELDS.email} type="email" autoComplete="email" required />
+      <TextInput field={FIELDS.whatsapp} type="tel" autoComplete="tel" />
       <Field htmlFor={FIELDS.interest.id} label={FIELDS.interest.label} wide>
         <select id={FIELDS.interest.id} name={FIELDS.interest.id} defaultValue="">
           {CONTACT.interestOptions.map((option) => (
@@ -66,6 +79,7 @@ function ContactForm() {
       </Field>
       <div className={styles['submit']}>
         <Button type="submit">{CONTACT.submit}</Button>
+        <p className={styles['note']}>{CONTACT.note}</p>
       </div>
     </form>
   );

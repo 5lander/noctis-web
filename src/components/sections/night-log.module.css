@@ -28,3 +28,13 @@
     width: 100%;
   }
 }
+
+/* El rótulo que declara ilustración lo que se lee como panel en vivo. */
+.caption {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--texto-2);
+}

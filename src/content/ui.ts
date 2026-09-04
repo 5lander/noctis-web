@@ -8,7 +8,9 @@
  */
 
 export const UI_TEXT = {
-  modeToggle: 'Cambiar entre modo claro y oscuro',
+  menuToggle: 'Abrir el menú de secciones',
+  whatsapp: 'Escribir por WhatsApp',
+  tourLabel: 'Recorrido en vídeo de la página de',
 } as const;
 
 /**

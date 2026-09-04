@@ -4,6 +4,9 @@ import type { ChatPort } from '@/modules/chat/application/ports/chat-port';
 import { FakeChat } from '@/modules/chat/infrastructure/fake-chat';
 import type { MailPort } from '@/modules/lead/application/ports/mail-port';
 import { FakeMail } from '@/modules/lead/infrastructure/fake-mail';
+import type { PortfolioRepositoryPort } from '@/modules/portfolio/application/ports/portfolio-repository-port';
+import { MemoryPortfolioRepository } from '@/modules/portfolio/infrastructure/memory-portfolio-repository';
+import { SqlitePortfolioRepository } from '@/modules/portfolio/infrastructure/sqlite-portfolio-repository';
 import type { StorePort } from '@/shared/application/ports/store-port';
 import { MemoryStore } from '@/shared/infrastructure/store/memory-store';
 
@@ -80,7 +83,19 @@ export interface Services {
   readonly calendar: CalendarPort;
   readonly mail: MailPort;
   readonly chat: ChatPort;
+  /**
+   * El portafolio no pasa por `guardReal`: su adaptador real **ya existe**, así
+   * que no hay nada que diferir a P12 ni credencial que exigir. Pedirle SQLite
+   * en un entorno sin disco escribible falla al primer uso con el error del
+   * sistema de archivos, que dice exactamente qué pasó.
+   */
+  readonly portfolio: PortfolioRepositoryPort;
   createStore<T>(): StorePort<T>;
+}
+
+function createPortfolio(source: AppEnvironment): PortfolioRepositoryPort {
+  if (source.PORTAFOLIO_ADAPTER === 'memoria') return new MemoryPortfolioRepository();
+  return new SqlitePortfolioRepository(source.SQLITE_RUTA);
 }
 
 export function createServices(source: AppEnvironment, credentials: CredentialSource): Services {
@@ -96,6 +111,7 @@ export function createServices(source: AppEnvironment, credentials: CredentialSo
     calendar: new FakeCalendar(),
     mail: new FakeMail(),
     chat: new FakeChat(),
+    portfolio: createPortfolio(source),
     createStore: <T>(): StorePort<T> => new MemoryStore<T>(),
   };
 }

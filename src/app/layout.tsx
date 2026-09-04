@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
-import { Inter, Source_Serif_4 } from 'next/font/google';
+import localFont from 'next/font/local';
 import { headers } from 'next/headers';
 import type { ReactNode } from 'react';
 
 import { InlineHeadScript } from '@/components/head/inline-head-script';
-import { FALLBACK_MODE } from '@/components/theme/theme';
 import { SITE } from '@/content/site';
+import { environment } from '@/shared/infrastructure/config/environment';
 import { NONCE_HEADER } from '@/shared/infrastructure/http/security-headers';
 
 import '@/styles/tokens.css';
@@ -25,24 +25,53 @@ import '@/styles/animation.css';
  * cuenta, y una serif falsamente cursiva es justo la deformación que el manual
  * de marca prohíbe.
  */
-const displayFont = Source_Serif_4({
-  subsets: ['latin'],
-  weight: ['600'],
-  style: ['normal', 'italic'],
+const displayFont = localFont({
+  src: [
+    { path: './fonts/source-serif-4-latin-600-normal.woff2', weight: '600', style: 'normal' },
+    { path: './fonts/source-serif-4-latin-600-italic.woff2', weight: '600', style: 'italic' },
+  ],
   display: 'swap',
   variable: '--fuente-display',
 });
 
-const textFont = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
+const textFont = localFont({
+  src: [
+    { path: './fonts/inter-latin-400-normal.woff2', weight: '400', style: 'normal' },
+    { path: './fonts/inter-latin-500-normal.woff2', weight: '500', style: 'normal' },
+    { path: './fonts/inter-latin-600-normal.woff2', weight: '600', style: 'normal' },
+  ],
   display: 'swap',
   variable: '--fuente-texto',
 });
 
+/**
+ * Metadatos completos, incluidos los sociales.
+ *
+ * El enlace de este sitio se va a repartir por WhatsApp, que es como se pasa un
+ * contacto en Ecuador. Sin `openGraph` ahí aparece como texto pelado: sin
+ * imagen, sin título, indistinguible de un enlace roto. La tarjeta es la
+ * diferencia entre parecer una empresa y parecer un archivo suelto.
+ *
+ * `metadataBase` sale de `SITIO_URL` porque el dominio todavía es D9 y no se
+ * puede incrustar. Sin esa variable, Next omite las URLs absolutas en vez de
+ * generarlas contra `localhost`, que es justo el error que termina publicado.
+ */
 export const metadata: Metadata = {
+  ...(environment.SITIO_URL === undefined
+    ? {}
+    : { metadataBase: new URL(environment.SITIO_URL), alternates: { canonical: '/' } }),
   title: SITE.title,
   description: SITE.description,
+  applicationName: SITE.name,
+  openGraph: {
+    type: 'website',
+    locale: SITE.locale,
+    siteName: SITE.name,
+    title: SITE.title,
+    description: SITE.description,
+  },
+  twitter: { card: 'summary_large_image', title: SITE.title, description: SITE.description },
+  robots: { index: true, follow: true },
 };
 
 /**
@@ -60,15 +89,20 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const nonce = (await headers()).get(NONCE_HEADER) ?? '';
 
   return (
-    // `data-mode` sale del servidor con el modo por defecto para que la página
-    // se vea entera aunque JavaScript esté deshabilitado: sin atributo no habría
-    // ni un token de color definido. El script del `<head>` lo corrige antes del
-    // primer pintado si el visitante o su sistema piden otra cosa — y por eso
-    // `suppressHydrationWarning`: el atributo cambia legítimamente antes de que
-    // React hidrate, y no es una diferencia que haya que arreglar.
+    // Ya no sale ningún `data-mode`: el sitio tiene un solo esquema y el color
+    // vive entero en `tokens.css`, sin nada que corregir en el arranque.
+    // `suppressHydrationWarning` se queda igual, y no por inercia: el script del
+    // `<head>` sigue añadiendo la clase `animation-ready` al `<html>` antes de que
+    // React hidrate. Es una diferencia servidor/cliente legítima y deliberada
+    // —es lo que evita que la página se quede en blanco sin JavaScript— y sin
+    // esta línea React la reporta como error de hidratación en cada carga.
+    // `data-scroll-behavior` le dice a Next que el `scroll-behavior: smooth` de
+    // `base.css` es deliberado. Sin el atributo avisa por consola en cada
+    // navegación, porque un desplazamiento suave durante un cambio de ruta
+    // normalmente es un descuido: la página nueva llega animando hacia arriba.
     <html
       lang={SITE.locale}
-      data-mode={FALLBACK_MODE}
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
       className={`${displayFont.variable} ${textFont.variable}`}
     >

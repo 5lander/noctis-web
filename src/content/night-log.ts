@@ -14,6 +14,21 @@ export interface NightLogEntry {
   readonly event: string;
 }
 
+/**
+ * El rótulo hace dos cosas a la vez.
+ *
+ * Declara que es un ejemplo —sin eso, siete líneas con hora y evento se leen
+ * como un panel en vivo de clientes reales— y además **sostiene el titular**.
+ * Al cambiar la portada de la metáfora de la noche al ahorro de horas, este
+ * bloque se quedaba sin argumento y pasaba a ser adorno. Con «sin nadie
+ * atendiendo» vuelve a ser la prueba de lo que el titular promete: siete cosas
+ * resueltas y ni una hora de nadie gastada en ellas.
+ *
+ * Y de paso salva la identidad: el nombre, la luna y el cielo siguen
+ * significando algo.
+ */
+export const NIGHT_LOG_CAPTION = 'Ejemplo · una noche sin nadie atendiendo';
+
 export const NIGHT_LOG: readonly NightLogEntry[] = [
   { time: '22:41', event: 'Instagram: consulta de precios respondida' },
   { time: '23:12', event: 'Cita confirmada para el jueves 09:30' },

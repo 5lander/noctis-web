@@ -22,4 +22,11 @@ import { SplitText } from 'gsap/SplitText';
 
 gsap.registerPlugin(ScrollTrigger, ScrollSmoother, SplitText, DrawSVGPlugin, Observer);
 
-export { gsap, ScrollTrigger, ScrollSmoother, SplitText, DrawSVGPlugin, Observer };
+/*
+ * Se reexporta solo lo que alguien importa. `DrawSVGPlugin` y `Observer` se
+ * registran arriba —así están disponibles para cualquier efecto futuro— pero no
+ * se reexportaban para nadie, y `knip` los marcaba como código muerto en cada
+ * corrida de `npm run audit`, que es como una compuerta deja de significar algo:
+ * cuando siempre está en rojo por lo mismo, se mira el rojo y se sigue.
+ */
+export { gsap, ScrollTrigger, ScrollSmoother, SplitText };

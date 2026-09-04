@@ -1,0 +1,62 @@
+.grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 44px 34px;
+}
+
+.language {
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+ * El tablero se enseña entero, sin recortar: cada uno es una composición
+ * completa y recortarla se llevaría justo lo que demuestra. De ahí `contain` en
+ * vez de `cover` y la proporción fija de la imagen original.
+ *
+ * El marco es neutro y muy fino a propósito. Cada tablero trae su propio fondo
+ * —blanco, papel, amarillo saturado, negro— y un marco con carácter competiría
+ * con los cuatro a la vez.
+ */
+.board {
+  border: 1px solid var(--linea);
+  border-radius: var(--borde-control);
+  overflow: hidden;
+  background: var(--fondo);
+  box-shadow: var(--sombra-2);
+  transition:
+    transform 0.5s var(--curva),
+    box-shadow 0.5s var(--curva);
+}
+
+.board img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+}
+
+.language:hover .board {
+  transform: translateY(-3px);
+  box-shadow: var(--sombra-3), var(--sombra-2);
+}
+
+.language h3 {
+  font-size: 20px;
+  margin: 18px 0 6px;
+}
+
+.language p {
+  font-size: 15px;
+  color: var(--texto-2);
+  max-width: 44ch;
+}
+
+@media (max-width: 760px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+}

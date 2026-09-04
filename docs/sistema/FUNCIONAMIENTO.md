@@ -73,15 +73,12 @@ scripts desde CDN, SQL interpolado y archivos `.env` versionados.
 ```mermaid
 flowchart TD
   PX["src/proxy.ts"] -->|nonce| LY["app/layout.tsx"]
-  LY -->|data-mode por defecto| HTML["&lt;html data-mode='dark'&gt;"]
-  LY --> TS["ThemeScript en &lt;head&gt;"]
-  TS -->|antes del primer pintado| HTML
-  LY --> FONT["next/font · Inter Tight + Inter<br/>descargadas en el build"]
-  HTML --> TOK["tokens.css · dos modos + .inv"]
+  LY --> HTML["&lt;html lang='es-EC'&gt;"]
+  LY --> IS["InlineHeadScript en &lt;head&gt;"]
+  IS -->|clase animation-ready antes del primer pintado| HTML
+  LY --> FONT["next/font · Source Serif 4 + Inter<br/>descargadas en el build"]
+  HTML --> TOK["tokens.css · un solo esquema oscuro + .inv"]
   TOK --> UI["Button · Field · Label · Status · Accordion"]
-  MT["ModeToggle (cliente)"] -->|clic| HTML
-  MT --> LS["localStorage"]
-  LS -.->|próxima visita| TS
 ```
 
 **Por qué no parpadea.** El `<html>` sale del servidor con el modo por defecto,

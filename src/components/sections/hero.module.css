@@ -1,6 +1,16 @@
+/*
+ * La portada tiene que caber en el primer pantallazo de una laptop de 1440×900,
+ * que es la máquina desde la que un gerente abre el sitio.
+ *
+ * Antes no cabía: 1011 px contra un visor de 900. La causa no era el espaciado,
+ * era la carga. La portada llevaba seis bloques —titular de cuatro líneas a
+ * 88 px, bajada de tres, dos botones, el rótulo de lugar y el panel del registro
+ * nocturno— y ninguna combinación de márgenes arregla eso. El registro salió a
+ * su propia banda, la bajada bajó a veinte palabras y el titular a dos líneas.
+ */
 .hero {
   position: relative;
-  padding: 180px 0 0;
+  padding: 132px 0 64px;
   isolation: isolate;
 }
 
@@ -16,43 +26,87 @@
   will-change: transform;
 }
 
-.log {
-  display: block;
-}
-
+/*
+ * Dos líneas, no cuatro.
+ *
+ * El titular tiene 44 caracteres y su primera oración, 29. A 88 px con un ancho
+ * de 17ch caía en cuatro líneas, que es un error de escala y no de longitud del
+ * texto. El ancho tiene que dar para esos 29 caracteres o el corte se adelanta y
+ * vuelven a salir tres: 30ch entra justo. El interletrado se afloja un punto
+ * porque a menor tamaño el -0.045em juntaba demasiado la serif.
+ *
+ * `text-wrap: balance` reparte las líneas en vez de dejar la última huérfana. Se
+ * aplica antes de que `SplitText` parta el titular, así que la animación hereda
+ * el corte equilibrado en lugar de pelearse con él.
+ */
 .hero h1 {
-  font-size: clamp(44px, 7.6vw, 104px);
-  letter-spacing: -0.045em;
-  max-width: 15ch;
+  font-size: clamp(38px, 5vw, 68px);
+  letter-spacing: -0.035em;
+  max-width: 30ch;
+  text-wrap: balance;
 }
 
 .support {
-  margin-top: 30px;
+  margin-top: 26px;
   font-size: 19px;
   color: var(--texto-2);
-  max-width: 50ch;
+  max-width: 46ch;
 }
 
 .actions {
   display: flex;
   gap: 12px;
-  margin-top: 38px;
+  margin-top: 34px;
   flex-wrap: wrap;
 }
 
-.foot {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 40px;
-  flex-wrap: wrap;
-  margin-top: 92px;
-  padding: 20px 0 24px;
-  border-top: 1px solid var(--linea);
+/*
+ * Pantallas bajas: la laptop de 1366×768 sigue siendo de las más comunes en una
+ * oficina. La consulta es por **alto** y no por ancho a propósito: el problema no
+ * es que la pantalla sea estrecha, es que es baja, y encoger el titular por ancho
+ * castigaría a un monitor panorámico que no tiene ningún problema.
+ */
+@media (max-height: 820px) {
+  .hero {
+    padding: 108px 0 44px;
+  }
+
+  .hero h1 {
+    font-size: clamp(38px, 4.4vw, 58px);
+  }
+
+  .support {
+    margin-top: 20px;
+  }
+
+  .actions {
+    margin-top: 26px;
+  }
 }
 
 @media (max-width: 1000px) {
   .hero {
-    padding-top: 120px;
+    padding: 100px 0 40px;
   }
+}
+
+/*
+ * La línea que va debajo de los botones: qué cuesta preguntar y cuándo
+ * contestan. Pequeña y en el color secundario a propósito, porque su trabajo es
+ * quitar una objeción en el momento del clic, no competir con el titular.
+ */
+.reassure {
+  margin-top: 18px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--texto-2);
+  max-width: 46ch;
+}
+
+/*
+ * El rótulo de encima del titular. Solo separa: el tamaño, el interletrado y el
+ * color los trae `Label`, que es el mismo componente del rótulo de lugar.
+ */
+.eyebrow {
+  margin-bottom: 22px;
 }

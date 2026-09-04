@@ -6,22 +6,30 @@
  *
  * A esa proporción el bloque mide 54.9px de alto y entra en la barra de 66px.
  */
+
+/*
+ * El recorte de la luna es un círculo opaco del color del fondo, así que cada
+ * archivo solo funciona sobre el fondo para el que fue hecho: `#0A0A12` el
+ * oscuro, `#FAFAFA` el claro. El sitio es oscuro, así que el archivo oscuro es
+ * el de partida y el logotipo no se coloca sobre una superficie que no sea
+ * `--color-fondo`.
+ */
 .logo {
   display: block;
   width: 96px;
   aspect-ratio: 210 / 120;
-  background-image: url('/marca/logo.svg');
+  background-image: url('/marca/logo-oscuro.svg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
 }
 
 /*
- * El recorte de la luna es un círculo opaco del color del fondo, así que cada
- * archivo solo funciona sobre el fondo para el que fue hecho: `#FAFAFA` el
- * claro, `#0A0A12` el oscuro. Por eso se conmutan, y por eso el logotipo no se
- * coloca sobre una superficie que no sea `--color-fondo`.
+ * Cuando la barra pasa sobre una franja invertida su fondo se vuelve claro, y
+ * por lo que dice la nota de arriba el logotipo tiene que voltear con él: el
+ * archivo oscuro sobre un fondo claro dejaría un disco `#0A0A12` dentro de la
+ * letra.
  */
-html[data-mode='dark'] .logo {
-  background-image: url('/marca/logo-oscuro.svg');
+[data-nav-bar][data-over='inv'] .logo {
+  background-image: url('/marca/logo.svg');
 }

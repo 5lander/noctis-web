@@ -1,6 +1,26 @@
+/*
+ * El separador de arriba repite el degradado de `Section`: contacto no usa ese
+ * componente porque su encabezado es de una sola columna, pero tiene que cortar
+ * igual que las demás o el ritmo de la página se rompe justo antes del cierre.
+ */
 .section {
+  position: relative;
   padding: 118px 0;
-  border-top: 1px solid var(--linea);
+}
+
+.section::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    var(--color-accion) 0%,
+    var(--linea) 22%,
+    var(--linea) 78%,
+    transparent 100%
+  );
+  opacity: 0.55;
 }
 
 .grid {
@@ -21,10 +41,31 @@
   max-width: 42ch;
 }
 
+/*
+ * El formulario pasa a ser una superficie con material. Es el único punto de la
+ * página donde el visitante tiene que hacer algo, y hasta ahora eran seis rayas
+ * sueltas sobre el fondo de la franja: nada decía «acá se trabaja». La tarjeta
+ * lo delimita y de paso separa el par de columnas del bloque de texto de al lado.
+ */
 .form {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 22px;
+  padding: 32px;
+  border: 1px solid var(--linea);
+  border-radius: var(--borde);
+  background: var(--superficie-2);
+  box-shadow: var(--sombra-2);
+}
+
+.form::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  border-radius: var(--borde) var(--borde) 0 0;
+  background: linear-gradient(90deg, transparent, var(--realce) 30%, var(--realce) 70%, transparent);
 }
 
 .submit {
@@ -47,5 +88,24 @@
 
   .form {
     grid-template-columns: 1fr;
+    padding: 22px;
   }
+}
+
+/*
+ * La nota de debajo del botón de envío. `.submit` era solo el botón, así que
+ * pasa a apilar los dos con su propio espacio.
+ */
+.submit {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.note {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--texto-2);
+  max-width: 52ch;
 }

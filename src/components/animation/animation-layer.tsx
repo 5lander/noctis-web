@@ -10,10 +10,11 @@ import {
   REDUCED_MOTION_QUERY,
 } from './animation-settings';
 import { animateAccordion } from './effects/accordion';
+import { countFigures } from './effects/counters';
 import { followCursor } from './effects/cursor';
 import { animateHero, magnetizeElements } from './effects/hero';
 import { loopMarquee } from './effects/marquee';
-import { hideNavBarOnScroll } from './effects/nav-bar';
+import { condenseNavBarOnScroll } from './effects/nav-bar';
 import { parallaxLayers } from './effects/parallax';
 import { pinProcess } from './effects/process';
 import { revealSections, waveGrids } from './effects/reveal';
@@ -62,8 +63,9 @@ function startDesktopMotion(): () => void {
 
   revealSections();
   waveGrids();
+  countFigures();
   loopMarquee();
-  hideNavBarOnScroll();
+  condenseNavBarOnScroll();
   pinProcess();
   parallaxLayers();
   skewOnVelocity();

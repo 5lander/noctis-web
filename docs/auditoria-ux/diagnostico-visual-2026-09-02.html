@@ -1,0 +1,1057 @@
+<title>Diagnóstico visual Noctis</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,600&display=swap">
+<style>
+  :root {
+    --fondo: #fafafa;
+    --superficie: #ffffff;
+    --texto: #18181b;
+    --texto-2: #52525b;
+    --texto-3: #8a8a93;
+    --marca: #3730a3;
+    --acento: #c4b5fd;
+    --linea: rgba(24, 24, 27, 0.11);
+    --linea-fuerte: rgba(24, 24, 27, 0.2);
+    --sombra: 0 1px 2px rgba(24, 24, 27, 0.05), 0 18px 44px -22px rgba(55, 48, 163, 0.22);
+    --realce: rgba(255, 255, 255, 0.9);
+
+    --alto: #9f1239;
+    --alto-tenue: rgba(159, 18, 57, 0.09);
+    --medio: #a25708;
+    --medio-tenue: rgba(162, 87, 8, 0.1);
+    --bajo: #3f6212;
+    --bajo-tenue: rgba(63, 98, 18, 0.1);
+    --bien: #166534;
+    --bien-tenue: rgba(22, 101, 52, 0.09);
+
+    --display: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+    --sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+    --medida: 68ch;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --fondo: #0a0a12;
+      --superficie: #14131f;
+      --texto: #f4f4f5;
+      --texto-2: #a1a1aa;
+      --texto-3: #71717a;
+      --marca: #4338ca;
+      --acento: #c4b5fd;
+      --linea: rgba(244, 244, 245, 0.12);
+      --linea-fuerte: rgba(244, 244, 245, 0.24);
+      --sombra: 0 2px 4px rgba(0, 0, 0, 0.5), 0 24px 56px -26px rgba(0, 0, 0, 0.8);
+      --realce: rgba(244, 244, 245, 0.08);
+
+      --alto: #fda4af;
+      --alto-tenue: rgba(253, 164, 175, 0.12);
+      --medio: #fcd34d;
+      --medio-tenue: rgba(252, 211, 77, 0.12);
+      --bajo: #bef264;
+      --bajo-tenue: rgba(190, 242, 100, 0.1);
+      --bien: #86efac;
+      --bien-tenue: rgba(134, 239, 172, 0.1);
+    }
+  }
+
+  :root[data-theme='dark'] {
+    --fondo: #0a0a12;
+    --superficie: #14131f;
+    --texto: #f4f4f5;
+    --texto-2: #a1a1aa;
+    --texto-3: #71717a;
+    --marca: #4338ca;
+    --acento: #c4b5fd;
+    --linea: rgba(244, 244, 245, 0.12);
+    --linea-fuerte: rgba(244, 244, 245, 0.24);
+    --sombra: 0 2px 4px rgba(0, 0, 0, 0.5), 0 24px 56px -26px rgba(0, 0, 0, 0.8);
+    --realce: rgba(244, 244, 245, 0.08);
+
+    --alto: #fda4af;
+    --alto-tenue: rgba(253, 164, 175, 0.12);
+    --medio: #fcd34d;
+    --medio-tenue: rgba(252, 211, 77, 0.12);
+    --bajo: #bef264;
+    --bajo-tenue: rgba(190, 242, 100, 0.1);
+    --bien: #86efac;
+    --bien-tenue: rgba(134, 239, 172, 0.1);
+  }
+
+  body {
+    background: var(--fondo);
+    color: var(--texto);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .hoja {
+    max-width: 940px;
+    margin: 0 auto;
+    padding: 64px 28px 120px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--display);
+    font-weight: 600;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  h1 {
+    font-size: clamp(34px, 5.2vw, 52px);
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+  }
+
+  h2 {
+    font-size: clamp(24px, 3.2vw, 31px);
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-size: 19px;
+    line-height: 1.3;
+  }
+
+  p {
+    margin: 0;
+    max-width: var(--medida);
+  }
+
+  a {
+    color: var(--marca);
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) a {
+      color: var(--acento);
+    }
+  }
+
+  :root[data-theme='dark'] a {
+    color: var(--acento);
+  }
+
+  a:focus-visible,
+  summary:focus-visible {
+    outline: 2px solid var(--marca);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.88em;
+    background: var(--alto-tenue);
+    background: color-mix(in srgb, var(--texto) 7%, transparent);
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+  }
+
+  /* ---------- Portada ---------- */
+
+  .portada {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--linea-fuerte);
+  }
+
+  .sello {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--texto-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+  }
+
+  .entrada {
+    font-size: 19px;
+    line-height: 1.6;
+    color: var(--texto-2);
+    max-width: 62ch;
+  }
+
+  .lectura {
+    background: var(--superficie);
+    border: 1px solid var(--linea);
+    border-top: 1px solid var(--realce);
+    box-shadow: var(--sombra);
+    border-radius: 14px;
+    padding: 22px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .lectura p {
+    max-width: none;
+    font-size: 16.5px;
+  }
+
+  .diales {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 28px;
+    padding-top: 4px;
+    border-top: 1px solid var(--linea);
+    margin-top: 2px;
+  }
+
+  .dial {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    letter-spacing: 0.04em;
+    color: var(--texto-2);
+  }
+
+  .dial b {
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--texto);
+  }
+
+  .dial .flecha {
+    color: var(--texto-3);
+  }
+
+  /* ---------- Secciones ---------- */
+
+  section {
+    margin-top: 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .rotulo {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--texto-3);
+  }
+
+  /* ---------- Tabla de medidas ---------- */
+
+  .medidas {
+    overflow-x: auto;
+    border: 1px solid var(--linea);
+    border-radius: 14px;
+    background: var(--superficie);
+    box-shadow: var(--sombra);
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 14.5px;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--linea);
+    vertical-align: top;
+  }
+
+  thead th {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--texto-3);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  tbody tr:last-child th,
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody th {
+    font-weight: 500;
+    color: var(--texto);
+    white-space: nowrap;
+  }
+
+  .cifra {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .fuera {
+    color: var(--alto);
+    font-weight: 600;
+  }
+
+  .dentro {
+    color: var(--bien);
+    font-weight: 600;
+  }
+
+  /* ---------- Hallazgos ---------- */
+
+  .grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .hallazgo {
+    display: grid;
+    grid-template-columns: 42px 1fr;
+    gap: 0 18px;
+    padding: 22px 0 24px 18px;
+    border-top: 1px solid var(--linea);
+    border-left: 3px solid var(--barra, var(--linea-fuerte));
+  }
+
+  .hallazgo:first-child {
+    border-top: none;
+  }
+
+  .hallazgo[data-sev='alto'] {
+    --barra: var(--alto);
+  }
+
+  .hallazgo[data-sev='medio'] {
+    --barra: var(--medio);
+  }
+
+  .hallazgo[data-sev='bajo'] {
+    --barra: var(--bajo);
+  }
+
+  .num {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    color: var(--texto-3);
+    padding-top: 3px;
+  }
+
+  .cuerpo {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .cuerpo p {
+    color: var(--texto-2);
+    font-size: 15.5px;
+  }
+
+  .prueba {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    letter-spacing: 0.01em;
+  }
+
+  .prueba span {
+    background: color-mix(in srgb, var(--texto) 6%, transparent);
+    border-radius: 4px;
+    padding: 3px 9px;
+    color: var(--texto-2);
+    white-space: nowrap;
+  }
+
+  .prueba span.mal {
+    background: var(--alto-tenue);
+    color: var(--alto);
+  }
+
+  .prueba span.regla {
+    background: transparent;
+    border: 1px dashed var(--linea-fuerte);
+    color: var(--texto-3);
+  }
+
+  /* ---------- Aciertos ---------- */
+
+  .aciertos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(248px, 1fr));
+    gap: 14px;
+  }
+
+  .acierto {
+    background: var(--superficie);
+    border: 1px solid var(--linea);
+    border-radius: 12px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .acierto h3 {
+    font-family: var(--sans);
+    font-size: 14.5px;
+    font-weight: 600;
+    letter-spacing: 0.005em;
+  }
+
+  .acierto p {
+    font-size: 14px;
+    color: var(--texto-2);
+    line-height: 1.55;
+  }
+
+  .acierto .cifra {
+    color: var(--bien);
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+
+  /* ---------- Palancas ---------- */
+
+  ol.palancas {
+    counter-reset: p;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--linea);
+    border: 1px solid var(--linea);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  ol.palancas li {
+    counter-increment: p;
+    background: var(--superficie);
+    padding: 18px 22px 18px 20px;
+    display: grid;
+    grid-template-columns: 30px 1fr auto;
+    gap: 4px 16px;
+    align-items: baseline;
+  }
+
+  ol.palancas li::before {
+    content: counter(p);
+    font-family: var(--mono);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    color: var(--acento);
+    font-weight: 600;
+  }
+
+  :root:not([data-theme='dark']) ol.palancas li::before {
+    color: var(--marca);
+  }
+
+  .palanca-txt {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .palanca-txt strong {
+    font-weight: 600;
+    font-size: 15.5px;
+  }
+
+  .palanca-txt span {
+    font-size: 14px;
+    color: var(--texto-2);
+    line-height: 1.55;
+  }
+
+  .riesgo {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .riesgo.r-bajo {
+    background: var(--bien-tenue);
+    color: var(--bien);
+  }
+
+  .riesgo.r-medio {
+    background: var(--medio-tenue);
+    color: var(--medio);
+  }
+
+  .riesgo.r-alto {
+    background: var(--alto-tenue);
+    color: var(--alto);
+  }
+
+  .cierre {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--linea-fuerte);
+    font-size: 14.5px;
+    color: var(--texto-3);
+    max-width: var(--medida);
+  }
+
+  @media (max-width: 620px) {
+    .hoja {
+      padding: 44px 20px 90px;
+    }
+
+    .hallazgo {
+      grid-template-columns: 1fr;
+      gap: 8px;
+      padding-left: 14px;
+    }
+
+    ol.palancas li {
+      grid-template-columns: 26px 1fr;
+    }
+
+    .riesgo {
+      grid-column: 2;
+      justify-self: start;
+      margin-top: 6px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+
+<div class="hoja">
+  <header class="portada">
+    <div class="sello">
+      <span>Noctis Web</span>
+      <span>2 de septiembre de 2026</span>
+      <span>Diagnóstico, sin cambios de código</span>
+    </div>
+    <h1>Lo que le falta al sitio para verse tan terminado como el manual que lo define</h1>
+    <p class="entrada">
+      La marca está bien aplicada. Los siete <code>--color-*</code> de cada modo son
+      transcripción literal del manual y hay una prueba que los verifica uno a uno. Lo que
+      separa al sitio de verse terminado no es la paleta: es la composición. Catorce
+      hallazgos, medidos sobre la página servida en <code>localhost:3000</code> a 1440x900 y a
+      390x844, ordenados por lo que más cambia la primera impresión.
+    </p>
+
+    <div class="lectura">
+      <span class="rotulo">Lectura de diseño</span>
+      <p>
+        Página de empresa de software para dueños de PYME en Ecuador, con lenguaje
+        editorial y técnico a la vez (geometría de Vercel, calidez de Notion, acabado de
+        producto Apple), construida sobre CSS nativo con tokens y GSAP. Marca bloqueada:
+        índigo y lavanda, Source Serif 4 sobre Inter. El modo correcto es
+        <strong>rediseño que preserva</strong>: la arquitectura de información, las rutas y la
+        voz del copy se quedan como están.
+      </p>
+      <div class="diales">
+        <span class="dial">Variación <b>4</b> <span class="flecha">→</span> <b>7</b></span>
+        <span class="dial">Movimiento <b>6</b> <span class="flecha">→</span> <b>6</b></span>
+        <span class="dial">Densidad <b>3</b> <span class="flecha">→</span> <b>3</b></span>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <span class="rotulo">Lo que dio la cinta métrica</span>
+    <h2>Nueve números que explican casi todo</h2>
+    <div class="medidas">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Qué se midió</th>
+            <th scope="col">Sitio hoy</th>
+            <th scope="col">Referencia</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Imágenes reales en la portada</th>
+            <td class="cifra fuera">0</td>
+            <td class="cifra">2 o 3 mínimo</td>
+          </tr>
+          <tr>
+            <th scope="row">Rótulos en versalita sobre titulares</th>
+            <td class="cifra fuera">17</td>
+            <td class="cifra">2 como máximo</td>
+          </tr>
+          <tr>
+            <th scope="row">Alto de la portada contra el visor</th>
+            <td class="cifra fuera">1011 px / 900 px</td>
+            <td class="cifra">entra completa</td>
+          </tr>
+          <tr>
+            <th scope="row">Líneas del titular en escritorio</th>
+            <td class="cifra fuera">4 a 88 px</td>
+            <td class="cifra">2 como máximo</td>
+          </tr>
+          <tr>
+            <th scope="row">Palabras de la bajada</th>
+            <td class="cifra fuera">32</td>
+            <td class="cifra">20 como máximo</td>
+          </tr>
+          <tr>
+            <th scope="row">Escalas de radio en uso</th>
+            <td class="cifra fuera">4 (24, 10, 2, 50%)</td>
+            <td class="cifra">1</td>
+          </tr>
+          <tr>
+            <th scope="row">Inversiones de tema en una página clara</th>
+            <td class="cifra fuera">2</td>
+            <td class="cifra">1</td>
+          </tr>
+          <tr>
+            <th scope="row">Alto de la barra de navegación</th>
+            <td class="cifra dentro">67 px</td>
+            <td class="cifra">64 a 72 px</td>
+          </tr>
+          <tr>
+            <th scope="row">Alto de la página con movimiento reducido</th>
+            <td class="cifra dentro">6285 px, sin errores</td>
+            <td class="cifra">colapsa el anclaje</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <span class="rotulo">Hallazgos · rompen la promesa del sitio</span>
+    <h2>Alto</h2>
+    <div class="grupo">
+      <article class="hallazgo" data-sev="alto">
+        <span class="num">01</span>
+        <div class="cuerpo">
+          <h3>No hay una sola imagen en toda la página</h3>
+          <p>
+            El HTML servido no tiene ningún <code>&lt;img&gt;</code>. Los tres
+            <code>&lt;svg&gt;</code> son el logotipo, la línea del proceso y los signos del
+            acordeón. El proyecto declara que su producto real es la credibilidad
+            demostrada, y hoy no hay nada que ver: solo texto, degradados y una retícula.
+            Una página de puro texto no es minimalismo, es trabajo a medio terminar.
+          </p>
+          <div class="prueba">
+            <span class="mal">img = 0</span>
+            <span>svg = 3</span>
+            <span class="regla">portada, producto y proceso piden imagen propia</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="hallazgo" data-sev="alto">
+        <span class="num">02</span>
+        <div class="cuerpo">
+          <h3>El botón que promete la prueba no lleva a ninguna parte</h3>
+          <p>
+            El segundo botón de la portada apunta a <code>#trabajos</code> y ese
+            <code>id</code> no está en el documento, porque el portafolio en SQLite está
+            vacío y la sección no se pinta. La página filtra bien el enlace del menú cuando
+            no hay trabajos publicados, pero el botón de la portada quedó fuera de ese
+            filtro. El visitante hace clic en la promesa central del sitio y no pasa nada.
+          </p>
+          <div class="prueba">
+            <span class="mal">href="#trabajos" sin destino</span>
+            <span>src/app/page.tsx:37</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="hallazgo" data-sev="alto">
+        <span class="num">03</span>
+        <div class="cuerpo">
+          <h3>El aviso de privacidad da 404</h3>
+          <p>
+            El pie enlaza a <code>/privacidad</code> y esa ruta no existe. En un sitio que
+            pide nombre, correo y WhatsApp en un formulario, el enlace de privacidad roto
+            no es solo un enlace roto: es el requisito de LOPDP sin cumplir.
+          </p>
+          <div class="prueba">
+            <span class="mal">GET /privacidad → 404</span>
+            <span>rutas existentes: /, /admin, /dev/bandeja, /media/[name]</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="hallazgo" data-sev="alto">
+        <span class="num">04</span>
+        <div class="cuerpo">
+          <h3>Diecisiete rótulos en versalita hacen que el sitio se lea como plantilla</h3>
+          <p>
+            Cada sección abre igual: rótulo pequeño en mayúsculas, titular grande en serif,
+            regla degradada. Y dentro de las secciones se repite: cada producto lleva el suyo
+            (Comercio, Salud, Ventas, Talento), cada paso del proceso también, y los
+            servicios están numerados 01 a 05. Ese ritmo idéntico repetido diecisiete veces
+            es lo que hace que una página se vea generada. Los números de sección son
+            además decoración pura: el lector ya sabe contar.
+          </p>
+          <div class="prueba">
+            <span class="mal">17 rótulos en 6 secciones</span>
+            <span class="regla">máximo 1 cada 3 secciones</span>
+            <span class="mal">01 a 05 en Servicios</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="hallazgo" data-sev="alto">
+        <span class="num">05</span>
+        <div class="cuerpo">
+          <h3>La portada no cabe en la pantalla porque lleva seis cosas dentro</h3>
+          <p>
+            Mide 1011 px contra un visor de 900. No es un problema de espaciado: la portada
+            carga titular, bajada, dos botones, el rótulo de lugar y el panel del registro
+            nocturno, todo en el mismo momento. Un titular de 4 líneas a 88 px es un error
+            de escala tipográfica, no de longitud del texto. El registro nocturno es buen
+            contenido y merece su propia sección justo debajo, donde además tendría sitio
+            para respirar.
+          </p>
+          <div class="prueba">
+            <span class="mal">1011 px / 900 px</span>
+            <span class="mal">titular 4 líneas a 88 px</span>
+            <span class="mal">bajada de 32 palabras</span>
+            <span class="regla">máximo 4 elementos, titular en 2 líneas, bajada en 20 palabras</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <span class="rotulo">Hallazgos · se notan al segundo vistazo</span>
+    <h2>Medio</h2>
+    <div class="grupo">
+      <article class="hallazgo" data-sev="medio">
+        <span class="num">06</span>
+        <div class="cuerpo">
+          <h3>El formulario pierde el foco de teclado</h3>
+          <p>
+            El sitio tiene un anillo de foco correcto de 2 px en color de marca, y funciona
+            en el menú, los botones y el acordeón. Los campos del formulario lo apagan con
+            <code>outline: none</code> y lo reemplazan por un cambio de color en un borde de
+            1 px. Quien navega con teclado deja de saber dónde está justo en el único punto
+            del sitio donde se escribe algo.
+          </p>
+          <div class="prueba">
+            <span class="mal">outline: none en input, select y textarea</span>
+            <span>src/components/ui/field.module.css:50</span>
+            <span>resto del sitio: 2px solid #3730A3</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="hallazgo" data-sev="medio">
+        <span class="num">07</span>
+        <div class="cuerpo">
+          <h3>Dos botones para lo mismo, con dos nombres distintos</h3>
+          <p>
+            La barra dice Hablemos y la portada dice Conversemos. Los dos van a
+            <code>#contacto</code> y hacen exactamente lo mismo. Un rótulo por intención:
+            elegir uno y usarlo en la barra, la portada y el pie.
+          </p>
+          <div class="prueba">
+            <span class="mal">Hablemos + Conversemos → #contacto</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="hallazgo" data-sev="medio">
+        <span class="num">08</span>
+        <div class="cuerpo">
+          <h3>Cuatro escalas de esquina conviviendo en la misma página</h3>
+          <p>
+            Hay radios de 24 px en las tarjetas, 10 px en los botones, 2 px en detalles y
+            círculos completos en el conmutador de modo. Cuatro sistemas de forma a la vez
+            leen como cuatro decisiones distintas tomadas en cuatro momentos distintos. Una
+            sola escala documentada, con una regla explícita si los botones van a ser
+            distintos de las tarjetas.
+          </p>
+          <div class="prueba">
+            <span class="mal">24px (11 usos)</span>
+            <span class="mal">10px (4)</span>
+            <span class="mal">50% (6)</span>
+            <span class="mal">2px (4)</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="hallazgo" data-sev="medio">
+        <span class="num">09</span>
+        <div class="cuerpo">
+          <h3>La página clara se va a oscuro dos veces, y la barra no se entera</h3>
+          <p>
+            Servicios y Contacto invierten a <code>#0a0a12</code> dentro de una página
+            clara. Una inversión deliberada es un recurso fuerte; dos lo convierten en
+            alternancia, y el visitante siente que cambió de sitio a mitad del scroll. Peor:
+            la barra fija se queda clara sobre el fondo oscuro, y ahí se lee como un error de
+            maquetación y no como una decisión.
+          </p>
+          <div class="prueba">
+            <span class="mal">#servicios y #contacto invertidos</span>
+            <span class="mal">barra sin adaptar sobre franja oscura</span>
+            <span class="regla">una sola inversión por página</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="hallazgo" data-sev="medio">
+        <span class="num">10</span>
+        <div class="cuerpo">
+          <h3>Servicios deja una tarjeta huérfana</h3>
+          <p>
+            Cinco servicios en una rejilla de dos columnas dejan la quinta tarjeta sola en la
+            última fila, con la mitad derecha vacía. La rejilla debe tener exactamente tantas
+            celdas como contenido: 2 más 3, o una tarjeta destacada arriba y cuatro debajo.
+          </p>
+          <div class="prueba">
+            <span class="mal">repeat(2, 1fr) con 5 elementos</span>
+            <span>src/components/sections/services.module.css:3</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="hallazgo" data-sev="medio">
+        <span class="num">11</span>
+        <div class="cuerpo">
+          <h3>Objetivos táctiles por debajo del mínimo cómodo</h3>
+          <p>
+            Los enlaces del menú miden 25 px de alto, el conmutador de modo 36, los campos
+            del formulario 37 y el botón de envío 41. Ninguno llega a 44. En escritorio pasa
+            desapercibido; en el celular, que es por donde va a entrar el dueño de negocio al
+            que apunta el sitio, cada toque falla más de lo que debería.
+          </p>
+          <div class="prueba">
+            <span class="mal">menú 25 px</span>
+            <span class="mal">campos 37 px</span>
+            <span class="mal">envío 41 px</span>
+            <span class="regla">44 px</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <span class="rotulo">Hallazgos · detalle fino</span>
+    <h2>Bajo</h2>
+    <div class="grupo">
+      <article class="hallazgo" data-sev="bajo">
+        <span class="num">12</span>
+        <div class="cuerpo">
+          <h3>Las seis secciones respiran exactamente igual</h3>
+          <p>
+            Todas llevan 118 px arriba y 118 abajo. La consistencia está bien, pero sin
+            variación no hay jerarquía de respiro: el cierre pesa lo mismo que un listado
+            intermedio. Dos o tres escalones de espacio bastan para que la página tenga
+            cadencia.
+          </p>
+          <div class="prueba">
+            <span>118 px en las 6 secciones</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="hallazgo" data-sev="bajo">
+        <span class="num">13</span>
+        <div class="cuerpo">
+          <h3>Raya larga en el título de la pestaña</h3>
+          <p>
+            El cuerpo del sitio está limpio de rayas largas, lo cual tiene mérito. Queda una,
+            en el sitio más visible de todos: el <code>&lt;title&gt;</code>, que se replica en
+            Open Graph y en Twitter. Un guion normal o dos puntos resuelven.
+          </p>
+          <div class="prueba">
+            <span class="mal">Noctis — Software para negocios en Loja, Ecuador</span>
+            <span>src/content/site.ts:10</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="hallazgo" data-sev="bajo">
+        <span class="num">14</span>
+        <div class="cuerpo">
+          <h3>La consola acusa treinta y cuatro estilos en línea bloqueados</h3>
+          <p>
+            La CSP declara <code>style-src 'self' 'nonce-…' 'unsafe-inline'</code>, y el
+            navegador ignora <code>'unsafe-inline'</code> justamente porque hay un nonce
+            presente. Comparé la página con la CSP activa y con la CSP saltada: se ve
+            idéntica, porque GSAP escribe por CSSOM y eso la CSP no lo toca. O sea que hoy no
+            rompe nada visible, pero algo se está bloqueando y en producción la política es
+            todavía más cerrada. Conviene resolverlo antes de Pf y no durante.
+          </p>
+          <div class="prueba">
+            <span class="mal">34 violaciones de style-src</span>
+            <span>src/shared/infrastructure/http/security-headers.ts:47</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <span class="rotulo">Lo que ya está resuelto</span>
+    <h2>Cinco cosas que no hay que tocar</h2>
+    <div class="aciertos">
+      <div class="acierto">
+        <h3>La marca, aplicada al pie de la letra</h3>
+        <p>
+          Los siete <code>--color-*</code> de cada modo son transcripción del manual, y
+          <code>contrast.spec.ts</code> los verifica uno a uno. Ninguna palanca de este
+          informe los toca.
+        </p>
+      </div>
+      <div class="acierto">
+        <h3>Movimiento reducido, bien resuelto</h3>
+        <p class="cifra">7611 px → 6285 px</p>
+        <p>
+          Con <code>prefers-reduced-motion</code> el anclaje del proceso colapsa, la página
+          se acorta, no queda un solo elemento en opacidad cero y no hay errores en consola.
+        </p>
+      </div>
+      <div class="acierto">
+        <h3>Foco visible donde sí está</h3>
+        <p>
+          Menú, botones y acordeón llevan anillo de 2 px en color de marca con separación de
+          4. El sistema es correcto: solo hay que dejar de apagarlo en el formulario.
+        </p>
+      </div>
+      <div class="acierto">
+        <h3>Formularios con etiqueta propia</h3>
+        <p>
+          Etiqueta encima del campo, nunca el marcador de posición haciendo de etiqueta, y
+          el marcador sube a <code>--texto-2</code> para pasar contraste.
+        </p>
+      </div>
+      <div class="acierto">
+        <h3>Sin desbordes en el celular</h3>
+        <p class="cifra">scrollWidth 390 = clientWidth 390</p>
+        <p>
+          A 390 px no hay barrido horizontal y el menú colapsa a hamburguesa como debe.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <span class="rotulo">Propuesta</span>
+    <h2>Siete palancas, en orden de retorno sobre riesgo</h2>
+    <p>
+      Ordenadas para que cada una se pueda cerrar sola. Las cuatro primeras no tocan la
+      arquitectura de información ni el copy, y son las que más cambian la primera
+      impresión.
+    </p>
+    <ol class="palancas">
+      <li>
+        <div class="palanca-txt">
+          <strong>Recomponer la portada</strong>
+          <span>
+            Bajar la escala del titular hasta que entre en dos líneas, recortar la bajada a
+            veinte palabras y sacar el registro nocturno a su propia sección. Resuelve el
+            hallazgo 05 y de paso el 12.
+          </span>
+        </div>
+        <span class="riesgo r-bajo">riesgo bajo</span>
+      </li>
+      <li>
+        <div class="palanca-txt">
+          <strong>De diecisiete rótulos a dos</strong>
+          <span>
+            Quitar los rótulos de producto y de paso, borrar la numeración 01 a 05 y dejar
+            como mucho dos en toda la página. El titular solo alcanza para saber dónde está
+            uno.
+          </span>
+        </div>
+        <span class="riesgo r-bajo">riesgo bajo</span>
+      </li>
+      <li>
+        <div class="palanca-txt">
+          <strong>Arreglar los dos destinos rotos</strong>
+          <span>
+            Crear <code>/privacidad</code> y filtrar el botón de la portada con la misma
+            condición que ya filtra el enlace del menú. Hallazgos 02 y 03.
+          </span>
+        </div>
+        <span class="riesgo r-bajo">riesgo bajo</span>
+      </li>
+      <li>
+        <div class="palanca-txt">
+          <strong>Unificar forma y foco</strong>
+          <span>
+            Una sola escala de radios documentada, el anillo de foco devuelto al formulario y
+            los objetivos táctiles a 44 px. Hallazgos 06, 08 y 11.
+          </span>
+        </div>
+        <span class="riesgo r-bajo">riesgo bajo</span>
+      </li>
+      <li>
+        <div class="palanca-txt">
+          <strong>Que la barra reaccione a la franja oscura</strong>
+          <span>
+            El vidrio esmerilado ya está en los tokens. Falta que la barra tome el juego de
+            color de la sección que tiene debajo, y decidir si Servicios o Contacto se queda
+            como la única inversión. Hallazgo 09.
+          </span>
+        </div>
+        <span class="riesgo r-medio">riesgo medio</span>
+      </li>
+      <li>
+        <div class="palanca-txt">
+          <strong>Meter imágenes de verdad</strong>
+          <span>
+            Es el hallazgo más grande y el más caro, porque necesita material real:
+            capturas de Commerce y de Care funcionando, y una imagen de portada. Sin esto el
+            sitio sigue contando en vez de demostrar. Hallazgo 01.
+          </span>
+        </div>
+        <span class="riesgo r-medio">riesgo medio</span>
+      </li>
+      <li>
+        <div class="palanca-txt">
+          <strong>Rehacer la rejilla de Servicios y el panel de Proceso</strong>
+          <span>
+            Quitar la tarjeta huérfana y revisar el anclaje: hoy deja tramos largos de
+            pantalla casi vacía mientras se recorre. Hallazgos 10 y 12.
+          </span>
+        </div>
+        <span class="riesgo r-alto">riesgo alto</span>
+      </li>
+    </ol>
+  </section>
+
+  <p class="cierre">
+    Medido sobre el servidor de desarrollo el 2 de septiembre de 2026, en Chrome a 1440x900 y
+    a 390x844, en modo claro y oscuro, con y sin movimiento reducido. El criterio sale de las
+    skills del estudio de diseño en <code>C:\Projects\Sistema de disenio</code>, contrastado
+    contra el manual de marca y contra <code>docs/SPEC.md</code>. Ningún archivo del sitio fue
+    modificado para producir este informe.
+  </p>
+</div>

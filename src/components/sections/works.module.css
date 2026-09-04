@@ -1,119 +1,266 @@
-/* La inclinación por velocidad (RA-10) necesita un origen estable. */
-.grid {
+/*
+ * Los trabajos dejaron de ser una grilla de tres columnas.
+ *
+ * Un trabajo con recorrido en vídeo no cabe en un tercio de ancho: se vería como
+ * un sello. Cada uno ocupa la fila entera, con la pieza a un lado y la ficha al
+ * otro, y los lados se alternan (`data-flip`) para que dos seguidos no se lean
+ * como la misma tarjeta repetida.
+ *
+ * De paso desaparece el problema que tenía la grilla: con un solo trabajo
+ * publicado, tres columnas dejaban dos huecos. Una lista no tiene ese problema
+ * porque no tiene celdas que llenar.
+ */
+.list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 72px;
   transform-origin: center center;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
 }
 
 .work {
-  display: block;
-  cursor: pointer;
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: 44px;
+  align-items: center;
 }
 
+/*
+ * Alternar lados es invertir **las dos cosas**: el orden y el reparto de ancho.
+ *
+ * Con solo el `order`, la pieza del trabajo alternado caía en la columna de 1fr
+ * y salía un tercio más pequeña que la del anterior. Dos recorridos del mismo
+ * tipo con tamaños distintos no se leen como ritmo, se leen como un fallo.
+ */
+.work[data-flip] {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr);
+}
+
+.work[data-flip] .canvas {
+  order: 2;
+}
+
+/*
+ * La superficie flota sobre la página: en modo claro es `#FFFFFF` sobre
+ * `#FAFAFA`, o sea 1.4:1, que a ojo es nada. Sin la sombra las piezas no se leen
+ * como piezas sino como huecos en una hoja. En modo oscuro la elevación ya la da
+ * el propio tono de la superficie, y la sombra solo la asienta.
+ */
 .canvas {
   position: relative;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 16 / 10;
   overflow: hidden;
   border: 1px solid var(--linea);
+  border-radius: var(--borde);
   display: grid;
   place-items: center;
-  padding: 24px;
-  background: var(--fondo-2);
+  background: var(--superficie-2);
+  box-shadow: var(--sombra-2);
+  transition:
+    transform 0.5s var(--curva),
+    box-shadow 0.5s var(--curva);
+}
+
+.canvas::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--borde);
+  pointer-events: none;
+  background: linear-gradient(180deg, var(--realce), transparent 24%);
+  opacity: 0.5;
+}
+
+.work:hover .canvas {
+  transform: translateY(-3px);
+  box-shadow: var(--sombra-3), var(--sombra-2);
+}
+
+/* El recorrido y la portada llenan el lienzo por igual. */
+.tour,
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/*
+ * El vídeo se sale del `overflow: hidden` del lienzo en Safari si no se le da su
+ * propio radio: el recorte de un elemento reemplazado no siempre respeta el del
+ * contenedor.
+ */
+.tour {
+  border-radius: var(--borde);
 }
 
 .mark {
   font-family: var(--display);
   font-weight: 600;
-  font-size: clamp(20px, 2.4vw, 34px);
+  font-size: clamp(24px, 3vw, 44px);
   letter-spacing: -0.015em;
   text-align: center;
   line-height: 1.12;
+  padding: 24px;
   transition: transform 0.7s var(--curva);
-}
-
-.kind {
-  position: absolute;
-  left: 16px;
-  bottom: 14px;
-  font-size: 10.5px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  opacity: 0.55;
-}
-
-.arrow {
-  position: absolute;
-  right: 16px;
-  top: 14px;
-  font-size: 15px;
-  opacity: 0;
-  transform: translate(-6px, 6px);
-  transition: all 0.5s var(--curva);
 }
 
 .work:hover .mark {
   transform: scale(1.04);
 }
 
-.work:hover .arrow {
-  opacity: 0.7;
-  transform: none;
-}
-
 /* Los cuatro tratamientos del prototipo: todo tipografía y contraste */
+
+/*
+ * La portada invertida usa el esquema contrario, así que también tiene que
+ * voltear el realce. Sin esta línea, en modo claro la tarjeta oscura recibía el
+ * realce claro —blanco al 90%— y le aparecía una barra blanca cruzando el borde
+ * superior. Es la misma clase de error que `tokens.css` documenta para `.inv`:
+ * invertir el fondo sin invertir lo que se apoya en él.
+ */
 .inverted {
+  --realce: rgba(244, 244, 245, 0.08);
+
   background: var(--inv-fondo);
   color: var(--inv-texto);
 }
 
 /* 600 y no 400: es el único peso de la serif que se carga (spec de marca §2). */
-.italic .mark {
+.italic {
   font-style: italic;
   font-weight: 600;
 }
 
 .uppercase {
-  background: var(--fondo);
-}
-
-.uppercase .mark {
   text-transform: uppercase;
   letter-spacing: 0.02em;
-  font-size: clamp(16px, 1.9vw, 24px);
+  font-size: clamp(18px, 2.2vw, 30px);
 }
 
-.image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+/* ---------- La ficha ---------- */
 
-.info {
+.file {
   display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  margin-top: 14px;
-  font-size: 14.5px;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
-.info b {
-  font-weight: 500;
+.file h3 {
+  font-size: clamp(26px, 2.6vw, 34px);
 }
 
-.info span {
+.live {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  color: inherit;
+  border-bottom: 1px solid var(--linea-control);
+  transition: border-color 0.3s var(--curva);
+}
+
+.live span {
+  font-size: 0.6em;
+  color: var(--color-accion);
+  transition: transform 0.3s var(--curva);
+}
+
+.live:hover {
+  border-bottom-color: var(--color-accion);
+}
+
+.live:hover span {
+  transform: translate(2px, -2px);
+}
+
+/*
+ * Que un trabajo no lleve enlace no es un fallo, y decirlo evita que lo parezca.
+ * Va en el color decorativo porque es una nota al margen, no una advertencia.
+ */
+.pending {
+  margin-top: 8px;
+  font-size: 12.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--texto-3);
+}
+
+.summary {
+  margin-top: 16px;
+  font-size: 16px;
   color: var(--texto-2);
+  max-width: 40ch;
 }
 
-@media (max-width: 1000px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+.meta {
+  display: flex;
+  gap: 40px;
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid var(--linea);
+  width: 100%;
+}
+
+.meta dt {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--texto-3);
+  margin-bottom: 5px;
+}
+
+.meta dd {
+  font-size: 15.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * El muro de logotipos de clientes publicados.
+ *
+ * Va debajo de los trabajos y no arriba: primero la prueba con detalle, después
+ * el reconocimiento rápido. Si ningún cliente tiene logotipo cargado, el
+ * componente devuelve `null` y no queda una fila vacía — la misma regla que
+ * gobierna la sección entera.
+ */
+.wall {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px 44px;
+  margin-top: 64px;
+  padding-top: 34px;
+  border-top: 1px solid var(--linea);
+}
+
+.wall img {
+  height: 34px;
+  width: auto;
+  object-fit: contain;
+  opacity: 0.62;
+  filter: grayscale(1);
+  transition:
+    opacity 0.4s var(--curva),
+    filter 0.4s var(--curva);
+}
+
+.wall li:hover img {
+  opacity: 1;
+  filter: none;
+}
+
+@media (max-width: 900px) {
+  .list {
+    gap: 52px;
   }
-}
 
-@media (max-width: 620px) {
-  .grid {
+  .work,
+  .work[data-flip] {
     grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  /* En una sola columna la pieza va siempre primero: alternar no significa nada. */
+  .work[data-flip] .canvas {
+    order: 0;
   }
 }

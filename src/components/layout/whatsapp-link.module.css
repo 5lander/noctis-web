@@ -1,0 +1,54 @@
+/*
+ * El botón flotante.
+ *
+ * Abajo a la derecha en celular, que es donde llega el pulgar, y por encima de
+ * todo salvo el menú de la barra. No usa el verde de la marca de WhatsApp: usa
+ * el color de acción de Noctis, porque el botón es de Noctis y el manual de
+ * marca manda sobre el logotipo de un tercero. El icono ya dice cuál es el canal.
+ *
+ * El área es de 56 px, muy por encima del mínimo de 24×24 que pide WCAG 2.2
+ * §2.5.8, porque es la acción que más se va a tocar del sitio.
+ */
+/* El contenedor es el que flota; el enlace solo se dibuja. */
+.dock {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 70;
+}
+
+.floating {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--borde-circulo);
+  background: var(--color-accion);
+  color: var(--color-fondo);
+  box-shadow: var(--sombra-2);
+  transition:
+    transform 0.35s var(--curva),
+    box-shadow 0.35s var(--curva);
+}
+
+.floating:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: var(--sombra-3), var(--sombra-2);
+}
+
+/*
+ * En escritorio el pie ya lleva el enlace y la barra tiene la llamada a la
+ * acción, así que el flotante sobra: en pantalla grande estorba la lectura y
+ * tapa la esquina donde suelen caer los últimos párrafos.
+ */
+@media (min-width: 1001px) {
+  .dock {
+    right: 28px;
+    bottom: 28px;
+  }
+
+  .floating {
+    width: 52px;
+    height: 52px;
+  }
+}

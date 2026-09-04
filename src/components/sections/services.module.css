@@ -1,16 +1,65 @@
+/*
+ * Cinco servicios, cinco celdas, cero huecos.
+ *
+ * La rejilla era de dos columnas y los servicios son cinco, así que el quinto
+ * quedaba solo en la última fila con la mitad derecha vacía. Una rejilla tiene
+ * exactamente tantas celdas como contenido hay: si sobra una, el reparto está
+ * mal elegido, no falta una tarjeta.
+ *
+ * Seis columnas de base permiten el reparto 2 + 3 sin trucos: las dos primeras
+ * ocupan tres columnas cada una y las tres siguientes, dos. Da además una
+ * jerarquía honesta, porque los dos primeros servicios son los que más se piden.
+ */
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0 68px;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 18px;
 }
 
+.service:nth-child(-n + 2) {
+  grid-column: span 3;
+}
+
+.service:nth-child(n + 3) {
+  grid-column: span 2;
+}
+
+/*
+ * Sin material, cinco párrafos seguidos se leen como un muro de texto; con la
+ * tarjeta, como cinco cosas que se pueden pedir por separado, que es justo lo
+ * que la sección quiere decir.
+ *
+ * La sección ya no invierte el tema, así que la superficie es la del propio
+ * esquema. Lo que separa la tarjeta del fondo es la elevación —sombra y canto de
+ * luz— y no un cambio de color: es la misma decisión que documenta `tokens.css`
+ * en la capa de profundidad.
+ */
 .service {
-  padding: 28px 0;
-  border-top: 1px solid var(--linea);
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 24px;
-  align-items: baseline;
+  position: relative;
+  padding: 26px 26px 28px;
+  border: 1px solid var(--linea);
+  border-radius: var(--borde);
+  background: var(--superficie-2);
+  box-shadow: var(--sombra-2);
+  display: flex;
+  flex-direction: column;
+  transition:
+    transform 0.5s var(--curva),
+    box-shadow 0.5s var(--curva);
+}
+
+.service::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  border-radius: var(--borde) var(--borde) 0 0;
+  background: linear-gradient(90deg, transparent, var(--realce) 30%, var(--realce) 70%, transparent);
+}
+
+.service:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-3), var(--sombra-2);
 }
 
 .service h3 {
@@ -26,5 +75,11 @@
 @media (max-width: 1000px) {
   .grid {
     grid-template-columns: 1fr;
+  }
+
+  /* En una sola columna el reparto 2 + 3 no significa nada: todas ocupan igual. */
+  .service:nth-child(-n + 2),
+  .service:nth-child(n + 3) {
+    grid-column: auto;
   }
 }

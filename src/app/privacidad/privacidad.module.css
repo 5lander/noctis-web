@@ -1,0 +1,90 @@
+/*
+ * Una hoja de texto, no una sección de la portada.
+ *
+ * El ancho de lectura manda: 68 caracteres es donde el ojo deja de perder el
+ * renglón. Todo lo demás —la superficie, el filete de luz, la sombra— es el
+ * mismo material que usan las tarjetas del sitio, para que el aviso se lea como
+ * parte de la misma casa y no como una página pegada aparte.
+ */
+.page {
+  padding: 148px 0 110px;
+}
+
+.sheet {
+  max-width: 68ch;
+  padding: 44px 44px 40px;
+  border: 1px solid var(--linea);
+  border-radius: var(--borde);
+  background: var(--superficie-2);
+  box-shadow: var(--sombra-2);
+  position: relative;
+}
+
+.sheet::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  border-radius: var(--borde) var(--borde) 0 0;
+  background: linear-gradient(90deg, transparent, var(--realce) 30%, var(--realce) 70%, transparent);
+}
+
+.sheet h1 {
+  font-size: clamp(31px, 4vw, 44px);
+}
+
+.updated {
+  margin-top: 10px;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--texto-3);
+}
+
+.intro {
+  margin-top: 22px;
+  font-size: 18px;
+  color: var(--texto);
+}
+
+.block {
+  margin-top: 38px;
+}
+
+.block h2 {
+  font-size: 21px;
+  margin-bottom: 12px;
+}
+
+.block p + p {
+  margin-top: 12px;
+}
+
+.block p {
+  color: var(--texto-2);
+  font-size: 16px;
+}
+
+/* Área tocable de 44 px por caja real, igual que los enlaces del pie. */
+.back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 44px;
+  color: var(--color-accion);
+  font-size: 15px;
+}
+
+.back:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+@media (max-width: 620px) {
+  .page {
+    padding: 116px 0 76px;
+  }
+
+  .sheet {
+    padding: 30px 24px 28px;
+  }
+}
