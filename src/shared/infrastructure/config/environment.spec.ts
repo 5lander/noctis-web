@@ -6,6 +6,12 @@ describe('entorno validado por esquema', () => {
   it('arranca en demo sin una sola variable puesta', () => {
     expect(readEnvironment({})).toEqual({
       MODO_SERVICIOS: 'demo',
+      // El portafolio arranca en SQLite y con rutas por omisión: el sitio se
+      // clona y corre sin que nadie configure nada, que es la condición que
+      // este archivo entero defiende.
+      PORTAFOLIO_ADAPTER: 'sqlite',
+      SQLITE_RUTA: './data/noctis.db',
+      MEDIOS_RUTA: './data/medios',
       BOT_ACTIVO: false,
       AGENDADOR_ACTIVO: true,
     });

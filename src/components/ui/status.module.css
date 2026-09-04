@@ -13,7 +13,7 @@
 .dot {
   width: 5px;
   height: 5px;
-  border-radius: 50%;
+  border-radius: var(--borde-circulo);
   background: var(--texto-3);
 }
 

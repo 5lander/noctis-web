@@ -12,18 +12,44 @@ import styles from './button.module.css';
 
 export type ButtonVariant = 'solid' | 'outline';
 
+/** La firma de una acción de servidor tal como la invoca un `<form>`. */
+type FormAction = (formData: FormData) => void | Promise<void>;
+
 interface ButtonProps {
   readonly children: ReactNode;
   readonly variant?: ButtonVariant;
   readonly href?: string;
   readonly type?: 'button' | 'submit';
+  /**
+   * Acción propia de este botón, distinta de la del formulario que lo contiene.
+   *
+   * Existe por un motivo concreto: un formulario de edición necesita «Guardar» y
+   * «Eliminar», y la forma intuitiva —meter un segundo `<form>` dentro del
+   * primero— **es HTML inválido**. El analizador del navegador descarta la
+   * etiqueta anidada y sus campos quedan colgando del formulario de fuera, así
+   * que el botón de borrar termina guardando. `formAction` es el mecanismo que
+   * HTML tiene justamente para esto.
+   */
+  readonly formAction?: FormAction;
+  /**
+   * Salta la validación del navegador al enviar. Un botón que no guarda no tiene
+   * por qué exigir que los campos obligatorios estén completos.
+   */
+  readonly formNoValidate?: boolean;
 }
 
 function classNamesFor(variant: ButtonVariant): string {
   return variant === 'outline' ? `${styles['button']} ${styles['outline']}` : `${styles['button']}`;
 }
 
-export function Button({ children, variant = 'solid', href, type = 'button' }: ButtonProps) {
+export function Button({
+  children,
+  variant = 'solid',
+  href,
+  type = 'button',
+  formAction,
+  formNoValidate,
+}: ButtonProps) {
   const className = classNamesFor(variant);
 
   if (href !== undefined) {
@@ -35,7 +61,12 @@ export function Button({ children, variant = 'solid', href, type = 'button' }: B
   }
 
   return (
-    <button className={className} type={type}>
+    <button
+      className={className}
+      type={type}
+      {...(formAction === undefined ? {} : { formAction })}
+      {...(formNoValidate === undefined ? {} : { formNoValidate })}
+    >
       {children}
     </button>
   );

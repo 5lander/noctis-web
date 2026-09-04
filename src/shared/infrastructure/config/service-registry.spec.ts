@@ -9,7 +9,18 @@ import { createServices, resolveServiceModes } from './service-registry';
  * ningún calendario. Acá se prueba que **no hay forma** de que eso pase.
  */
 
-const DEMO: AppEnvironment = { MODO_SERVICIOS: 'demo', BOT_ACTIVO: false, AGENDADOR_ACTIVO: true };
+/**
+ * El portafolio va en memoria en las pruebas: el adaptador de SQLite escribe un
+ * archivo, y una prueba que toca el disco deja de ser una prueba de esta unidad.
+ */
+const DEMO: AppEnvironment = {
+  MODO_SERVICIOS: 'demo',
+  PORTAFOLIO_ADAPTER: 'memoria',
+  SQLITE_RUTA: './data/prueba.db',
+  MEDIOS_RUTA: './data/medios-prueba',
+  BOT_ACTIVO: false,
+  AGENDADOR_ACTIVO: true,
+};
 const SIN_CREDENCIALES: Record<string, string | undefined> = {};
 
 const CREDENCIALES_DE_CALENDARIO = {

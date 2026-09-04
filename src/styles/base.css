@@ -18,6 +18,7 @@ html {
 }
 
 body {
+  position: relative;
   background: var(--fondo);
   color: var(--texto);
   font-family: var(--texto-f);
@@ -30,14 +31,55 @@ body {
     color 0.5s var(--curva);
 }
 
+/*
+ * El fondo de la página: dos lavados de color y una retícula fina.
+ *
+ * Es lo que responde a «en claro se ve muy simple». Un `#FAFAFA` liso no es
+ * sobrio, es vacío — y sobre él, una tarjeta blanca no se distingue de nada. Con
+ * estas tres capas el papel tiene grano y profundidad, y las superficies pasan a
+ * flotar encima en vez de estar recortadas dentro.
+ *
+ * Va en un pseudoelemento fijo y no en el `background` del cuerpo por dos
+ * motivos: no se desplaza con el scroll —así el degradado se percibe como luz de
+ * la escena y no como una imagen que sube— y no compite con `.inv`, que
+ * redefine el fondo de su franja y tiene que seguir tapándolo entero.
+ *
+ * `pointer-events: none` es obligatorio: sin eso, una capa fija sobre toda la
+ * ventana se come todos los clics de la página.
+ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(60% 45% at 12% 0%, var(--halo-1), transparent 70%),
+    radial-gradient(55% 40% at 88% 22%, var(--halo-2), transparent 72%),
+    linear-gradient(var(--rejilla) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rejilla) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    100% 100%,
+    68px 68px,
+    68px 68px;
+  transition: background-image 0.5s var(--curva);
+}
+
 a {
   color: inherit;
   text-decoration: none;
 }
 
-/* El foco de teclado se ve siempre, en todo elemento interactivo (SPEC §8.3) */
+/*
+ * El foco de teclado se ve siempre, en todo elemento interactivo (SPEC §8.3).
+ * En el color de acción y no en `currentcolor`: ese token está definido para ser
+ * legible en los dos modos y se voltea dentro de la franja invertida, así que el
+ * anillo tiene contraste en cualquier fondo del sistema y de paso el foco queda
+ * en la marca en vez de en negro.
+ */
 :focus-visible {
-  outline: 2px solid currentcolor;
+  outline: 2px solid var(--color-accion);
   outline-offset: 4px;
 }
 

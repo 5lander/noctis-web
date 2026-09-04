@@ -1,9 +1,20 @@
-/* Rótulo de interfaz: Inter, no la serif de títulos (spec de marca §2). */
+/*
+ * Rótulo de interfaz: Inter, no la serif de títulos (spec de marca §2).
+ *
+ * Va en el color de marca y no en gris. Es el rótulo que encabeza cada sección,
+ * así que es el único sitio donde el par índigo/lavanda puede aparecer cinco
+ * veces sin saturar nada — y el activo distintivo 1 del manual pide que el par
+ * esté presente, no que exista en la paleta.
+ *
+ * `--color-accion` y no `--color-marca`: en modo oscuro el marca es `#4338CA` y
+ * da 2.49:1 sobre el fondo, o sea que como texto no se lee. El de acción está
+ * definido justamente como el tono de marca legible en cada modo.
+ */
 .label {
   font-family: var(--texto-f);
   font-size: 11.5px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--texto-2);
+  color: var(--color-accion);
 }

@@ -67,6 +67,15 @@ function toVector(color: RgbColor): Vector3 {
   return new Vector3(color.red, color.green, color.blue);
 }
 
+/**
+ * Los tres colores del cielo se **leen** de los tokens, no se calculan acá: la
+ * paleta vive en `tokens.css` y este archivo no es sitio para un hex.
+ *
+ * Se leen una sola vez, al crear los uniformes. Mientras hubo modo claro había
+ * además un `refreshPalette` atado a un `MutationObserver` sobre `data-mode`,
+ * porque conmutar cambiaba los tres colores debajo del shader. Con un solo
+ * esquema la paleta ya no cambia después del arranque.
+ */
 function createUniforms(): SkyUniforms {
   return {
     uTime: { value: 0 },
@@ -77,13 +86,6 @@ function createUniforms(): SkyUniforms {
     uBrand: { value: toVector(readBrandColor(PALETTE_TOKENS.brand)) },
     uAccent: { value: toVector(readBrandColor(PALETTE_TOKENS.accent)) },
   };
-}
-
-/** El modo claro/oscuro cambia la paleta: el cielo la vuelve a leer, no la calcula. */
-function refreshPalette(uniforms: SkyUniforms): void {
-  uniforms.uBackground.value.copy(toVector(readBrandColor(PALETTE_TOKENS.background)));
-  uniforms.uBrand.value.copy(toVector(readBrandColor(PALETTE_TOKENS.brand)));
-  uniforms.uAccent.value.copy(toVector(readBrandColor(PALETTE_TOKENS.accent)));
 }
 
 /** Devuelve `null` si el navegador no da contexto: es un caso previsto, no un error. */
@@ -206,7 +208,14 @@ function startSky(canvas: HTMLCanvasElement): () => void {
   };
 }
 
-/** Tamaño y modo: los dos cambian sin avisar y los dos invalidan lo dibujado. */
+/**
+ * El tamaño cambia sin avisar e invalida lo dibujado.
+ *
+ * Antes también vigilaba `data-mode` con un `MutationObserver`, porque el cielo
+ * lee sus tres colores de los tokens y había que releerlos al conmutar. Con un
+ * solo esquema la paleta no cambia nunca después del arranque, así que la
+ * lectura inicial de `refreshPalette` es la única que hace falta.
+ */
 function watchViewport({ renderer, uniforms, canvas }: SkyRuntime): () => void {
   resizeTo(renderer, uniforms, canvas);
 
@@ -215,14 +224,8 @@ function watchViewport({ renderer, uniforms, canvas }: SkyRuntime): () => void {
   });
   sizeObserver.observe(canvas);
 
-  const modeObserver = new MutationObserver(() => {
-    refreshPalette(uniforms);
-  });
-  modeObserver.observe(document.documentElement, { attributeFilter: ['data-mode'] });
-
   return () => {
     sizeObserver.disconnect();
-    modeObserver.disconnect();
   };
 }
 
@@ -239,7 +242,12 @@ export function HeroSky() {
 
   return (
     <div className={styles['sky']} aria-hidden="true">
-      <canvas className={styles['canvas']} ref={canvasRef} />
+      {/*
+        Decorativo y nada más: el argumento de la portada está en el titular y en
+        la bajada. Sin `aria-hidden`, un lector de pantalla anuncia un lienzo
+        vacío antes del `h1`, que es la primera cosa que oye quien entra.
+      */}
+      <canvas className={styles['canvas']} ref={canvasRef} aria-hidden="true" />
     </div>
   );
 }

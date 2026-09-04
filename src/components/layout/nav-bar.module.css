@@ -1,22 +1,46 @@
+/*
+ * Fija y sobrepuesta, siempre. El `transform` de la capa de animación ya no la
+ * mueve (ver `effects/nav-bar.ts`): lo único que cambia al bajar es el material.
+ *
+ * `--nav-alto` es una variable y no un número suelto porque la portada tiene que
+ * dejarle sitio y el salto a un ancla tiene que descontarla. Con el valor en un
+ * solo lugar, condensar la barra no descoloca ninguna de las dos cosas.
+ */
 .bar {
+  --nav-alto: 66px;
+
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 80;
-  background: color-mix(in srgb, var(--fondo) 88%, transparent);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--linea);
+  background: var(--barra-fondo);
+  backdrop-filter: var(--barra-filtro);
+  border-bottom: 1px solid transparent;
   transition:
-    transform 0.45s var(--curva),
-    background 0.5s var(--curva);
+    background 0.5s var(--curva),
+    box-shadow 0.5s var(--curva),
+    border-color 0.5s var(--curva);
+}
+
+/*
+ * Condensada: la barra gana cuerpo cuando hay contenido pasando por debajo. Es
+ * lo que sustituye a esconderla — sigue habiendo una señal de que la página se
+ * movió, pero la llamada a la acción no se va a ninguna parte.
+ */
+:global(html[data-nav-condensed='true']) .bar {
+  --nav-alto: 58px;
+
+  border-bottom-color: var(--linea);
+  box-shadow: var(--sombra-2);
 }
 
 .inner {
   display: flex;
   align-items: center;
   gap: 32px;
-  height: 66px;
+  height: var(--nav-alto);
+  transition: height 0.4s var(--curva);
 }
 
 /* Solo posiciona: el logotipo trae su tamaño y su área de seguridad. */
@@ -35,6 +59,21 @@
 .nav a {
   position: relative;
   padding-bottom: 3px;
+}
+
+/*
+ * Área tocable de 48 px sin mover ni el texto ni el subrayado.
+ *
+ * El enlace medía 25 px de alto. Subirlo con relleno habría empujado el
+ * subrayado de `::after` lejos de la palabra, que es justo el detalle que hace
+ * que el menú se sienta afinado. Una capa transparente que desborda la caja
+ * agranda el objetivo y deja la composición intacta. Los 8 px laterales no
+ * llegan a tocarse entre enlaces: la separación es de 26 px.
+ */
+.nav a::before {
+  content: '';
+  position: absolute;
+  inset: -12px -8px;
 }
 
 .nav a::after {
@@ -56,8 +95,109 @@
   width: 100%;
 }
 
+/*
+ * El menú de celular.
+ *
+ * Es `<details>` y no un panel con estado de React por la misma razón que el
+ * acordeón de preguntas: funciona sin JavaScript, el teclado lo abre y lo cierra
+ * solo, y el lector de pantalla ya sabe anunciarlo. Cero código, cero excepción
+ * a la CSP.
+ *
+ * Antes de esto, por debajo de 1000 px **no había navegación de ninguna clase**:
+ * los cuatro enlaces se ocultaban y no los reemplazaba nada, en una página de
+ * once pantallas de alto.
+ */
+.menu {
+  display: none;
+  position: relative;
+}
+
+.menu > summary {
+  list-style: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--linea-control);
+  border-radius: var(--borde-control);
+  color: var(--texto);
+}
+
+.menu > summary::-webkit-details-marker {
+  display: none;
+}
+
+.menu > summary span {
+  position: relative;
+  display: block;
+  width: 16px;
+  height: 1.5px;
+  background: currentcolor;
+}
+
+.menu > summary span::before,
+.menu > summary span::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 16px;
+  height: 1.5px;
+  background: currentcolor;
+}
+
+.menu > summary span::before {
+  top: -5px;
+}
+
+.menu > summary span::after {
+  top: 5px;
+}
+
+/*
+ * El panel se ancla a la ventana y no al botón.
+ *
+ * Colgado del botón con `position: absolute`, su borde izquierdo quedaba pegado
+ * al canto de la pantalla —sin margen— porque el botón está a 170 px del borde y
+ * el panel mide 208. Anclado a la ventana ocupa el ancho útil con aire a los dos
+ * lados, que además da objetivos táctiles más grandes: en celular el menú es lo
+ * que se toca con el pulgar en movimiento.
+ */
+.panel {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  top: calc(var(--nav-alto) + 10px);
+  display: grid;
+  gap: 2px;
+  padding: 10px;
+  border: 1px solid var(--linea);
+  border-radius: var(--borde);
+  background: var(--superficie-2);
+  box-shadow: var(--sombra-2);
+}
+
+.panel a {
+  padding: 14px 12px;
+  border-radius: var(--borde-control);
+  font-size: 15px;
+  color: var(--texto);
+}
+
+.panel a:hover {
+  background: var(--fondo);
+}
+
 @media (max-width: 1000px) {
   .nav {
     display: none;
+  }
+
+  .menu {
+    display: block;
+  }
+
+  .inner {
+    gap: 14px;
   }
 }

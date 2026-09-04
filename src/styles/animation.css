@@ -64,7 +64,7 @@ html.smoother-active {
   height: 12px;
   margin: -6px 0 0 -6px;
   border: 1px solid var(--color-acento);
-  border-radius: 50%;
+  border-radius: var(--borde-circulo);
   pointer-events: none;
   mix-blend-mode: difference;
   transition: background 0.3s var(--curva);
@@ -79,32 +79,10 @@ html.smoother-active {
 }
 
 /*
- * RA-06: el barrido circular del cambio de modo.
- *
- * El navegador toma una captura del antes y del después; acá solo se dice que la
- * nueva se descubra en círculo desde el botón. Las cuatro variables las escribe
- * `mode-sweep.ts` sobre el `<html>` justo antes de disparar la transición.
- *
- * `::view-transition-old(root)` se queda quieto a propósito: si las dos capturas
- * se movieran, el cruce se vería sucio en el borde del círculo.
+ * Acá vivía RA-06, el barrido circular del cambio de modo. Se fue con el
+ * conmutador: sin dos esquemas no hay nada entre lo que barrer. El requisito
+ * queda cerrado por retirada del alcance, no por incumplimiento.
  */
-::view-transition-old(root) {
-  animation: none;
-}
-
-::view-transition-new(root) {
-  animation: barrido-de-modo var(--barrido-duracion, 0.6s) var(--curva);
-}
-
-@keyframes barrido-de-modo {
-  from {
-    clip-path: circle(0 at var(--barrido-x, 50%) var(--barrido-y, 0));
-  }
-
-  to {
-    clip-path: circle(var(--barrido-r, 150vmax) at var(--barrido-x, 50%) var(--barrido-y, 0));
-  }
-}
 
 /*
  * Movimiento reducido: no se anima nada y todo queda visible, aunque la clase
@@ -124,9 +102,5 @@ html.smoother-active {
 
   .noctis-cursor {
     display: none;
-  }
-
-  ::view-transition-new(root) {
-    animation: none;
   }
 }

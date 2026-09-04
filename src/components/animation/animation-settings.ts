@@ -112,8 +112,15 @@ export const WORKS = {
 
 /** RA-12 · panel fijo del proceso, con el trazo que se dibuja. */
 export const PROCESS = {
-  /** Cuánto scroll dura el anclaje, en alturas de pantalla. */
-  pinDistance: '+=140%',
+  /**
+   * Cuánto scroll dura el anclaje, en alturas de pantalla.
+   *
+   * Estaba en 140% y sobraba: con tres pasos y un trazo, la secuencia terminaba
+   * de contarse a media altura y el resto era pantalla anclada sin nada nuevo
+   * que mirar. Una sección anclada cobra su precio en scroll, y el precio tiene
+   * que corresponder a lo que se está contando.
+   */
+  pinDistance: '+=90%',
   scrub: 1,
   stepDuration: 1,
   stepEase: 'power2.inOut',
@@ -140,14 +147,20 @@ export const CURSOR = {
   scaleEase: 'power3.out',
 } as const;
 
-/** RA-06 · barrido circular del cambio de modo. */
-export const MODE_SWEEP = {
-  durationMs: 620,
-  /** Nombres de las propiedades que el CSS lee para centrar el barrido. */
-  originXProperty: '--barrido-x',
-  originYProperty: '--barrido-y',
-  radiusProperty: '--barrido-r',
-  durationProperty: '--barrido-duracion',
+/**
+ * Contador de la banda de cifras.
+ *
+ * `power2.out` y no lineal: un contador que sube a velocidad constante se lee
+ * como un reloj. Con la salida amortiguada arranca rápido, frena cerca del
+ * final y el número queda como si se hubiera asentado.
+ *
+ * `start` es más tardío que el del revelado genérico porque la cifra tiene que
+ * empezar a subir cuando el visitante ya la está mirando, no antes.
+ */
+export const COUNTER = {
+  duration: 1.5,
+  ease: 'power2.out',
+  start: 'top 78%',
 } as const;
 
 /** RA-07 · cielo WebGL de la portada. */

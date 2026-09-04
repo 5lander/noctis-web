@@ -24,3 +24,7 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 _to_delete/
+
+# Datos del portafolio: base SQLite y capturas subidas desde /admin.
+# Nunca se versionan: son contenido de produccion, no codigo.
+/data

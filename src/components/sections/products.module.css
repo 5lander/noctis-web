@@ -1,18 +1,106 @@
+/*
+ * Los cuatro productos dejan de ser filas separadas por una raya y pasan a ser
+ * tarjetas con material. Es el bloque donde más se notaba la planitud del modo
+ * claro: cuatro bloques de texto sobre papel blanco, sin nada que dijera dónde
+ * empieza uno y termina el otro salvo una línea del 12% de opacidad.
+ *
+ * El realce del borde superior es lo que da el canto de luz; la sombra, la
+ * elevación. En oscuro el tono de la superficie ya separa, y las dos cosas solo
+ * asientan la pieza.
+ */
+/*
+ * La primera columna ya no es el rótulo en versalita: es la pantalla del
+ * producto. El ancho es el mismo que ocupaba el rótulo más su separación, así
+ * que la tarjeta no crece — lo que había ahí era aire con cuatro palabras
+ * dentro, y ahora hay la prueba de que el producto existe.
+ */
 .product {
+  position: relative;
   display: grid;
-  grid-template-columns: 170px 1fr 200px;
-  gap: 40px;
-  padding: 38px 0;
-  border-top: 1px solid var(--linea);
+  grid-template-columns: 340px 1fr 190px;
+  gap: 32px;
+  padding: 28px 32px;
+  align-items: start;
+  border: 1px solid var(--linea);
+  border-radius: var(--borde);
+  background: var(--superficie-2);
+  box-shadow: var(--sombra-2);
+  transition:
+    transform 0.5s var(--curva),
+    box-shadow 0.5s var(--curva);
 }
 
-.product:last-of-type {
-  border-bottom: 1px solid var(--linea);
+.product + .product {
+  margin-top: 20px;
+}
+
+.product::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  border-radius: var(--borde) var(--borde) 0 0;
+  background: linear-gradient(90deg, transparent, var(--realce) 30%, var(--realce) 70%, transparent);
+}
+
+.product:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-3), var(--sombra-2);
+}
+
+/*
+ * La pantalla se recorta con la misma proporción en las cuatro tarjetas, así que
+ * la columna no baila de alto entre una y otra. El borde interior de 1 px es lo
+ * que la separa del blanco de la tarjeta: sin él, una captura de fondo claro se
+ * derrama sobre la superficie y deja de leerse como pieza.
+ */
+.shot {
+  border-radius: var(--borde-control);
+  overflow: hidden;
+  border: 1px solid var(--linea);
+  background: var(--fondo);
+  line-height: 0;
+}
+
+.shot img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  object-position: left top;
 }
 
 .product h3 {
   font-size: 31px;
   margin-bottom: 11px;
+}
+
+/*
+ * El nombre del producto es el enlace cuando hay un sitio que abrir, y no un
+ * botón aparte: la flecha basta para decir que sale del sitio, y el nombre es lo
+ * que el visitante ya estaba mirando. Solo Care lo lleva hoy.
+ */
+.live {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  color: inherit;
+  border-bottom: 1px solid var(--linea-control);
+  transition: border-color 0.3s var(--curva);
+}
+
+.live span {
+  font-size: 0.6em;
+  color: var(--color-accion);
+  transition: transform 0.3s var(--curva);
+}
+
+.live:hover {
+  border-bottom-color: var(--color-accion);
+}
+
+.live:hover span {
+  transform: translate(2px, -2px);
 }
 
 .summary {
@@ -63,7 +151,7 @@
 @media (max-width: 1000px) {
   .product {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 18px;
   }
 
   .capabilities {

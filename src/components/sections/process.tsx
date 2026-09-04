@@ -1,5 +1,4 @@
 import { Section } from '@/components/layout/section';
-import { Label } from '@/components/ui/label';
 import { PROCESS_STEPS } from '@/content/process';
 import { HEADINGS } from '@/content/site-copy';
 
@@ -39,7 +38,6 @@ export function Process() {
         <div className={styles['grid']}>
           {PROCESS_STEPS.map((step) => (
             <div key={step.id} className={styles['step']} data-anim data-process-step>
-              <Label>{step.stage}</Label>
               <h3>{step.title}</h3>
               <p>{step.description}</p>
             </div>

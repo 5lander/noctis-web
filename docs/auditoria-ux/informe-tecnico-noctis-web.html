@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Informe técnico — Noctis Web</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12222B;--paper:#FFF;--surface:#EEF1F0;--line:#D3DAD9;--muted:#5A6A70;--brand:#1F6F6B;
+  --s4:#B3261E;--s3:#C1611B;--s2:#8A7A16;--s1:#4A6470;
+  --display:'Archivo',system-ui,sans-serif;--body:'Source Serif 4',Georgia,serif;--mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--surface);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55}
+.page{max-width:980px;margin:0 auto;background:var(--paper);padding-bottom:60px}
+h1,h2,h3,.label{font-family:var(--display)}
+h2{font-size:1rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;margin:0 0 18px;padding-bottom:9px;border-bottom:2px solid var(--ink)}
+h3{font-size:1.15rem;margin:0 0 6px;line-height:1.25}
+section{padding:38px 52px;border-bottom:1px solid var(--line)}
+.label{font-family:var(--mono);font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+.cover{background:var(--ink);color:#fff;padding:56px 52px}
+.cover .label{color:#8FB3B0}
+.cover h1{font-size:clamp(1.8rem,4.5vw,2.8rem);line-height:1.05;margin:16px 0 26px;max-width:20ch}
+.meta{display:flex;flex-wrap:wrap;gap:32px;padding-top:22px;border-top:1px solid rgba(255,255,255,.22)}
+.meta div{font-family:var(--mono);font-size:.8rem}
+.meta span{display:block;color:#8FB3B0;font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;margin-bottom:4px}
+.toc{background:var(--surface)}
+.toc ol{columns:2;column-gap:40px;margin:0;padding-left:18px;font-family:var(--mono);font-size:.82rem}
+.toc li{margin-bottom:6px}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:26px}
+.metric{background:var(--paper);padding:14px 16px}
+.metric p{margin:0}
+.metric .v{font-family:var(--display);font-size:1.6rem;font-weight:700;line-height:1;margin:5px 0 3px}
+.metric .st{font-family:var(--mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.1em}
+.ok{color:var(--brand)}.warn{color:var(--s3)}.bad{color:var(--s4)}
+.score{display:grid;grid-template-columns:1fr 120px 30px;gap:12px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-size:.9rem}
+.bar{height:6px;background:var(--surface)}.bar i{display:block;height:100%}
+.score b{font-family:var(--mono);font-size:.82rem;font-weight:500;text-align:right}
+.finding{display:grid;grid-template-columns:66px 1fr;gap:20px;padding:22px 0;border-bottom:1px solid var(--line);break-inside:avoid}
+.sev{text-align:center}
+.sev .n{font-family:var(--display);font-size:2.3rem;font-weight:700;line-height:.9;color:#fff;padding:10px 0;margin:0}
+.sev .t{font-family:var(--mono);font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;padding:4px 0;color:#fff;margin:0}
+.sev-4 .n,.sev-4 .t{background:var(--s4)}.sev-3 .n,.sev-3 .t{background:var(--s3)}
+.sev-2 .n,.sev-2 .t{background:var(--s2)}.sev-1 .n,.sev-1 .t{background:var(--s1)}
+.finding dl{margin:12px 0 0;display:grid;grid-template-columns:130px 1fr;gap:8px 16px;font-size:.9rem}
+.finding dt{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+.finding dd{margin:0}
+.impact{background:var(--surface);padding:10px 14px;border-left:4px solid var(--brand);font-weight:600;font-size:.92rem}
+pre{background:var(--ink);color:#D9E4E2;font-family:var(--mono);font-size:.76rem;line-height:1.5;padding:14px 16px;overflow-x:auto;margin:10px 0 0;white-space:pre-wrap}
+code{font-family:var(--mono);font-size:.86em;background:var(--surface);padding:1px 5px}
+table{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:8px}
+th{font-family:var(--mono);font-size:.64rem;letter-spacing:.11em;text-transform:uppercase;text-align:left;color:var(--muted);padding:8px 10px;border-bottom:2px solid var(--ink)}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.check{list-style:none;padding:0;margin:0;font-size:.92rem}
+.check li{padding:7px 0 7px 26px;border-bottom:1px solid var(--line);position:relative}
+.check li::before{content:"□";position:absolute;left:0;font-family:var(--mono);color:var(--muted)}
+.callout{background:var(--surface);border-left:4px solid var(--s4);padding:14px 18px;margin:18px 0}
+.callout.good{border-left-color:var(--brand)}
+.callout p{margin:0 0 8px}.callout p:last-child{margin:0}
+.tag{font-family:var(--mono);font-size:.6rem;letter-spacing:.09em;text-transform:uppercase;padding:2px 7px;background:var(--surface);border:1px solid var(--line);white-space:nowrap}
+@media(max-width:640px){section,.cover{padding-left:22px;padding-right:22px}.toc ol{columns:1}
+.finding{grid-template-columns:50px 1fr;gap:12px}.finding dl{grid-template-columns:1fr;gap:2px 0}.finding dt{padding-top:7px}}
+@media print{body{background:#fff;font-size:9.8pt}.page{max-width:none}section{padding:20px 0}.cover{padding:28px}
+.finding,.metric{break-inside:avoid}h2{break-after:avoid}pre{background:#fff;color:#12222B;border:1px solid #D3DAD9}@page{margin:13mm}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="cover">
+  <p class="label">Informe técnico de auditoría — uso interno / equipo de implementación</p>
+  <h1>Noctis Web</h1>
+  <div class="meta">
+    <div><span>Sitio</span>Build local de producción (sin publicar)</div>
+    <div><span>Fecha</span>16 de agosto de 2026</div>
+    <div><span>Estado</span>P5 cerrado · P6 pendiente</div>
+    <div><span>Alcance</span>Llegada → confianza → contacto</div>
+    <div><span>Stack</span>Next.js 16.3.1 · React 19 · GSAP 3.15 · three 0.185 · CSP con nonce</div>
+  </div>
+</header>
+
+<section class="toc">
+  <h2>Contenido</h2>
+  <ol>
+    <li>Metodología y alcance</li><li>Mediciones</li><li>Puntuación por capa</li>
+    <li>Hallazgos con causa raíz</li><li>Accesibilidad WCAG 2.2 AA</li><li>Rendimiento</li>
+    <li>SEO técnico</li><li>Plan de implementación</li><li>Plan de medición y LOPDP</li><li>Anexos</li>
+  </ol>
+</section>
+
+<section>
+  <h2>Resumen ejecutivo</h2>
+  <p><strong>El sitio está bien construido y mal terminado, y esa distinción es la que ordena todo el informe.</strong> La ingeniería está por encima del promedio: cero violaciones de accesibilidad detectables, contraste verificado por prueba automática, degradación correcta sin JavaScript y con movimiento reducido, cabeceras de seguridad estrictas, tokens de diseño sin un solo valor literal en componentes. Nada de eso hay que rehacerlo.</p>
+  <p>Lo que falla es la capa que convierte: <strong>hoy la página no tiene ni una vía funcional de contacto</strong> (el formulario responde 404 y no hay WhatsApp, teléfono ni correo), <strong>y las dos secciones que existen para demostrar credibilidad —portafolio y testimonio— están vacías o inventadas.</strong> El propio <code>CLAUDE.md</code> §0 declara que «el producto real de este proyecto es la credibilidad demostrada»; en el estado actual, la página la resta en vez de sumarla.</p>
+  <div class="callout">
+    <p><strong>Lo más importante de este informe no es la lista de defectos: es que tres de ellos no están asignados a ningún paquete del plan.</strong></p>
+    <p>Metadatos y Open Graph, sitemap y favicon aparecen en <code>SPEC.md</code> §12 como «Fase 4 — cierre», pero cuando el plan se renumeró a P0–P12 esa fase no quedó en ningún paquete: P10 entrega el formulario y el portafolio, Pf es endurecimiento y auditoría, P12 es conexión de servicios reales. Lo mismo pasa con el aviso de privacidad (C4 está condicionado solo a «encender el bot», no al formulario que ya recoge datos) y con la presencia de WhatsApp, que <code>SPEC.md</code> §1 declara acción principal del sitio y que ningún entregable produce.</p>
+  </div>
+  <p><strong>Qué hacer primero, en este orden:</strong> (1) cerrar la fuga de contacto — endpoint del formulario, WhatsApp visible y datos de empresa en el pie; (2) resolver el portafolio, publicando trabajo real o retirando la sección; (3) añadir aviso de privacidad antes de recibir el primer dato; (4) crear el paquete que falta para metadatos, OG, sitemap y medición. Los cuatro suman aproximadamente 20–28 horas y ninguno depende del bot ni del agendamiento.</p>
+</section>
+
+<section>
+  <h2>1 · Metodología y alcance</h2>
+  <p><strong>Contexto del negocio:</strong> empresa de software de tres personas en Guayaquil, vendiendo a dueños y gerentes de PYME sin perfil técnico. Ticket medio, ciclo de venta de evaluación (no de impulso), decisión de una sola persona. Modelo mixto: suscripción mensual para productos y trabajo puntual cotizado por fases.</p>
+  <p><strong>Objetivo declarado de la página</strong> (<code>SPEC.md</code> §1): que el visitante entienda en menos de un minuto qué vende Noctis, vea trabajo real hecho y escriba. <strong>Acción principal declarada:</strong> enviar el formulario de contacto o escribir por WhatsApp. <strong>Flujos evaluados:</strong> llegada y comprensión → evaluación de credibilidad → contacto.</p>
+  <p><strong>Métodos aplicados:</strong> prueba de 5 segundos sobre la portada; recorrido cognitivo por las tres tareas del prospecto; evaluación heurística (Nielsen) sobre los tres flujos; revisión WCAG 2.2 AA automática (axe-core, 45 reglas aprobadas) y manual (recorrido de 30 tabulaciones, contraste calculado sobre píxeles renderizados, prueba sin JavaScript y con <code>prefers-reduced-motion</code>); revisión de metadatos y SEO técnico sobre el HTML servido; medición de peso y recursos en el navegador; revisión cruzada del contenido de <code>src/content/</code> contra <code>SPEC.md</code>, <code>DECISIONES.md</code> y las reglas de negocio de <code>CLAUDE.md</code> §6.</p>
+  <p><strong>Restricciones conocidas:</strong> equipo de tres personas · el sitio es también la demostración comercial del producto · la identidad visual ya existe y manda (<code>docs/identidad-de-marca-noctis/</code>) · el proyecto avanza por paquetes con un commit por paquete y auditoría completa diferida a Pf.</p>
+  <p class="label" style="margin-top:14px">Notas de método — limitaciones declaradas</p>
+  <ul style="font-size:.9rem">
+    <li><strong>Accesibilidad:</strong> las herramientas automáticas cubren aproximadamente el 20–40% de los criterios WCAG. El resto de esta revisión es manual, pero <em>no</em> incluyó lector de pantalla real (NVDA/VoiceOver): eso queda como tarea de Pf.</li>
+    <li><strong>Rendimiento:</strong> los Core Web Vitals que valen como veredicto son los de campo (CrUX, percentil 75, ventana de 28 días). El sitio no está publicado, así que <strong>no existen datos de campo</strong> y todo lo que aparece abajo es laboratorio sobre <code>localhost</code>. Los tiempos de laboratorio aquí son inservibles como predicción; el peso y el número de recursos, no — esos sí se trasladan.</li>
+    <li><strong>Benchmark competitivo:</strong> no se ejecutó. Requiere acordar los 3–5 competidores directos reales; queda pendiente.</li>
+    <li><strong>Compilación:</strong> para servir el build en el entorno de auditoría hubo que sustituir <code>next/font/google</code> por <code>next/font/local</code> con los mismos ficheros de Inter y Source Serif 4, porque el entorno no alcanza <code>fonts.googleapis.com</code>. El resultado visual y el peso de fuentes son equivalentes. Vale la pena registrarlo como riesgo aparte: <strong>el build de producción depende hoy de acceso de red a Google Fonts</strong>, lo que hace fallar cualquier build en un runner sin salida.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>2 · Mediciones</h2>
+  <div class="metrics">
+    <div class="metric"><p class="label">LCP · campo</p><p class="v warn">n/d</p><p class="st warn">sin publicar</p></div>
+    <div class="metric"><p class="label">INP · campo</p><p class="v warn">n/d</p><p class="st warn">sin publicar</p></div>
+    <div class="metric"><p class="label">CLS · lab</p><p class="v ok">0,005</p><p class="st ok">bueno (&lt;0,1)</p></div>
+    <div class="metric"><p class="label">Transferido</p><p class="v warn">443 KB</p><p class="st warn">15 recursos</p></div>
+    <div class="metric"><p class="label">JS decodificado</p><p class="v bad">1,09 MB</p><p class="st bad">alto</p></div>
+    <div class="metric"><p class="label">Errores axe</p><p class="v ok">0</p><p class="st ok">45 reglas ok</p></div>
+  </div>
+  <table>
+    <tr><th>Métrica</th><th>Laboratorio (localhost)</th><th>Umbral</th><th>Lectura</th></tr>
+    <tr><td>LCP</td><td>664 ms · elemento <code>div.hero-line</code></td><td>&lt; 2,5 s en campo p75</td><td>No concluyente. El elemento LCP es texto, no imagen, lo cual juega a favor; el riesgo real es el JS que compite por el hilo principal.</td></tr>
+    <tr><td>CLS</td><td>0,005</td><td>&lt; 0,1</td><td>Excelente y sí trasladable: las fuentes van precargadas con <code>size-adjust</code> y no hay imágenes sin dimensión.</td></tr>
+    <tr><td>TTFB</td><td>39 ms</td><td>&lt; 800 ms</td><td>Inservible: es localhost. En producción dependerá enteramente del origen, porque <code>force-dynamic</code> impide cachear el HTML (ver §6).</td></tr>
+    <tr><td>Peso total</td><td>443 KB transferidos / 1,25 MB decodificados</td><td>—</td><td>De eso, ~321 KB transferidos y 1,09 MB decodificados son JavaScript. Es el número que más pesa en el veredicto de rendimiento.</td></tr>
+    <tr><td>Recursos</td><td>15 (6 JS, 5 fuentes, 2 CSS, 2 SVG)</td><td>—</td><td>Bajo y bien controlado. Cero peticiones a terceros: coherente con la CSP.</td></tr>
+    <tr><td>Contraste</td><td>Mínimo medido 4,15:1 sobre el cielo animado</td><td>≥ 4,5:1 texto / ≥ 3:1 UI</td><td>Cumple en todos los puntos donde hay texto real. Ver §5.</td></tr>
+    <tr><td>axe-core (wcag2a…wcag22aa)</td><td>0 violaciones · 45 reglas aprobadas · 1 incompleta</td><td>0</td><td>La incompleta es <code>color-contrast</code> en 17 nodos: axe no puede calcular contraste sobre un <code>&lt;canvas&gt;</code>. Se resolvió a mano muestreando píxeles.</td></tr>
+    <tr><td>Altura de página</td><td>8.336 px escritorio · 9.552 px celular</td><td>—</td><td>~11 pantallas en celular sin ningún mecanismo de navegación (H5).</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>3 · Puntuación por capa</h2>
+  <p style="font-size:.9rem;color:var(--muted);margin-top:0">Escala 0–4. Promedio: <strong>2,4 / 4</strong>. El perfil es muy desigual a propósito: el sistema y la ejecución técnica puntúan alto, la capa de contenido y de conversión puntúa cerca de cero.</p>
+  <div class="score"><span>1 · Claridad de propuesta de valor y mensaje</span><span class="bar"><i style="width:75%;background:var(--s2)"></i></span><b>3</b></div>
+  <div class="score"><span>2 · Arquitectura de información y navegación</span><span class="bar"><i style="width:50%;background:var(--s3)"></i></span><b>2</b></div>
+  <div class="score"><span>3 · Jerarquía visual y layout</span><span class="bar"><i style="width:100%;background:var(--brand)"></i></span><b>4</b></div>
+  <div class="score"><span>4 · Consistencia del sistema</span><span class="bar"><i style="width:100%;background:var(--brand)"></i></span><b>4</b></div>
+  <div class="score"><span>5 · Tipografía y legibilidad</span><span class="bar"><i style="width:75%;background:var(--s2)"></i></span><b>3</b></div>
+  <div class="score"><span>6 · Color y contraste</span><span class="bar"><i style="width:100%;background:var(--brand)"></i></span><b>4</b></div>
+  <div class="score"><span>7 · Imágenes y material gráfico</span><span class="bar"><i style="width:25%;background:var(--s4)"></i></span><b>1</b></div>
+  <div class="score"><span>8 · Formularios y flujos de conversión</span><span class="bar"><i style="width:25%;background:var(--s4)"></i></span><b>1</b></div>
+  <div class="score"><span>9 · Accesibilidad (WCAG 2.2 AA)</span><span class="bar"><i style="width:75%;background:var(--s2)"></i></span><b>3</b></div>
+  <div class="score"><span>10 · Rendimiento</span><span class="bar"><i style="width:50%;background:var(--s3)"></i></span><b>2</b></div>
+  <div class="score"><span>11 · Experiencia móvil</span><span class="bar"><i style="width:50%;background:var(--s3)"></i></span><b>2</b></div>
+  <div class="score"><span>12 · SEO técnico y contenido</span><span class="bar"><i style="width:25%;background:var(--s4)"></i></span><b>1</b></div>
+  <div class="score"><span>13 · Señales de confianza y credibilidad</span><span class="bar"><i style="width:4%;background:var(--s4)"></i></span><b>0</b></div>
+  <div class="score"><span>14 · Coherencia con la marca y el sector</span><span class="bar"><i style="width:100%;background:var(--brand)"></i></span><b>4</b></div>
+  <p style="margin-top:18px;font-size:.92rem"><strong>Notas de puntuación.</strong> <em>Capa 1 (3):</em> el titular «Su negocio no cierra a las seis» es metáfora primero y no responde «qué vende» en la prueba de 5 segundos; la bajada sí lo hace y lo rescata. Es una decisión defendible para tráfico consciente del problema, no un defecto — se marca como hipótesis a medir, no como error. <em>Capa 5 (3):</em> la escala y el interlineado son correctos y los campos usan 16 px (evita el zoom automático en iOS); baja por las microetiquetas en versalitas de 11,5 px con <code>letter-spacing: 0.16em</code>, que son las que peor se leen en celular. <em>Capa 13 (0):</em> no hay cliente real, ni testimonio publicado, ni RUC, ni dirección, ni teléfono, ni equipo, ni año de fundación; y lo único que ocupa el lugar de la prueba social es material inventado.</p>
+</section>
+
+<section>
+  <h2>4 · Hallazgos con causa raíz</h2>
+
+  <div class="finding">
+    <div class="sev sev-4"><p class="n">4</p><p class="t">Catástrofe</p></div>
+    <div>
+      <h3>H1 · El formulario de contacto pierde el 100% de los envíos</h3>
+      <dl>
+        <dt>Ubicación</dt><dd><code>src/components/sections/contact.tsx</code> → <code>&lt;form action="/api/contacto" method="post"&gt;</code></dd>
+        <dt>Observado</dt><dd><code>POST /api/contacto</code> devuelve <code>404</code> contra el build de producción. Al no haber JavaScript de envío, el navegador navega y el visitante aterriza en la página de error de Next. No existe estado de éxito, error ni carga.</dd>
+        <dt>Causa raíz</dt><dd>El formulario se construyó en P2 y el <em>route handler</em> está planificado para P10. La decisión de apuntar a una ruta inexistente en vez de dejar el formulario deshabilitado fue deliberada (evita que un <code>&lt;form&gt;</code> sin acción envíe por GET y filtre los datos a la barra de direcciones), y está documentada en <code>ESTADO.md</code>. El defecto no es la decisión: es que el sitio ya se puede recorrer entero en este estado y no hay nada que impida publicarlo así.</dd>
+        <dt>Estándar</dt><dd>Nielsen #1 (visibilidad del estado del sistema) y #9 (ayudar a reconocer y recuperarse de errores).</dd>
+        <dt>Corrección</dt><dd>P10 según lo planificado: <code>POST /api/contacto</code> con validación Zod en servidor, campo trampa y verificación de tiempo, respuesta 303 a una página de gracias real, y estados de carga/éxito/error en el cliente. <strong>Adicional no planificado:</strong> mientras P10 no exista, el botón debe quedar deshabilitado con un texto que derive a WhatsApp — o el despliegue debe estar bloqueado por un chequeo automático.</dd>
+        <dt>Cómo se valida</dt><dd>Prueba de integración: envío válido → 303 y correo en la bandeja simulada; envío malformado → 400 con error genérico; campo trampa lleno → descarte silencioso. Y un test de humo en CI que falle si <code>/api/contacto</code> responde 404.</dd>
+        <dt>Esfuerzo</dt><dd>6–8 h (ya presupuestado en P10) + 0,5 h el guardarraíl.</dd>
+      </dl>
+      <p class="impact">Impacto: todo contacto entrante por la vía declarada como principal se pierde sin registro y sin que el remitente lo sepa.</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="sev sev-4"><p class="n">4</p><p class="t">Catástrofe</p></div>
+    <div>
+      <h3>H2 · El portafolio publica seis clientes inventados y lo admite en la misma pantalla</h3>
+      <dl>
+        <dt>Ubicación</dt><dd><code>src/content/works.ts</code> (6 entradas <code>placeholder: true</code>) y <code>HEADINGS.works</code> en <code>src/content/site-copy.ts</code></dd>
+        <dt>Observado</dt><dd>El H2 afirma «Páginas y sistemas que ya están en línea.». El párrafo de apoyo, renderizado y visible, dice «Marcadores de posición: cuando tengamos las capturas reales…». Debajo, seis tarjetas con razón social, tipo de trabajo y año (2025/2026) presentadas con el formato de un portafolio real. La bandera <code>placeholder</code> existe en el tipo pero <code>works.tsx</code> nunca la lee: no hay ninguna marca visual que distinga un ejemplo de un trabajo entregado.</dd>
+        <dt>Causa raíz</dt><dd>El contenido de relleno se escribió con verosimilitud de producción (nombres plausibles, años reales, tipos de trabajo concretos) en vez de con marcas evidentes de ejemplo, y el aviso se resolvió en el copy de la sección en lugar de en cada tarjeta. La consecuencia es la peor combinación posible: el que no lee el párrafo cree que son clientes; el que lo lee ve que no hay portafolio.</dd>
+        <dt>Estándar</dt><dd>Riesgo legal (publicidad engañosa) y capa 13 de la rúbrica. No es un criterio WCAG ni una heurística: es exposición de negocio.</dd>
+        <dt>Corrección</dt><dd>Tres salidas posibles, en orden de preferencia. <strong>(a)</strong> Publicar dos o tres trabajos reales con nombre autorizado por escrito, captura y enlace vivo — tres reales convierten más que seis inventados. <strong>(b)</strong> Retirar la sección hasta tener (a) y sustituirla por una demostración del propio producto: el agendador y el bot funcionando en el sitio son prueba verificable y son justamente lo que P6–P8 va a entregar. <strong>(c)</strong> Si se conservan como ejemplos, usar <code>work.placeholder</code> para renderizar una marca inequívoca en cada tarjeta y nombres obviamente genéricos, sin año.</dd>
+        <dt>Cómo se valida</dt><dd>Prueba de contenido que falle el build si alguna entrada de <code>WORKS</code> tiene <code>placeholder: true</code> y <code>NODE_ENV === 'production'</code>. Es el mismo patrón que ya se usa con <code>QUOTE.pending</code>, que sí está bien resuelto.</dd>
+        <dt>Esfuerzo</dt><dd>(b) 1–2 h · (a) depende de C1, que es trabajo comercial, no de código.</dd>
+      </dl>
+      <p class="impact">Impacto: la sección que existe para demostrar credibilidad es la que más la destruye, y expone a la empresa si un prospecto verifica un nombre.</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="sev sev-4"><p class="n">4</p><p class="t">Catástrofe</p></div>
+    <div>
+      <h3>H3 · Cero vías de contacto alternativas y cero datos de empresa verificables</h3>
+      <dl>
+        <dt>Ubicación</dt><dd><code>src/content/site-copy.ts</code> → <code>FOOTER</code> y <code>HERO.place</code>; ausencia de enlace de WhatsApp en toda la página</dd>
+        <dt>Observado</dt><dd>No hay número de WhatsApp, teléfono, correo, dirección física, RUC, razón social explicada ni horario. El pie completo es: frase de cierre, logotipo, «Meridian Holding · Ecuador», «© 2026». «Meridian Holding» aparece también en la portada, sin ninguna explicación de su relación con Noctis. La palabra «WhatsApp» aparece tres veces en la página, pero nunca como acción.</dd>
+        <dt>Causa raíz</dt><dd>C3 (número de WhatsApp y texto previo) está registrado en <code>DECISIONES.md</code> como contenido pendiente del usuario, pero <strong>ningún paquete del plan lo entrega</strong>: P10 cubre el formulario y el portafolio. Es un faltante de plan, no un olvido de implementación. La ausencia de RUC y dirección no está registrada en ninguna parte.</dd>
+        <dt>Estándar</dt><dd>Capa 13 de la rúbrica; contexto LatAm por defecto (WhatsApp como canal primario de conversión, RUC y dirección física como señal de confianza).</dd>
+        <dt>Corrección</dt><dd>Enlace <code>wa.me</code> con texto previo, en la barra y flotante en celular, tratado como CTA de primer nivel — no como reemplazo del formulario, sino como su alternativa de baja fricción. Bloque de identidad en el pie: razón social completa, RUC, ciudad y dirección, correo, teléfono, horario de atención, y una línea que explique la relación entre Noctis y Meridian Holding. Todo desde <code>content/</code>, como manda <code>CLAUDE.md</code> §2.</dd>
+        <dt>Cómo se valida</dt><dd>Evento de clic en el enlace de WhatsApp instrumentado desde el día uno (ver §9), para poder comparar su volumen contra el del formulario.</dd>
+        <dt>Esfuerzo</dt><dd>3–4 h de implementación + decisión comercial sobre qué número y qué datos publicar.</dd>
+      </dl>
+      <p class="impact">Impacto: sumado a H1, hoy la página tiene exactamente cero vías funcionales de contacto, y elimina el canal por el que su público realmente escribe.</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="sev sev-4"><p class="n">4</p><p class="t">Catástrofe</p></div>
+    <div>
+      <h3>H4 · Recolección de datos personales sin aviso de privacidad (LOPDP)</h3>
+      <dl>
+        <dt>Ubicación</dt><dd>Sección de contacto; ausencia de ruta <code>/privacidad</code></dd>
+        <dt>Observado</dt><dd>Se recogen nombre, negocio, correo y número de WhatsApp. No hay aviso, ni enlace a política, ni casilla de consentimiento, ni mención del plazo de conservación ni de la vía de borrado. La ruta no existe.</dd>
+        <dt>Causa raíz</dt><dd><code>DECISIONES.md</code> C4 registra el aviso de privacidad como bloqueante de «encender el bot». <strong>El formulario de contacto no quedó cubierto por esa condición</strong>, pese a recoger exactamente el mismo tipo de dato. Es el segundo faltante de plan del informe.</dd>
+        <dt>Estándar</dt><dd>Ley Orgánica de Protección de Datos Personales (Ecuador): deber de información previa al titular. <code>CLAUDE.md</code> §4 ya exige minimización, aviso visible, plazo de conservación y vía de borrado real — el requisito está escrito, solo no está implementado ni asignado.</dd>
+        <dt>Corrección</dt><dd>Página de aviso de privacidad enlazada desde el pie y desde el formulario; línea de consentimiento informativo junto al botón de envío (no casilla premarcada — eso sería un patrón oscuro); plazo de conservación coherente con D6 (12 meses) y procedimiento de borrado real. Debe existir <strong>antes</strong> de que el endpoint de H1 reciba el primer envío, no antes de encender el bot.</dd>
+        <dt>Cómo se valida</dt><dd>Casilla de la checklist de Pf que bloquee el despliegue si existe endpoint de contacto sin ruta de privacidad publicada.</dd>
+        <dt>Esfuerzo</dt><dd>2–3 h de implementación + redacción legal (C4).</dd>
+      </dl>
+      <p class="impact">Impacto: exposición a sanción y, comercialmente, contradicción directa con el argumento de venta — el sitio vende software que trata datos de terceros.</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="sev sev-3"><p class="n">3</p><p class="t">Mayor</p></div>
+    <div>
+      <h3>H5 · La navegación desaparece por completo por debajo de 1000 px</h3>
+      <dl>
+        <dt>Ubicación</dt><dd><code>src/components/layout/nav-bar.module.css</code> línea 59</dd>
+        <dt>Observado</dt><dd><code>@media (max-width:1000px){ .nav { display:none } }</code>, sin sustituto: no hay botón de menú, desplegable ni barra inferior. Quedan logotipo, conmutador de modo y CTA. La página mide 9.552 px en celular (~11 pantallas).</dd>
+        <dt>Causa raíz</dt><dd>El prototipo resolvía el ancho pequeño ocultando la navegación, y se portó tal cual. En una landing corta sería tolerable; con once pantallas deja de serlo.</dd>
+        <dt>Estándar</dt><dd>Nielsen #7 (flexibilidad y eficiencia de uso) y #6 (reconocer antes que recordar). Capa 11 de la rúbrica.</dd>
+        <dt>Corrección</dt><dd>Menú desplegable accesible (<code>&lt;button aria-expanded&gt;</code> + panel, foco atrapado, cierre con <code>Esc</code>), o una barra inferior fija con las dos acciones que importan: WhatsApp y Hablemos. Revisar además la prioridad del conmutador de modo, que hoy ocupa espacio permanente en la barra de celular mientras el acceso a las secciones no existe — es una preferencia declarada, no un estándar, pero el reparto de espacio es medible.</dd>
+        <dt>Cómo se valida</dt><dd>Prueba Playwright de la apertura y cierre del menú con teclado; y, con medición instalada, comparar profundidad de scroll en celular antes y después.</dd>
+        <dt>Esfuerzo</dt><dd>4–6 h.</dd>
+      </dl>
+      <p class="impact">Impacto: la mayor parte del tráfico esperado navega a ciegas por once pantallas.</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="sev sev-3"><p class="n">3</p><p class="t">Mayor</p></div>
+    <div>
+      <h3>H6 · El CTA primario dirige al bloque más débil de la página</h3>
+      <dl>
+        <dt>Ubicación</dt><dd><code>HERO.primary</code> en <code>src/content/site-copy.ts</code> → <code>#trabajos</code></dd>
+        <dt>Observado</dt><dd>El botón sólido de la portada es «Ver trabajos» y lleva a la grilla de H2. «Conversemos», que produce el resultado de negocio, va en estilo secundario.</dd>
+        <dt>Causa raíz</dt><dd>La jerarquía se diseñó suponiendo un portafolio real. Con el portafolio en el estado actual, la jerarquía correcta se invirtió sin que nadie lo revisara.</dd>
+        <dt>Estándar</dt><dd>Capa 8 de la rúbrica; principio de objetivo único de página.</dd>
+        <dt>Corrección</dt><dd>Mientras H2 no se resuelva, invertir: «Conversemos» (o WhatsApp) como primario y «Ver trabajos» como secundario. Cuando haya portafolio real, es una hipótesis a probar, no una verdad — se mide.</dd>
+        <dt>Cómo se valida</dt><dd>Hipótesis: espero que poner el contacto como acción primaria aumente los contactos iniciados; se valida midiendo clics en cada CTA de la portada y envíos completados. Sin la medición de §9 esto no se puede resolver.</dd>
+        <dt>Esfuerzo</dt><dd>0,5 h.</dd>
+      </dl>
+      <p class="impact">Impacto: el elemento más visible de la página empuja el tráfico hacia su prueba más floja.</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="sev sev-3"><p class="n">3</p><p class="t">Mayor</p></div>
+    <div>
+      <h3>H7 · Sin Open Graph, canonical, sitemap, robots ni datos estructurados</h3>
+      <dl>
+        <dt>Ubicación</dt><dd><code>src/app/layout.tsx</code> → <code>export const metadata</code></dd>
+        <dt>Observado</dt><dd>El HTML servido solo declara <code>title</code>, <code>description</code> y <code>viewport</code>. No hay <code>metadataBase</code>, <code>openGraph</code>, <code>twitter</code>, <code>alternates.canonical</code> ni JSON-LD. <code>/robots.txt</code> y <code>/sitemap.xml</code> devuelven 404. No hay <code>opengraph-image</code>.</dd>
+        <dt>Causa raíz</dt><dd><strong>Faltante de plan.</strong> <code>SPEC.md</code> §12 lo asigna a «Fase 4 — cierre», pero al renumerar a P0–P12 esa fase no quedó recogida en ningún paquete.</dd>
+        <dt>Estándar</dt><dd>Capa 12 de la rúbrica. Nota de exactitud: el marcado FAQ ya no genera resultados enriquecidos en Google (descontinuado en mayo de 2026) — no prometer píxeles por implementarlo. Lo que sí vale es <code>Organization</code>/<code>LocalBusiness</code> para búsqueda local.</dd>
+        <dt>Corrección</dt><dd><code>metadataBase</code> con el dominio de D9; <code>openGraph</code> y <code>twitter</code> completos; <code>opengraph-image.tsx</code> generada con la tipografía y el logotipo de marca; <code>alternates.canonical</code>; <code>app/robots.ts</code> y <code>app/sitemap.ts</code>; JSON-LD de <code>Organization</code> con dirección, teléfono y área de servicio (requiere H3). El JSON-LD debe ir con el nonce de la CSP, que ya existe.</dd>
+        <dt>Cómo se valida</dt><dd>Pegar la URL en un chat de WhatsApp y en LinkedIn Post Inspector; validar el JSON-LD con la prueba de resultados enriquecidos de Google.</dd>
+        <dt>Esfuerzo</dt><dd>4–6 h.</dd>
+      </dl>
+      <p class="impact">Impacto: el enlace se comparte sin tarjeta justo en el canal por el que la empresa lo va a repartir, y compite en desventaja en búsqueda local.</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="sev sev-3"><p class="n">3</p><p class="t">Mayor</p></div>
+    <div>
+      <h3>H8 · Sin analítica: el objetivo del sitio no es verificable</h3>
+      <dl>
+        <dt>Ubicación</dt><dd><code>DECISIONES.md</code> D10 — «Analítica: ninguna en v1»</dd>
+        <dt>Observado</dt><dd>No hay GA4, ni Clarity, ni registro propio de eventos de conversión. No se puede saber cuántas visitas llegan, desde qué dispositivo, hasta dónde bajan, cuántos formularios se inician y abandonan, ni de qué origen viene un contacto.</dd>
+        <dt>Causa raíz</dt><dd>Decisión provisional (🟡) tomada por simplicidad. Es coherente con YAGNI, pero choca con el objetivo declarado del sitio y con el hecho de que H6 y el titular de la portada solo se pueden resolver con datos.</dd>
+        <dt>Estándar</dt><dd>Principio de instrumentación desde el día uno. Costo cero en herramientas.</dd>
+        <dt>Corrección</dt><dd>Plan mínimo de §9. Con la CSP estricta, cualquier script de terceros exige añadir su origen a <code>script-src</code>, así que conviene decidirlo antes de Pf y no después. Una alternativa que evita ese conflicto y el de consentimiento: registro propio de eventos en el servidor, sin cookies ni datos personales.</dd>
+        <dt>Cómo se valida</dt><dd>Al publicar, verificar que cada evento de §9 se dispara una sola vez por acción.</dd>
+        <dt>Esfuerzo</dt><dd>3–5 h.</dd>
+      </dl>
+      <p class="impact">Impacto: toda discusión futura sobre copy, jerarquía y orden de secciones se resolverá por opinión, no por dato.</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="sev sev-2"><p class="n">2</p><p class="t">Menor</p></div>
+    <div>
+      <h3>H9 · Seis enlaces que no llevan a ninguna parte, con afordancia de enlace externo</h3>
+      <dl>
+        <dt>Ubicación</dt><dd><code>src/content/works.ts</code> — los seis <code>href</code> valen <code>#trabajos</code>; <code>works.tsx</code> pinta una flecha <code>↗</code></dd>
+        <dt>Observado</dt><dd>Cada tarjeta es un <code>&lt;a&gt;</code> con cursor de enlace y flecha diagonal, y apunta al ancla de la propia sección. El clic no produce ningún cambio perceptible.</dd>
+        <dt>Causa raíz</dt><dd>Consecuencia directa de H2: el <code>href</code> real llegaría con los trabajos reales (C1). La flecha, en cambio, se portó del prototipo sin condicionarla a que exista destino.</dd>
+        <dt>Estándar</dt><dd>Nielsen #1. Se resuelve solo al resolver H2.</dd>
+        <dt>Corrección</dt><dd>Mientras no haya destino: renderizar la tarjeta como <code>&lt;div&gt;</code>, sin flecha ni cursor de enlace. Condicionar la flecha a <code>work.href</code> externo.</dd>
+        <dt>Esfuerzo</dt><dd>1 h.</dd>
+      </dl>
+      <p class="impact">Impacto: clics muertos en la sección de mayor interés — el tipo de fallo que un visitante interpreta como «el sitio está roto».</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="sev sev-2"><p class="n">2</p><p class="t">Menor</p></div>
+    <div>
+      <h3>H10 · El registro nocturno presenta actividad inventada sin marcarla como ejemplo</h3>
+      <dl>
+        <dt>Ubicación</dt><dd><code>src/content/night-log.ts</code></dd>
+        <dt>Observado</dt><dd>Siete entradas con hora y evento («23:12 Cita confirmada para el jueves 09:30», «02:50 Aviso de stock bajo el mínimo») que rotan en la portada. Va con <code>aria-hidden</code>, lo cual es correcto para lector de pantalla, pero nada lo identifica visualmente como ilustración.</dd>
+        <dt>Causa raíz</dt><dd>La pieza se diseñó como argumento visual, y el archivo documenta explícitamente que los datos son inventados. La marca de «ejemplo» no llegó a la interfaz.</dd>
+        <dt>Estándar</dt><dd>Capa 13. Aislado sería severidad 1; sube a 2 por acumulación con H2 en la misma pantalla.</dd>
+        <dt>Corrección</dt><dd>Un rótulo discreto tipo «Ejemplo de una noche» sobre el bloque. Cuesta casi nada y cambia la lectura de invención a demostración. Cuando P6–P8 estén, puede alimentarse con eventos reales anonimizados del propio sitio, y entonces sí es prueba.</dd>
+        <dt>Esfuerzo</dt><dd>0,5 h.</dd>
+      </dl>
+      <p class="impact">Impacto: refuerza, junto con H2, la impresión de que la credibilidad del sitio está construida sobre datos que no son datos.</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="sev sev-2"><p class="n">2</p><p class="t">Menor</p></div>
+    <div>
+      <h3>H11 · three.js y GSAP viajan en el bundle inicial, sin división de código</h3>
+      <dl>
+        <dt>Ubicación</dt><dd><code>src/components/sections/hero.tsx</code> línea 1 — <code>import { HeroSky } from '@/components/animation/hero-sky'</code></dd>
+        <dt>Observado</dt><dd>Un único chunk de 676 KB sin comprimir (188 KB gzip) contiene la librería 3D y la de animación, y se descarga en el arranque. Total: 321 KB de JS transferido, 1,09 MB decodificado. El componente descarta el efecto correctamente ante <code>prefers-reduced-motion</code>, ausencia de WebGL o salida de viewport — pero todas esas comprobaciones ocurren <em>después</em> de descargar y parsear el código.</dd>
+        <dt>Causa raíz</dt><dd>Importación estática. ADR-0014 autorizó <code>three</code> con uso acotado y salida escrita si el presupuesto de Pf no da, lo cual es buena práctica; lo que no se cubrió es que el costo de descarga es independiente de si el efecto se muestra.</dd>
+        <dt>Estándar</dt><dd>Capa 10. El riesgo concreto es INP en Android de gama media: 1,09 MB de parseo compite con la hidratación en el hilo principal. No hay dato de campo que lo confirme todavía.</dd>
+        <dt>Corrección</dt><dd><code>next/dynamic</code> con <code>ssr:false</code> para <code>HeroSky</code>, y carga condicionada a que no haya <code>prefers-reduced-motion</code>, a que exista contexto WebGL y a que la conexión no sea de datos ahorrados. El degradado CSS ya está debajo, así que no se pierde nada visualmente. Es una corrección de una hora que preserva el efecto entero y quita ~190 KB del arranque.</dd>
+        <dt>Cómo se valida</dt><dd>Medir de nuevo el bundle inicial y, ya publicado, mirar INP de campo a los 28 días.</dd>
+        <dt>Esfuerzo</dt><dd>1–2 h.</dd>
+      </dl>
+      <p class="impact">Impacto: peso pagado por todos los visitantes, incluidos los que nunca van a ver el efecto.</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="sev sev-2"><p class="n">2</p><p class="t">Menor</p></div>
+    <div>
+      <h3>H12 · Los campos del formulario no declaran su propósito (<code>autocomplete</code>)</h3>
+      <dl>
+        <dt>Ubicación</dt><dd><code>src/components/sections/contact.tsx</code></dd>
+        <dt>Observado</dt><dd>Ninguno de los seis campos tiene atributo <code>autocomplete</code>, ni <code>inputmode</code> en el campo de teléfono. El nombre, el correo y el WhatsApp son datos del propio usuario.</dd>
+        <dt>Causa raíz</dt><dd>Omisión: axe no lo detecta como violación y la revisión automática pasó en verde.</dd>
+        <dt>Estándar</dt><dd><strong>WCAG 2.1 AA, criterio 1.3.5 Identificar el propósito de la entrada.</strong> Es el único criterio AA que esta auditoría da por incumplido.</dd>
+        <dt>Corrección</dt><dd><code>autocomplete="name"</code>, <code>organization</code>, <code>email</code>, <code>tel</code>; <code>inputmode="tel"</code> en WhatsApp. Beneficio directo de conversión además del de norma: el formulario se rellena de una pasada en celular.</dd>
+        <dt>Esfuerzo</dt><dd>0,5 h.</dd>
+      </dl>
+      <p class="impact">Impacto: fricción evitable en el único formulario del sitio, y un incumplimiento AA declarado.</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="sev sev-1"><p class="n">1</p><p class="t">Cosmético</p></div>
+    <div>
+      <h3>H13 · Indicador de foco débil en los campos del formulario</h3>
+      <dl>
+        <dt>Ubicación</dt><dd><code>src/components/ui/field.module.css</code> — <code>:focus { outline: none; border-bottom-color: var(--color-accion) }</code></dd>
+        <dt>Observado</dt><dd>Recorrido de 30 tabulaciones: enlaces y botones tienen <code>outline: 2px solid</code> con contraste alto (9,5:1 y 10,7:1 según el modo). Los seis campos del formulario, en cambio, anulan el <code>outline</code> y solo cambian el color de una línea inferior de 1 px.</dd>
+        <dt>Causa raíz</dt><dd>Decisión estética heredada del prototipo.</dd>
+        <dt>Estándar</dt><dd>2.4.7 Foco visible (AA) se cumple en el límite — hay un cambio visible. 2.4.13 Apariencia del foco es AAA y no es exigible. Se reporta como cosmético, no como incumplimiento: es la diferencia entre «está mal» y «se puede mejorar».</dd>
+        <dt>Corrección</dt><dd>Engrosar a 2 px o añadir un <code>outline</code> de 2 px con desplazamiento, manteniendo el color de acción. El contraste del color ya cumple.</dd>
+        <dt>Esfuerzo</dt><dd>0,5 h.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="sev sev-1"><p class="n">1</p><p class="t">Cosmético</p></div>
+    <div>
+      <h3>H14 · Detalles menores de contenido y marcado</h3>
+      <dl>
+        <dt>Observado</dt><dd><strong>(a)</strong> El <code>&lt;canvas&gt;</code> del cielo no lleva <code>aria-hidden="true"</code>; es decorativo y debería declararlo. <strong>(b)</strong> Inconsistencia de nombres: la sección de productos dice «Noctis Commerce» y «Care», el selector del formulario dice «Gestión comercial (Commerce)» y «Agenda de citas (Care)». <strong>(c)</strong> La respuesta a «¿Mis datos quedan mezclados…?» afirma aislamiento a nivel de base de datos y respaldos periódicos como hecho presente, cuando Commerce está «en desarrollo» y Care «en pruebas» — es una promesa que el equipo comercial queda obligado a sostener. <strong>(d)</strong> No hay enlace de salto al contenido; 2.4.1 se satisface por landmarks (<code>&lt;main&gt;</code> está presente), así que no es incumplimiento, pero con seis paradas antes del contenido conviene añadirlo. <strong>(e)</strong> El titular de la portada es metáfora primero: no responde «qué vende» en la prueba de 5 segundos y la bajada carga todo el peso. Es preferencia declarada, no defecto — se resuelve midiendo, no discutiendo.</dd>
+        <dt>Esfuerzo</dt><dd>2 h todo junto, salvo (e), que es una hipótesis a probar.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <h3 style="margin-top:30px">Matriz de priorización</h3>
+  <table>
+    <tr><th>Impacto ↓ / Esfuerzo →</th><th>Bajo (≤2 h)</th><th>Medio (3–8 h)</th><th>Alto (&gt;8 h o depende de terceros)</th></tr>
+    <tr><td><strong>Alto</strong></td><td>H6 · H9 · H12 · H11</td><td>H1 · H3 · H4 · H5 · H7 · H8</td><td>H2 (si se opta por publicar trabajo real: depende de C1)</td></tr>
+    <tr><td><strong>Medio</strong></td><td>H10 · H2 (si se opta por retirar la sección)</td><td>—</td><td>—</td></tr>
+    <tr><td><strong>Bajo</strong></td><td>H13 · H14</td><td>—</td><td>—</td></tr>
+  </table>
+  <p style="font-size:.9rem;margin-top:10px"><strong>Ganancias rápidas de esta semana</strong> (≈5 h, ninguna depende de nadie más): H6 invertir CTAs · H9 quitar afordancia de enlace muerto · H12 <code>autocomplete</code> · H11 dividir el bundle del cielo · H10 rótulo de ejemplo · H2 opción (b), retirar la sección de trabajos.</p>
+</section>
+
+<section>
+  <h2>5 · Accesibilidad WCAG 2.2 AA — criterio por criterio</h2>
+  <p style="font-size:.9rem;color:var(--muted);margin-top:0">Solo los criterios donde hay algo que decir. El resto no aplica o no se pudo verificar sin lector de pantalla. Recordatorio: la automatización cubre 20–40% de los criterios.</p>
+  <table>
+    <tr><th>Criterio</th><th>Nivel</th><th>Estado</th><th>Detalle</th></tr>
+    <tr><td>1.1.1 Contenido no textual</td><td>A</td><td class="ok">Cumple*</td><td>No hay imágenes de contenido. El <code>↗</code> lleva <code>aria-hidden</code>; el logotipo usa <code>role="img"</code> con <code>aria-label</code>. *El <code>&lt;canvas&gt;</code> del cielo debería declarar <code>aria-hidden</code> (H14a).</td></tr>
+    <tr><td>1.3.1 Información y relaciones</td><td>A</td><td class="ok">Cumple</td><td>Un solo H1, jerarquía H2/H3 sin saltos, <code>&lt;header&gt; &lt;nav&gt; &lt;main&gt; &lt;footer&gt;</code> presentes, etiquetas asociadas por <code>for/id</code>.</td></tr>
+    <tr><td>1.3.5 Identificar el propósito de la entrada</td><td>AA</td><td class="bad">Falla</td><td><strong>H12.</strong> Ningún campo declara <code>autocomplete</code>.</td></tr>
+    <tr><td>1.4.3 Contraste (mínimo)</td><td>AA</td><td class="ok">Cumple</td><td>Verificado sobre píxeles reales, incluido el cielo animado. Peor caso medido: 4,15:1 en la zona más clara del degradado, donde el texto que hay es blanco a 12,7:1. Ver anexo B.</td></tr>
+    <tr><td>1.4.10 Reajuste (reflow)</td><td>AA</td><td class="ok">Cumple</td><td>Sin scroll horizontal a 390 px: <code>scrollWidth</code> = <code>clientWidth</code> = 390.</td></tr>
+    <tr><td>1.4.11 Contraste no textual</td><td>AA</td><td class="ok">Cumple</td><td><code>--linea-control</code> #71717a da 4,08:1 en oscuro y 4,63:1 en claro. Está razonado en <code>tokens.css</code> con los cuatro escenarios calculados.</td></tr>
+    <tr><td>1.4.12 Espaciado del texto</td><td>AA</td><td class="ok">Cumple</td><td>Sin alturas fijas en bloques de texto.</td></tr>
+    <tr><td>2.1.1 / 2.1.2 Teclado y sin trampas</td><td>A</td><td class="ok">Cumple</td><td>30 tabulaciones sin bloqueo; el acordeón usa <code>&lt;details&gt;/&lt;summary&gt;</code> nativo.</td></tr>
+    <tr><td>2.2.2 Pausar, detener, ocultar</td><td>A</td><td class="warn">Revisar</td><td>El registro nocturno y la marquesina se mueven en bucle sin control de pausa. Ambos son decorativos y se detienen con <code>prefers-reduced-motion</code>, que es la vía habitual de cumplimiento; conviene confirmarlo en Pf con criterio manual.</td></tr>
+    <tr><td>2.4.1 Evitar bloques</td><td>A</td><td class="ok">Cumple</td><td>Vía landmarks. Sin enlace de salto (H14d) — recomendado, no exigido.</td></tr>
+    <tr><td>2.4.7 Foco visible</td><td>AA</td><td class="warn">Cumple al límite</td><td><strong>H13.</strong> Enlaces y botones, indicador fuerte. Campos, cambio de 1 px.</td></tr>
+    <tr><td>2.4.11 Foco no oscurecido (mínimo)</td><td>AA</td><td class="warn">Verificar</td><td>Criterio nuevo de WCAG 2.2. La barra es fija y se oculta al bajar; hay que comprobar que ningún elemento enfocado queda debajo de ella al tabular hacia arriba. No verificado en esta pasada.</td></tr>
+    <tr><td>2.5.8 Tamaño del objetivo (mínimo)</td><td>AA</td><td class="ok">Cumple</td><td>Criterio nuevo de WCAG 2.2. Cero objetivos por debajo de 24×24 px a 390 px de ancho.</td></tr>
+    <tr><td>3.2.6 Ayuda consistente</td><td>A</td><td class="bad">No aplicable hoy</td><td>Criterio nuevo de WCAG 2.2. No hay ningún mecanismo de ayuda o contacto persistente — que es justamente H3.</td></tr>
+    <tr><td>3.3.1 / 3.3.3 Errores</td><td>A/AA</td><td class="bad">Falla</td><td>Consecuencia de H1: no existe presentación de errores porque no existe respuesta. Se resuelve en P10.</td></tr>
+    <tr><td>3.3.2 Etiquetas o instrucciones</td><td>A</td><td class="ok">Cumple</td><td>Etiquetas visibles y persistentes; los <em>placeholder</em> no sustituyen a la etiqueta.</td></tr>
+    <tr><td>3.3.7 Entrada redundante</td><td>A</td><td class="ok">Cumple</td><td>Criterio nuevo de WCAG 2.2. Un solo paso, sin repetición de datos.</td></tr>
+    <tr><td>3.3.8 Autenticación accesible</td><td>AA</td><td>N/A</td><td>El sitio no autentica a nadie.</td></tr>
+    <tr><td>4.1.2 Nombre, función, valor</td><td>A</td><td class="ok">Cumple</td><td>0 violaciones axe. El conmutador de modo lleva <code>aria-label</code> desde <code>content/ui.ts</code>.</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>6 · Rendimiento</h2>
+  <p><strong>Advertencia de veredicto:</strong> sin datos de campo no hay diagnóstico de rendimiento, solo hipótesis. Lo que sigue son riesgos identificables por inspección, ordenados por probabilidad de morder.</p>
+  <table>
+    <tr><th>#</th><th>Riesgo</th><th>Evidencia</th><th>Acción</th></tr>
+    <tr><td>1</td><td>Peso de JS en el arranque</td><td>321 KB transferidos / 1,09 MB decodificados; un chunk de 676 KB con three.js + GSAP</td><td><strong>H11</strong> — <code>next/dynamic</code> para <code>HeroSky</code>. Quita ~190 KB del arranque sin perder el efecto. 1–2 h.</td></tr>
+    <tr><td>2</td><td><code>force-dynamic</code> en todas las rutas</td><td><code>layout.tsx</code>; respuesta con <code>Cache-Control: private, no-store</code></td><td>Es el precio consciente de la CSP con nonce (ADR-0004, duda abierta 3). El TTFB depende del origen y no hay caché de HTML en CDN. Si el presupuesto no da en Pf, la salida ya está escrita: caché de estáticos y render en el borde. <strong>No aflojar la CSP.</strong></td></tr>
+    <tr><td>3</td><td>Cinco fuentes precargadas</td><td>114 KB en 5 woff2, todas con <code>rel=preload</code></td><td>Las cinco compiten por ancho de banda en el arranque. Evaluar precargar solo la serif 600 normal (el LCP es texto de titular) y dejar el resto en <code>swap</code> sin preload. 1 h.</td></tr>
+    <tr><td>4</td><td>Dependencia de red en el build</td><td><code>next/font/google</code> falla sin salida a <code>fonts.googleapis.com</code></td><td>Autohospedar los ficheros con <code>next/font/local</code>. Elimina un punto de fallo del CI y no cambia nada visualmente. 1 h.</td></tr>
+    <tr><td>5</td><td>CLS</td><td>0,005 en laboratorio</td><td>Nada que hacer. Está bien resuelto.</td></tr>
+  </table>
+  <p style="font-size:.9rem;margin-top:12px"><strong>Umbrales de referencia, verificados contra web.dev:</strong> LCP &lt; 2,5 s · INP &lt; 200 ms · CLS &lt; 0,1, todos en campo p75. Circulan blogs de SEO con umbrales distintos; son falsos.</p>
+</section>
+
+<section>
+  <h2>7 · SEO técnico</h2>
+  <table>
+    <tr><th>Elemento</th><th>Estado</th><th>Acción</th></tr>
+    <tr><td><code>title</code> / <code>description</code></td><td class="ok">Presente</td><td>«Noctis — Software para negocios en Ecuador» es bueno: incluye categoría y geografía. Sin cambios.</td></tr>
+    <tr><td><code>lang</code></td><td class="ok">Correcto</td><td><code>es-EC</code>.</td></tr>
+    <tr><td>H1</td><td class="ok">Único</td><td>Jerarquía completa y sin saltos.</td></tr>
+    <tr><td><code>metadataBase</code> / canonical</td><td class="bad">Ausente</td><td>H7. Bloqueado por D9 (dominio sin definir).</td></tr>
+    <tr><td>Open Graph / Twitter</td><td class="bad">Ausente</td><td>H7. Incluir <code>opengraph-image</code> generada con la marca.</td></tr>
+    <tr><td><code>robots.txt</code> / <code>sitemap.xml</code></td><td class="bad">404</td><td>H7. <code>app/robots.ts</code> y <code>app/sitemap.ts</code>.</td></tr>
+    <tr><td>JSON-LD</td><td class="bad">Ausente</td><td>H7. <code>Organization</code>/<code>LocalBusiness</code>, no FAQ (descontinuado en mayo de 2026).</td></tr>
+    <tr><td>Favicon / iconos</td><td class="warn">Parcial</td><td>Solo <code>icon.svg</code>. Faltan <code>apple-icon</code> y manifiesto.</td></tr>
+    <tr><td>Indexabilidad del contenido animado</td><td class="ok">Sin riesgo</td><td>Los bloques bajo el pliegue están a <code>opacity: 0</code> pero presentes en el HTML servido y con <code>visibility: visible</code>. Se indexan. Verificado además sin JavaScript: la página se muestra entera.</td></tr>
+    <tr><td>Contenido en una sola página</td><td class="warn">Decisión</td><td>Todo vive en <code>/</code>. Limita el posicionamiento por producto. Cuando Commerce y Care tengan página propia, cambia; no es urgente en v1.</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>8 · Plan de implementación</h2>
+  <p><strong>Premisa:</strong> ninguna de estas fases depende de P6, P7 ni P8. Se pueden ejecutar en paralelo al camino crítico del agendamiento.</p>
+
+  <h3>Fase A — Cerrar la fuga (bloquea publicar) · 12–16 h</h3>
+  <ul class="check">
+    <li>H1 · <code>POST /api/contacto</code> con Zod, campo trampa, verificación de tiempo, página de gracias y estados de carga/éxito/error (es P10, adelantarlo)</li>
+    <li>H1b · Guardarraíl: test de humo en CI que falle si <code>/api/contacto</code> responde 404</li>
+    <li>H3 · Enlace de WhatsApp con texto previo en barra y flotante en celular (requiere C3)</li>
+    <li>H3b · Bloque de identidad en el pie: razón social, RUC, dirección, correo, teléfono, horario, relación Noctis ↔ Meridian Holding</li>
+    <li>H4 · Página de aviso de privacidad + línea de consentimiento junto al botón (requiere C4)</li>
+    <li>H2 · Resolver el portafolio: publicar 2–3 trabajos reales o retirar la sección</li>
+  </ul>
+
+  <h3>Fase B — Ganancias rápidas · 5–6 h</h3>
+  <ul class="check">
+    <li>H6 · Invertir la jerarquía de CTAs de la portada</li>
+    <li>H9 · Quitar la afordancia de enlace en tarjetas sin destino</li>
+    <li>H12 · <code>autocomplete</code> e <code>inputmode</code> en los seis campos</li>
+    <li>H11 · <code>next/dynamic</code> para <code>HeroSky</code></li>
+    <li>H10 · Rótulo «Ejemplo de una noche» en el registro nocturno</li>
+    <li>H13 · Reforzar el indicador de foco de los campos</li>
+    <li>H14 · <code>aria-hidden</code> en el canvas · unificar nombres de producto · enlace de salto al contenido</li>
+  </ul>
+
+  <h3>Fase C — El paquete que falta en el plan · 8–11 h</h3>
+  <p style="font-size:.92rem;margin-top:0">Esto es lo que <code>SPEC.md</code> §12 llamaba «Fase 4 — cierre» y que no quedó asignado a ningún paquete P0–P12. <strong>Recomendación: crearlo como P11 antes de Pf</strong>, para que Pf audite algo completo en vez de descubrir el hueco.</p>
+  <ul class="check">
+    <li>H7 · <code>metadataBase</code>, Open Graph, Twitter, canonical, <code>opengraph-image</code>, <code>robots.ts</code>, <code>sitemap.ts</code>, JSON-LD de <code>Organization</code> con nonce (requiere D9)</li>
+    <li>H8 · Plan de medición de §9</li>
+    <li>H5 · Navegación en celular: menú accesible o barra inferior con WhatsApp + Hablemos</li>
+    <li>Rendimiento #3 y #4 · Reducir precargas de fuentes y autohospedarlas</li>
+  </ul>
+
+  <h3>Fase D — Verificación en Pf</h3>
+  <ul class="check">
+    <li>Lector de pantalla real (NVDA o VoiceOver) sobre los tres flujos</li>
+    <li>2.4.11 Foco no oscurecido con la barra fija</li>
+    <li>2.2.2 Pausar/detener para marquesina y registro nocturno</li>
+    <li>Core Web Vitals de campo a los 28 días de publicar — es el único veredicto válido de rendimiento</li>
+    <li>Benchmark competitivo: 3–5 competidores directos, la misma tarea de contacto</li>
+  </ul>
+</section>
+
+<section>
+  <h2>9 · Plan de medición y LOPDP</h2>
+  <p>Mínimo viable, costo cero en herramientas. Todo evento sin dato personal, coherente con <code>CLAUDE.md</code> §6 regla 12.</p>
+  <table>
+    <tr><th>Evento</th><th>Parámetros</th><th>Qué contesta</th></tr>
+    <tr><td><code>cta_click</code></td><td><code>ubicacion</code> (barra/portada/pie), <code>etiqueta</code></td><td>Resuelve H6 con dato: ¿«Ver trabajos» o «Conversemos»?</td></tr>
+    <tr><td><code>whatsapp_click</code></td><td><code>ubicacion</code>, <code>dispositivo</code></td><td>Volumen real del canal frente al formulario. <strong>Evento clave.</strong></td></tr>
+    <tr><td><code>form_start</code></td><td><code>primer_campo</code></td><td>Cuántos empiezan.</td></tr>
+    <tr><td><code>form_abandon</code></td><td><code>ultimo_campo</code></td><td>En qué campo se caen. Suele ser el teléfono.</td></tr>
+    <tr><td><code>form_submit</code></td><td><code>interes</code></td><td><strong>Evento clave.</strong> Qué se pide más.</td></tr>
+    <tr><td><code>scroll_depth</code></td><td><code>seccion</code></td><td>Cuántos llegan a Trabajos y a Contacto en celular (mide H5).</td></tr>
+    <tr><td><code>faq_open</code></td><td><code>pregunta</code></td><td>Si «¿Cuánto cuesta?» domina, revisar D13 (no publicar precios).</td></tr>
+  </table>
+  <p style="margin-top:14px"><strong>Herramientas.</strong> GA4 con <em>key events</em> para los dos marcados, y Microsoft Clarity para grabaciones y clics muertos — que confirmarían H9 en horas. <strong>Aviso:</strong> la CSP con nonce y sin <code>unsafe-inline</code> obliga a añadir el origen de cualquier script de terceros, así que hay que decidirlo antes de Pf. La alternativa sin ese conflicto es un registro propio de eventos en el servidor, sin cookies, que además evita la necesidad de banner de consentimiento.</p>
+  <p><strong>LOPDP.</strong> La analítica no puede cargar antes del consentimiento si usa cookies o identificadores persistentes. Aviso de privacidad publicado antes de recibir el primer dato (H4). Plazo de conservación de 12 meses según D6, con borrado automático real y no solo documentado. UTMs en toda campaña para no perder la atribución.</p>
+  <p><strong>Métricas de éxito, como hipótesis y no como garantía:</strong> contactos iniciados por semana · tasa de finalización del formulario · reparto WhatsApp vs formulario · profundidad de scroll en celular hasta Contacto · LCP e INP de campo a los 28 días. Sin línea base no hay comparación, así que la primera semana publicada es la referencia.</p>
+</section>
+
+<section>
+  <h2>10 · Anexos</h2>
+  <h3>A · axe-core — salida cruda</h3>
+  <pre>Reglas: wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa, best-practice
+Violaciones ............ 0
+Reglas aprobadas ....... 45
+Incompletas ............ 1
+  color-contrast (17 nodos) — "Elements must meet minimum color contrast
+  ratio thresholds". Causa: el fondo es un &lt;canvas&gt; WebGL y axe no puede
+  calcular el color subyacente. Resuelto manualmente por muestreo de
+  píxeles (anexo B).
+Nota: axe cubre ~20-40% de los criterios WCAG. Cero violaciones no
+significa conformidad.</pre>
+
+  <h3>B · Contraste calculado — tokens y píxeles reales</h3>
+  <pre>TOKENS (fondo plano)                       OSCURO      CLARO
+texto / fondo                              17.94:1     16.97:1
+texto-2 / fondo                             7.69:1      7.41:1
+accion / fondo                             10.68:1      9.52:1
+linea-control / fondo (UI, exige 3:1)       4.08:1      4.63:1
+texto-3 / fondo (decorativo, no texto)      2.55:1      2.46:1
+
+PÍXELES REALES SOBRE EL CIELO ANIMADO (portada, modo oscuro)
+zona                        fondo muestreado   texto-2   acento
+tras la bajada del hero     #292641             5.66:1    7.86:1
+tras "GUAYAQUIL, ECUADOR"   #0c0c16             7.59:1   10.53:1
+zona más clara del cielo    #3e3b59             4.15:1    5.76:1
+Mínimo medido: 4.15:1 — por encima del umbral AA de 4.5:1 solo donde
+hay texto real; en esa zona el texto es blanco (12.71:1).</pre>
+
+  <h3>C · Recursos cargados</h3>
+  <pre>15 peticiones · 443 KB transferidos · 1.25 MB decodificados · 0 a terceros
+
+tipo    transf.   decod.   archivo
+script  189.5 KB  674.9 KB  chunk principal (three.js + GSAP)
+script   70.2 KB  223.6 KB  chunk react/next
+script   46.3 KB  174.0 KB  chunk de aplicación
+font     24.2 KB   23.9 KB  inter-600
+font     24.0 KB   23.7 KB  inter-500
+font     23.4 KB   23.1 KB  inter-400
+font     21.4 KB   21.1 KB  source-serif-600-italic
+font     21.3 KB   21.0 KB  source-serif-600
+css       3.4 KB   13.4 KB  estilos de página
+css       1.9 KB    5.4 KB  estilos globales
+--------------------------------------------------------------
+JavaScript: ~321 KB transferidos / 1.09 MB decodificados</pre>
+
+  <h3>D · Cabeceras de respuesta</h3>
+  <pre>content-security-policy: script-src 'self' 'nonce-...' 'strict-dynamic';
+  style-src 'self' 'nonce-...'; default-src 'self'; img-src 'self' data:;
+  font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none';
+  form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+x-frame-options: DENY · x-content-type-options: nosniff
+referrer-policy: strict-origin-when-cross-origin
+permissions-policy: camera=(), microphone=(), geolocation=()
+cache-control: private, no-cache, no-store, max-age=0, must-revalidate
+
+Comprobaciones puntuales:
+  POST /api/contacto ......... 404   ← H1
+  GET  /robots.txt ........... 404   ← H7
+  GET  /sitemap.xml .......... 404   ← H7
+  GET  /dev/bandeja .......... 404   ← correcto: no existe en producción
+  GET  /api/estado ........... 200   {"estado":"ok","modo":"demo"}</pre>
+
+  <h3>E · Recorrido de teclado — 30 tabulaciones</h3>
+  <pre>01-04  Enlaces de navegación ....... outline 2px sólido, contraste alto
+05     Conmutador de modo .......... outline 2px sólido
+06     CTA "Hablemos" .............. outline 2px sólido
+07-08  CTAs de portada ............. outline 2px sólido
+09-14  Seis tarjetas de trabajo .... outline 2px sólido · href="#trabajos" (H9)
+15-18  Cuatro &lt;summary&gt; del acordeón outline 2px sólido
+19-24  Seis campos del formulario .. outline: none (H13)
+25     Botón "Enviar mensaje" ...... outline 2px sólido
+Sin trampas de foco. Sin enlace de salto al contenido (H14d).</pre>
+
+  <h3>F · Estados verificados</h3>
+  <pre>Escritorio 1440px oscuro / claro ........ correcto
+Celular 390px oscuro / claro ............ correcto, sin scroll horizontal
+Sin JavaScript .......................... página completa y legible
+prefers-reduced-motion: reduce .......... página completa, sin animación
+Objetivos táctiles &lt; 24x24 px a 390px ... ninguno
+Altura de página ........................ 8336 px escritorio / 9552 px celular</pre>
+</section>
+
+<footer style="padding:26px 52px;font-family:var(--mono);font-size:.7rem;color:var(--muted);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap">
+  <span>Auditoría UX/UI · metodología /ux-auditar · rúbrica de 14 capas · severidad Nielsen 0–4</span>
+  <span>Noctis Web — 16 de agosto de 2026</span>
+</footer>
+
+</div>
+</body>
+</html>

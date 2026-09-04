@@ -1,12 +1,22 @@
 /*
- * Tokens del sistema visual. Un solo juego, dos modos, conmutados por
- * `data-mode` en <html>.
+ * Tokens del sistema visual. **Un solo esquema: oscuro.**
+ *
+ * El sitio tenía dos modos conmutados por `data-mode` en `<html>`. Se retiró el
+ * modo claro por decisión de producto: la marca es Noctis, el prototipo, el
+ * cielo del encabezado y el propio nombre están construidos sobre el oscuro, y
+ * mantener el claro obligaba a validar dos veces cada decisión visual a cambio
+ * de un modo que nadie pedía. Un esquema que se cuida es mejor que dos que se
+ * degradan.
  *
  * La paleta y las dos familias tipográficas salen de
- * `docs/identidad-de-marca-noctis/spec-rebrand-noctis.md` §1 y §2, que a partir
- * de este pase reemplaza al prototipo como fuente de verdad de color y de
- * tipografía. Los siete `--color-*` de cada modo son transcripción literal del
- * spec: se pueden diffear contra él sin interpretar nada.
+ * `docs/identidad-de-marca-noctis/spec-rebrand-noctis.md` §1 y §2. Los siete
+ * `--color-*` son transcripción literal del bloque oscuro del spec: se pueden
+ * diffear contra él sin interpretar nada.
+ *
+ * **La paleta clara no desapareció: es la franja invertida.** El spec la define
+ * y el sitio la sigue usando en Servicios, Contacto y las portadas `.inverted`
+ * de la grilla de trabajos. Lo que se fue es la posibilidad de que sea el
+ * esquema de la página entera.
  *
  * El resto —línea, texto decorativo y franja invertida— son derivados que el
  * spec no cubre y que el sitio ya tenía. Sus valores se eligen dentro de la
@@ -17,20 +27,90 @@
  * (`CLAUDE.md` §1) y por eso se mantienen en español, contra la convención de
  * identificadores (ADR-0001). La paleta de marca se consume por su nombre del
  * spec, `--color-accion` y `--color-acento`.
- *
- * El spec conmuta con `[data-theme]`; acá el atributo sigue siendo `data-mode`
- * porque el propio spec §4 pide mantener el toggle existente.
  */
 
 :root {
+  /*
+   * Le dice al navegador que sus propias superficies —barras de desplazamiento,
+   * calendarios, la lista de un `<select>`, el fondo antes de que llegue el
+   * CSS— son oscuras. Sin esta línea el sistema pinta esos widgets en claro y
+   * aparecen parches blancos que ninguna hoja de estilo puede alcanzar.
+   *
+   * Mientras hubo dos modos esto no se podía declarar acá: cambiaba con el
+   * atributo. Con un solo esquema es una constante, y por eso vive en la raíz.
+   */
+  color-scheme: dark;
+
   --display: var(--fuente-display), Georgia, 'Times New Roman', serif;
   --texto-f: var(--fuente-texto), system-ui, sans-serif;
   --ancho: 1280px;
-  --borde: 24px;
   --curva: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /*
+   * La escala de esquinas, y la regla que la gobierna.
+   *
+   * Convivían cuatro radios sin criterio: 24 px en las tarjetas, 10 px en unos
+   * paneles, 2 px en los botones y círculo en el conmutador. Cuatro sistemas de
+   * forma a la vez se leen como cuatro decisiones tomadas en cuatro momentos
+   * distintos, que es exactamente lo que eran.
+   *
+   * La regla es por tamaño del objeto y se cumple sin excepciones:
+   *
+   * - `--borde`         superficies que contienen otras cosas: tarjetas, paneles,
+   *                     portadas de trabajo, el formulario.
+   * - `--borde-control` cosas que se tocan: botones, campos, píldoras de estado.
+   * - `--borde-circulo` solo lo que es un círculo por función: el punto de una
+   *                     viñeta, el estado de un producto, el botón flotante de
+   *                     WhatsApp. No se usa para nada más.
+   *
+   * Un control dentro de un panel siempre lleva el radio menor: es lo que hace
+   * que se lea como pieza montada encima y no como un recorte del panel.
+   */
+  --borde: 20px;
+  --borde-control: 10px;
+  --borde-circulo: 50%;
+
+  /*
+   * El borde de un control —campo, desplegable, botón de contorno— no es una
+   * línea decorativa: WCAG 2.1 §1.4.11 le exige 3:1 contra lo que tenga al lado,
+   * porque es lo único que dice dónde se escribe. `--linea` está muy por debajo
+   * (1.31:1) y a propósito: separa secciones, no delimita controles. Este token
+   * es para eso.
+   *
+   * Un solo valor para la página y para la franja invertida, que es la razón de
+   * elegir este gris y no otro: da 4.08:1 sobre el fondo oscuro, 3.80:1 sobre la
+   * superficie oscura, 4.63:1 sobre el fondo claro de la franja y 4.83:1 sobre
+   * su superficie. No hay contexto donde haya que voltearlo, así que no hay
+   * contexto donde alguien pueda olvidarse de hacerlo.
+   */
+  --linea-control: #71717a;
+
+  /*
+   * El vidrio esmerilado de la barra (spec de marca §5). `saturate` es lo que
+   * separa un material de un velo gris: sin él, lo que pasa por debajo se
+   * desatura y la barra parece papel translúcido.
+   *
+   * **`var(--color-fondo)` NO se resuelve en el momento del uso.** El valor
+   * calculado de una propiedad personalizada ya lleva sus `var()` sustituidos en
+   * el elemento donde se declara, y acá se declara en la raíz: lo que hereda la
+   * barra es el color ya resuelto, no la referencia. Por eso hay que volver a
+   * declararlo donde el fondo cambie, y por eso existe el bloque de la barra
+   * sobre franja invertida.
+   */
+  --barra-fondo: color-mix(in srgb, var(--color-fondo) 86%, transparent);
+  --barra-filtro: blur(20px) saturate(160%);
 }
 
-html[data-mode='dark'] {
+/*
+ * La paleta de la página, en `html` y no en `:root`.
+ *
+ * No es cosmético: `html` vale (0,0,1) y `.inv` vale (0,1,0), así que la franja
+ * invertida gana sin depender del orden del archivo. Con la paleta en `:root`
+ * los dos valdrían lo mismo y la inversión pasaría a ser una cuestión de qué
+ * bloque se escribió después — que es exactamente el tipo de fragilidad que
+ * dejó a Servicios y Contacto sin invertir desde P1.
+ */
+html {
   --color-fondo: #0a0a12;
   --color-superficie: #14131f;
   --color-texto-primario: #f4f4f5;
@@ -45,11 +125,45 @@ html[data-mode='dark'] {
   --texto-2: var(--color-texto-secundario);
   --texto-3: #52525b;
   --linea: rgba(244, 244, 245, 0.12);
+  --sombra-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px -12px rgba(0, 0, 0, 0.6);
   --inv-fondo: #fafafa;
   --inv-texto: #18181b;
+
+  /* — Capa de profundidad. Ver la nota larga al final del archivo. — */
+  --superficie-2: #191828;
+  --realce: rgba(244, 244, 245, 0.08);
+  --sombra-2: 0 2px 4px rgba(0, 0, 0, 0.5), 0 28px 64px -24px rgba(0, 0, 0, 0.85);
+  --sombra-3: 0 40px 90px -40px rgba(67, 56, 202, 0.55);
+  --halo-1: rgba(67, 56, 202, 0.22);
+  --halo-2: rgba(196, 181, 253, 0.1);
+  --rejilla: rgba(244, 244, 245, 0.028);
+  --velo: rgba(10, 10, 18, 0.55);
+  --regla: linear-gradient(90deg, var(--color-accion), transparent);
 }
 
-html[data-mode='light'] {
+/*
+ * Franja invertida: la sección se pinta con la paleta clara del spec.
+ *
+ * **El bloque declara la paleta entera, `--fondo` y `--texto` incluidos.** No es
+ * redundancia: es lo único que hace que la franja funcione. Una versión anterior
+ * dejaba que `.inv` derivara `--fondo` de `--inv-fondo` y eso nunca invirtió
+ * nada, porque el bloque del modo pesaba más. Servicios y Contacto salieron del
+ * color de la página durante diez paquetes sin que nadie lo notara.
+ *
+ * `--inv-fondo` y `--inv-texto` quedan acá para lo que de verdad son: el juego
+ * que tomaría una franja anidada dentro de esta, y el que usan las portadas
+ * `.inverted` de la grilla de trabajos, que no van dentro de un `.inv`.
+ *
+ * Voltear `--color-accion` tampoco es opcional: lavanda sobre el fondo claro da
+ * 1.77:1, o sea que un botón de marca dentro de la franja sería invisible.
+ *
+ * El selector agrupa la barra porque cuando pasa por encima de una franja tiene
+ * que tomar exactamente el mismo juego —no una copia—: si la paleta invertida
+ * cambia, cambia en un solo sitio y la barra la sigue. El atributo lo pone
+ * `animation/effects/nav-bar.ts`.
+ */
+[data-nav-bar][data-over='inv'],
+.inv {
   --color-fondo: #fafafa;
   --color-superficie: #ffffff;
   --color-texto-primario: #18181b;
@@ -64,52 +178,72 @@ html[data-mode='light'] {
   --texto-2: var(--color-texto-secundario);
   --texto-3: #a1a1aa;
   --linea: rgba(24, 24, 27, 0.12);
+  /*
+   * La sombra tiene tinte índigo, no gris: una superficie flotante sobre papel
+   * blanco es lo que hace que la franja se lea como documento. El tinte es lo
+   * que la convierte en material (spec de marca §5).
+   */
+  --sombra-1: 0 1px 2px rgba(24, 24, 27, 0.05), 0 12px 32px -12px rgba(55, 48, 163, 0.18);
   --inv-fondo: #0a0a12;
   --inv-texto: #f4f4f5;
+
+  --superficie-2: #ffffff;
+  --realce: rgba(255, 255, 255, 0.9);
+  --sombra-2: 0 1px 2px rgba(24, 24, 27, 0.06), 0 24px 56px -22px rgba(55, 48, 163, 0.24);
+  --sombra-3: 0 40px 90px -44px rgba(55, 48, 163, 0.34);
+  --halo-1: rgba(55, 48, 163, 0.09);
+  --halo-2: rgba(196, 181, 253, 0.16);
+  --rejilla: rgba(24, 24, 27, 0.032);
+  --velo: rgba(250, 250, 250, 0.62);
+  --regla: linear-gradient(90deg, var(--color-accion), transparent);
 }
 
-/*
- * Franja invertida: la sección usa el esquema contrario al modo activo.
- * Los sobrescritos anidados son la parte fácil de romper (`SPEC.md` §4.1): sin
- * ellos, dentro de una franja invertida el texto secundario y —desde este
- * rebrand— el color de acción quedan con el contraste del modo equivocado.
- * Índigo sobre el fondo oscuro da 1.98:1: un botón de marca dentro de una
- * franja invertida sería invisible si `--color-accion` no se volteara acá.
- */
 .inv {
-  --fondo: var(--inv-fondo);
-  --texto: var(--inv-texto);
-  --color-fondo: var(--inv-fondo);
-  --color-texto-primario: var(--inv-texto);
-
   background: var(--fondo);
   color: var(--texto);
 }
 
-html[data-mode='dark'] .inv {
-  --color-superficie: #ffffff;
-  --color-texto-secundario: #52525b;
-  --color-marca: #3730a3;
-  --color-accion: #3730a3;
-
-  --fondo-2: var(--color-superficie);
-  --texto-2: var(--color-texto-secundario);
-  --texto-3: #a1a1aa;
-  --linea: rgba(24, 24, 27, 0.12);
-  --inv-fondo: #0a0a12;
-  --inv-texto: #f4f4f5;
+/*
+ * El vidrio de la barra, recalculado sobre el fondo volteado.
+ *
+ * Sin esto la barra cambiaba el color del texto y el logotipo al pasar sobre la
+ * franja invertida, pero se quedaba con el vidrio de la página: texto oscuro
+ * sobre un vidrio oscuro. Ver la nota de `--barra-fondo` en la raíz — el valor
+ * hay que volver a declararlo en el elemento donde el fondo cambia.
+ */
+[data-nav-bar][data-over='inv'] {
+  --barra-fondo: color-mix(in srgb, var(--color-fondo) 86%, transparent);
 }
 
-html[data-mode='light'] .inv {
-  --color-superficie: #14131f;
-  --color-texto-secundario: #a1a1aa;
-  --color-marca: #4338ca;
-  --color-accion: #c4b5fd;
-
-  --fondo-2: var(--color-superficie);
-  --texto-2: var(--color-texto-secundario);
-  --texto-3: #52525b;
-  --linea: rgba(244, 244, 245, 0.12);
-  --inv-fondo: #fafafa;
-  --inv-texto: #18181b;
-}
+/*
+ * La capa de profundidad — por qué existe y por qué no toca la paleta.
+ *
+ * El diagnóstico era que el sitio se veía plano: superficies del mismo tono y
+ * una línea de 1 px como única separación. Lo que falta en ese cuadro no es
+ * color, es **material**: sin sombra ni luz, dos superficies del mismo tono son
+ * la misma superficie.
+ *
+ * Los siete `--color-*` **no se tocan**. Son transcripción literal del spec de
+ * marca y `contrast.spec.ts` los compara uno a uno: cambiarlos para «dar vida»
+ * habría roto la prueba y, peor, la identidad. Todo lo de acá son tokens nuevos
+ * que se apoyan encima:
+ *
+ * - `--superficie-2` es el segundo escalón de elevación. Sube un punto sobre
+ *   `--color-superficie`, porque en oscuro la luz de la pantalla hace el
+ *   trabajo; en la franja clara sigue siendo blanco puro, porque ahí lo que
+ *   separa la tarjeta del papel es la sombra y no el tono.
+ * - `--realce` es la línea de luz de 1 px del borde superior de una superficie.
+ *   Es el detalle que convierte un rectángulo en un objeto con canto.
+ * - `--sombra-2` y `--sombra-3` llevan tinte índigo. Una sombra gris sobre una
+ *   marca índigo se lee como suciedad; con el tinte, se lee como la misma luz.
+ * - `--halo-1` y `--halo-2` son los dos focos de color que lavan el fondo de la
+ *   página. Muy bajos a propósito: por encima de estos valores el texto pierde
+ *   contraste y el sitio deja de parecer una empresa de software.
+ * - `--rejilla` es la retícula de 1 px que da textura al fondo. Al 3% no se ve
+ *   como cuadrícula: se percibe como que el papel tiene grano.
+ * - `--regla` es el degradado corto bajo los titulares de sección.
+ *
+ * Ninguno de estos tokens se usa nunca para texto ni para el borde de un
+ * control: eso sigue siendo `--texto*` y `--linea-control`, que son los que
+ * tienen contraste comprobado.
+ */

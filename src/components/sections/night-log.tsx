@@ -3,7 +3,12 @@
 import { useEffect, useState } from 'react';
 
 import { REDUCED_MOTION_QUERY } from '@/components/animation/animation-settings';
-import { NIGHT_LOG, NIGHT_LOG_INTERVAL_MS, NIGHT_LOG_VISIBLE } from '@/content/night-log';
+import {
+  NIGHT_LOG,
+  NIGHT_LOG_CAPTION,
+  NIGHT_LOG_INTERVAL_MS,
+  NIGHT_LOG_VISIBLE,
+} from '@/content/night-log';
 
 import styles from './night-log.module.css';
 
@@ -41,6 +46,13 @@ export function NightLog() {
 
   return (
     <div className={styles['log']} aria-hidden="true">
+      {/*
+        El rótulo lo declara ilustración. Va dentro del bloque con `aria-hidden`
+        porque para el lector de pantalla el conjunto sigue siendo decorativo: lo
+        que dice ya está en el titular. Es al visitante que mira a quien hay que
+        aclararle que estas horas no son de nadie.
+      */}
+      <span className={styles['caption']}>{NIGHT_LOG_CAPTION}</span>
       {windowOf(offset).map((entry, position) => (
         <div
           key={entry.time}

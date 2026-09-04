@@ -6,15 +6,19 @@ import { describe, expect, it } from 'vitest';
 /**
  * Contraste AA, calculado — no afirmado.
  *
- * El criterio de aceptación de P1 dice "contraste AA verificado en ambos modos,
- * con atención a `--texto-2` sobre `--fondo-2`". Una casilla marcada a mano se
- * desactualiza el día que alguien retoca un token; esta prueba lee `tokens.css`
- * y calcula la razón según WCAG 2.1, así que se entera sola.
+ * El criterio de aceptación de P1 pedía contraste AA verificado en los dos
+ * modos. Ya no hay dos modos: el sitio es oscuro y punto. Lo que quedan son dos
+ * **contextos** —la página y la franja invertida— y los dos siguen teniendo que
+ * cumplir, porque la franja no es una variante opcional: es media página.
  *
- * Desde el rebrand cubre además dos cosas nuevas: que los siete `--color-*` de
- * cada modo sean los del spec de marca §1 letra por letra, y que el color de
- * acción tenga contraste suficiente donde se usa —el botón sólido y la franja
- * invertida—, que es donde el índigo y la lavanda se equivocan de modo.
+ * Una casilla marcada a mano se desactualiza el día que alguien retoca un token;
+ * esta prueba lee `tokens.css` y calcula la razón según WCAG 2.1, así que se
+ * entera sola.
+ *
+ * Cubre además dos cosas: que los siete `--color-*` de cada contexto sean los
+ * del spec de marca §1 letra por letra, y que el color de acción tenga contraste
+ * suficiente donde se usa —el botón sólido y la franja invertida—, que es donde
+ * el índigo y la lavanda se equivocan de contexto.
  *
  * `--texto-3` no aparece: es un token decorativo (puntos, separadores y las
  * filas del registro nocturno, que va con `aria-hidden`). El único sitio donde
@@ -27,6 +31,10 @@ const FIELD_CSS = readFileSync(
   fileURLToPath(new URL('../components/ui/field.module.css', import.meta.url)),
   'utf8',
 );
+const BUTTON_CSS = readFileSync(
+  fileURLToPath(new URL('../components/ui/button.module.css', import.meta.url)),
+  'utf8',
+);
 const BRAND_SPEC = readFileSync(
   fileURLToPath(
     new URL('../../docs/identidad-de-marca-noctis/spec-rebrand-noctis.md', import.meta.url),
@@ -35,6 +43,8 @@ const BRAND_SPEC = readFileSync(
 );
 
 const AA_NORMAL_TEXT = 4.5;
+/** WCAG 2.1 §1.4.11: el límite visual de un control necesita 3:1, no 4.5:1. */
+const AA_NON_TEXT = 3;
 
 type TokenMap = Readonly<Record<string, string>>;
 
@@ -75,11 +85,28 @@ function resolve(raw: TokenMap, name: string): string {
   throw new Error(`No se pudo resolver ${name} a un color`);
 }
 
-function tokensOf(selector: string, extra: TokenMap = {}): TokenMap {
-  const raw = { ...declarationsIn(blockOf(TOKENS_CSS, selector)), ...extra };
+/**
+ * Aplica los bloques **en orden de especificidad**, de menor a mayor, que es lo
+ * que hace el navegador sobre un elemento al que le aplican varias reglas.
+ *
+ * Esto no es un detalle de implementación de la prueba: es lo que antes estaba
+ * mal. La versión anterior no modelaba el cascade — sintetizaba a mano el
+ * `--fondo` que la franja *debía* tener— así que pasaba en verde mientras
+ * Servicios y Contacto se pintaban del color de la página desde P1.
+ */
+function cascadeOf(...blocks: readonly TokenMap[]): TokenMap {
+  const raw: Record<string, string> = {};
+  for (const block of blocks) {
+    for (const [name, value] of Object.entries(block)) raw[name] = value;
+  }
+
   const resolved: Record<string, string> = {};
   for (const name of Object.keys(raw)) resolved[name] = resolve(raw, name);
   return resolved;
+}
+
+function blockFor(selector: string): TokenMap {
+  return declarationsIn(blockOf(TOKENS_CSS, selector));
 }
 
 function channelLuminance(value: number): number {
@@ -113,32 +140,79 @@ function ratioIn(tokens: TokenMap, foreground: string, background: string): numb
   return contrastRatio(from, over);
 }
 
-const DARK = tokensOf("html[data-mode='dark']");
-const LIGHT = tokensOf("html[data-mode='light']");
+/**
+ * Los dos contextos, armados como los arma el navegador.
+ *
+ * Especificidad de los selectores que declaran color sobre una sección con la
+ * clase `inv`: `html` vale (0,0,1), `:root` y `.inv` valen (0,1,0). Ese es el
+ * orden de la mezcla. `:root` y `.inv` empatan, pero declaran conjuntos
+ * disjuntos —la raíz lleva forma y medidas, la franja lleva color— así que el
+ * empate no decide nada.
+ *
+ * La paleta de la página vive en `html` y no en `:root` precisamente por esto:
+ * con las dos en (0,1,0) la inversión dependería de qué bloque se escribió
+ * después, que es la fragilidad que dejó a Servicios y Contacto sin invertir
+ * desde P1.
+ *
+ * `blockFor('.inv')` encuentra el bloque de la paleta invertida porque el
+ * selector agrupado la nombra en su segunda línea y `blockOf` busca la primera
+ * aparición de `.inv {`. El bloque suelto que aplica `background` y `color` va
+ * después y no declara ningún token.
+ */
+const ROOT = blockFor(':root');
+const PAGE_BLOCK = blockFor('html');
+const BAND_BLOCK = blockFor('.inv');
+
+const PAGE = cascadeOf(PAGE_BLOCK, ROOT);
+const BAND = cascadeOf(PAGE_BLOCK, ROOT, BAND_BLOCK);
+
+const PALETTES: readonly { readonly name: string; readonly tokens: TokenMap }[] = [
+  { name: 'la página', tokens: PAGE },
+  { name: 'la franja invertida', tokens: BAND },
+];
 
 /**
- * Los dos modos, y los dos con la franja invertida encima. La franja hereda
- * `--fondo` y `--texto` de `--inv-fondo` y `--inv-texto` del modo de afuera, así
- * que hay que inyectarlos: el bloque anidado no los declara.
+ * La prueba que faltaba.
+ *
+ * `Servicios` y `Contacto` están marcados como franja invertida desde P2 y se
+ * pintaron del color de la página durante diez paquetes, porque la prueba
+ * anterior verificaba la intención en vez del cascade. Una franja que no
+ * invierte no es un detalle estético: es media página de estructura que
+ * desaparece.
  */
-const PALETTES: readonly { readonly name: string; readonly tokens: TokenMap }[] = [
-  { name: 'modo oscuro', tokens: DARK },
-  { name: 'modo claro', tokens: LIGHT },
-  {
-    name: 'franja invertida sobre modo oscuro',
-    tokens: tokensOf("html[data-mode='dark'] .inv", {
-      '--fondo': DARK['--inv-fondo'] ?? '',
-      '--texto': DARK['--inv-texto'] ?? '',
-    }),
-  },
-  {
-    name: 'franja invertida sobre modo claro',
-    tokens: tokensOf("html[data-mode='light'] .inv", {
-      '--fondo': LIGHT['--inv-fondo'] ?? '',
-      '--texto': LIGHT['--inv-texto'] ?? '',
-    }),
-  },
-];
+describe('la franja invertida invierte de verdad', () => {
+  it('usa el esquema contrario al de la página', () => {
+    const pageBackground = PAGE['--fondo'] ?? '';
+    const bandBackground = BAND['--fondo'] ?? '';
+
+    expect(bandBackground).not.toBe(pageBackground);
+    expect(contrastRatio(bandBackground, pageBackground)).toBeGreaterThanOrEqual(AA_NORMAL_TEXT);
+  });
+
+  it('el bloque de la franja declara su propio fondo y texto', () => {
+    expect(Object.keys(BAND_BLOCK)).toContain('--fondo');
+    expect(Object.keys(BAND_BLOCK)).toContain('--texto');
+    expect(BAND['--texto']).not.toBe('');
+  });
+});
+
+/**
+ * El modo claro se retiró, y esto es lo que impide que vuelva a medias.
+ *
+ * Un `data-mode` suelto en `tokens.css` significaría que hay una rama de color
+ * que nadie conmuta y que ninguna prueba mira: el peor de los dos mundos.
+ */
+describe('el sitio tiene un solo esquema', () => {
+  it('no queda ningún selector de modo en los tokens', () => {
+    // El corchete es lo que distingue un selector de la prosa del encabezado,
+    // que menciona `data-mode` para explicar qué se retiró y por qué.
+    expect(TOKENS_CSS).not.toContain('[data-mode');
+  });
+
+  it('la raíz declara color-scheme dark para los widgets del navegador', () => {
+    expect(blockOf(TOKENS_CSS, ':root')).toContain('color-scheme: dark');
+  });
+});
 
 describe('contraste AA de los tokens', () => {
   it.each(PALETTES)('$name: el texto principal cumple AA sobre los dos fondos', ({ tokens }) => {
@@ -152,8 +226,26 @@ describe('contraste AA de los tokens', () => {
   });
 
   it('la franja invertida redefine también el fondo secundario', () => {
-    expect(tokensOf("html[data-mode='dark'] .inv")['--fondo-2']).toBeDefined();
-    expect(tokensOf("html[data-mode='light'] .inv")['--fondo-2']).toBeDefined();
+    expect(BAND_BLOCK['--fondo-2']).toBeDefined();
+  });
+
+  /*
+   * El borde del campo es lo único que le dice al visitante dónde escribe. Con
+   * `--linea` daba 1.28:1 en claro y 1.31:1 en oscuro: se reportó que los
+   * campos "no se ven". Estas dos pruebas son las que no dejan que vuelva a
+   * pasar, y por eso miran el CSS de verdad y no solo el token.
+   */
+  it.each(PALETTES)('$name: el borde de un control se distingue del fondo', ({ tokens }) => {
+    expect(ratioIn(tokens, '--linea-control', '--fondo')).toBeGreaterThanOrEqual(AA_NON_TEXT);
+    expect(ratioIn(tokens, '--linea-control', '--fondo-2')).toBeGreaterThanOrEqual(AA_NON_TEXT);
+  });
+
+  it('los campos y el botón de contorno no usan la línea decorativa como borde', () => {
+    const controlRule = /\.field input,[\s\S]*?\}/.exec(FIELD_CSS)?.[0] ?? '';
+
+    expect(controlRule).toContain('var(--linea-control)');
+    expect(controlRule).not.toMatch(/border[^;]*var\(--linea\)/);
+    expect(BUTTON_CSS).not.toMatch(/border-color:\s*var\(--linea\)/);
   });
 
   it('el marcador de posición no usa el token decorativo', () => {
@@ -187,30 +279,38 @@ describe('el color de acción de la marca', () => {
 /**
  * La paleta es transcripción del spec de marca, no una interpretación. Si
  * alguien retoca un tono en `tokens.css` sin tocar el spec —o al revés— esto se
- * entera. El spec conmuta con `[data-theme]` y el sitio con `data-mode`: la
- * diferencia es deliberada (spec §4 pide mantener el toggle existente) y es lo
- * único que esta prueba traduce.
+ * entera.
+ *
+ * **Los dos bloques del spec siguen vivos, y esa es la razón de mantener esta
+ * prueba entera.** Retirar el modo claro no borró la paleta clara: la movió de
+ * ser el esquema de la página a ser el de la franja invertida. El spec la
+ * declara en `:root` y el sitio la aplica en `.inv`; el oscuro pasa de
+ * `[data-theme="dark"]` a `html`. La traducción de nombres es todo lo que
+ * cambia.
  */
-const SPEC_BLOCKS: readonly { readonly mode: string; readonly specSelector: string }[] = [
-  { mode: "html[data-mode='light']", specSelector: ':root' },
-  { mode: "html[data-mode='dark']", specSelector: '[data-theme="dark"]' },
+const SPEC_BLOCKS: readonly {
+  readonly context: string;
+  readonly tokens: TokenMap;
+  readonly specSelector: string;
+}[] = [
+  { context: 'la franja invertida', tokens: BAND, specSelector: ':root' },
+  { context: 'la página', tokens: PAGE, specSelector: '[data-theme="dark"]' },
 ];
 
 describe('la paleta es la del spec de marca §1', () => {
-  it.each(SPEC_BLOCKS)('$mode declara los siete colores del spec', ({ mode, specSelector }) => {
+  it.each(SPEC_BLOCKS)('$context declara los siete colores del spec', ({ tokens, specSelector }) => {
     const fromSpec = declarationsIn(blockOf(BRAND_SPEC, specSelector));
-    const fromTokens = tokensOf(mode);
 
     expect(Object.keys(fromSpec)).toHaveLength(7);
 
     for (const [name, value] of Object.entries(fromSpec)) {
-      expect(fromTokens[name]?.toLowerCase()).toBe(value.toLowerCase());
+      expect(tokens[name]?.toLowerCase()).toBe(value.toLowerCase());
     }
   });
 
-  it('el modo oscuro no usa negro puro en ningún fondo (spec §4)', () => {
-    expect(DARK['--color-fondo']).not.toBe('#000000');
-    expect(DARK['--color-superficie']).not.toBe('#000000');
+  it('la página no usa negro puro en ningún fondo (spec §4)', () => {
+    expect(PAGE['--color-fondo']).not.toBe('#000000');
+    expect(PAGE['--color-superficie']).not.toBe('#000000');
   });
 });
 

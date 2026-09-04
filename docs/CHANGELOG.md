@@ -4,6 +4,155 @@ Una entrada por commit de paquete. Formato: qué se construyó, qué quedó fuer
 
 ## [Sin publicar]
 
+### P11.2 y P11.3 — Pase visual, esquema único y textos · 2026-09-02 y 03 · **fuera de la numeración**
+
+> Van en una sola entrada porque van en un solo commit. El árbol de trabajo tenía
+> P11, P11.2 y P11.3 sin commitear a la vez, y los tres tocan los mismos
+> archivos: `site-copy.ts` lleva a la vez el pase visual y la pasada de textos, y
+> no hay forma de separarlos por archivo sin inventar una historia que no ocurrió.
+> Se prefiere un commit grande y honesto a cuatro commits reconstruidos a mano.
+
+**Qué se construyó**
+
+- **Pasada de textos completa** (`content/`), con la auditoría de copia del 2 de
+  septiembre aplicada. Titular que por fin nombra las dos cosas que Noctis vende
+  y no solo la automatización, conservando «horas» y «ventas» que la prueba
+  exige. Bajada que dice de dónde son y qué hacen, en 17 palabras. «Conversemos»
+  pasa a «Pedir propuesta» con una línea que promete respuesta el mismo día
+  hábil. Los doce puntos de producto reescritos por lo que el dueño deja de
+  hacer, no por lo que el sistema tiene. Encabezado de Trabajos que cambia el
+  tema de cuántos a cuánto se enseña.
+- **Servicios pasa de cinco a seis: entra «Página web nueva».** Era lo más raro
+  que tenía el sitio, y no era de redacción: lo que más se enseñaba —seis páginas
+  en la banda, dos en el portafolio, «Páginas web» en la marquesina— no estaba a
+  la venta en la lista de servicios. «Mejora» pasa a «Rediseño», que es la
+  palabra que escribe quien busca.
+- **Preguntas pasa de cuatro a siete.** Las cuatro que había contestaban
+  objeciones técnicas; las nuevas contestan las humanas, que son las que frenan a
+  un dueño de PYME: quiénes son, si un negocio chico les interesa, si atienden
+  fuera de Loja.
+- **El sitio deja de ser anónimo.** Razón social, RUC, dirección, correo,
+  WhatsApp y horario en el pie, desde `content/site.ts`. Era el freno más caro
+  que tenía: una empresa de software que vende a distancia y no dice quién es se
+  parece demasiado a nadie.
+- **El número de WhatsApp sale de las variables de entorno** y pasa a
+  `content/site.ts`, con su mensaje precargado. `WHATSAPP_NUMERO` existía porque
+  el dato era C3 y no se podía incrustar; confirmado el dato, un número que se
+  pinta en un botón visible es contenido y no configuración. Con eso se va el
+  caso de «no hay número», que ya no puede darse.
+- **Corregido un texto que mandaba a mirar donde no había nada**: el apoyo de
+  Lenguajes decía que Burnout estaba «aquí abajo» y Burnout está en Trabajos, que
+  va antes.
+- Los catorce hallazgos del diagnóstico visual del 2 de septiembre
+  (`docs/auditoria-ux/diagnostico-visual-2026-09-02.html`), cerrados en siete
+  palancas. Lo medido sobre la página servida: la portada baja de 1011 px a
+  570 px y entra en el visor, el titular de cuatro líneas a dos, la bajada de 32
+  palabras a 20, los rótulos en versalita de 17 a 1, las imágenes de 0 a 6, las
+  escalas de radio de 4 a 3 con regla escrita, y las inversiones de tema de 2 a 1.
+- **El registro nocturno salió de la portada** a su propia banda. La portada
+  llevaba seis bloques y no cabía; ningún ajuste de márgenes arregla eso.
+- **Dos destinos rotos, cerrados.** `/privacidad` existe —el pie lo enlazaba
+  desde P11 y daba 404, con un formulario que pide nombre, correo y WhatsApp— y
+  el botón «Ver trabajos» de la portada ahora se filtra con la misma condición
+  que ya filtraba el enlace del menú.
+- **La barra voltea sobre la franja invertida**, con su vidrio, su texto y su
+  logotipo. Fuera de la capa de animación, porque tiene que funcionar también con
+  movimiento reducido y en móvil.
+- **El foco de teclado vuelve al formulario.** `field.module.css` lo apagaba con
+  `outline: none` en el único sitio del sitio donde alguien escribe.
+- **El catálogo real.** Fuera «Reclutamiento por chat», que es un proyecto aparte
+  y no un producto de esta página: quedan tres. Care enlaza a su sitio vivo en
+  `care.noctisdev.online`, y el nombre del producto **es** el enlace.
+- **Burnout, el primer trabajo del portafolio**, con captura real del sitio y por
+  el camino normal: una fila en la base, la misma que llena el panel. La rejilla
+  de trabajos ahora se adapta al número de piezas publicadas.
+- **Recorridos en vídeo a 1920×1200.** Cada trabajo puede llevar un MP4 que baja
+  por la página entregada de arriba abajo. Se montan fotograma a fotograma, no
+  con el grabador de Playwright, que comprime a VP8 con poco bitrate y deja un
+  máster del que ya no se recupera nitidez. No se descargan al abrir la página:
+  `preload="none"` y un `IntersectionObserver` los arrancan al llegar. `Work.tourUrl` en el dominio, columna nueva
+  con su migración, campo en el panel y `video/mp4` admitido en el almacén de
+  medios con un tope propio de 12 MB. Con `prefers-reduced-motion` no arranca
+  solo: se pausa y aparecen los controles.
+- **Care entra al portafolio** con su recorrido y su enlace; Burnout, con
+  recorrido y sin enlace hasta que su DNS apunte. La sección dejó de ser una
+  grilla de tres columnas y pasó a ser una lista a ancho completo con los lados
+  alternados: un recorrido en un tercio de ancho se ve como un sello.
+- **Sección de lenguajes de diseño**: cuatro tableros —minimalista, editorial,
+  brutalista y oscuro cinematográfico— que enseñan el rango sin romper la
+  coherencia de la página.
+- **Banda de cifras entre la marquesina y Productos.** Seis páginas web, cuatro
+  CRM, cuatro automatizaciones y tres productos propios, con contador que sube al
+  entrar en pantalla. La cifra de productos **se deriva** de `content/products.ts`
+  en vez de escribirse. Las otras tres son trabajo entregado a clientes que
+  pidieron no salir publicados, así que la banda cuenta catorce proyectos y el
+  portafolio enseña dos. Llevó una nota que explicaba ese hueco y se retiró a
+  pedido del usuario: sonaba a disculpa.
+- **El sitio se queda solo en oscuro.** Fuera el conmutador de la barra, el
+  script de modo del `<head>`, `localStorage`, el barrido circular (RA-06) y el
+  observador de `data-mode` del cielo. La paleta clara **no se borró**: pasó a
+  ser exclusivamente la de la franja invertida, que es donde el spec de marca la
+  sigue exigiendo. `color-scheme: dark` en la raíz para que los widgets del
+  navegador dejen de salir en claro.
+
+**Qué quedó fuera**
+
+- **Burnout va sin enlace.** `burnout.ec` no resuelve y el README del propio
+  proyecto dice que el despliegue no es lanzable: el formulario no envía, no hay
+  textos legales y la indexación está bloqueada.
+- Las capturas de producto son **ejemplos compuestos**; la de Burnout, en cambio,
+  es una captura real. Se reemplazan cambiando una ruta en `content/products.ts`.
+- `SPEC.md` §5.1 sigue diciendo cuatro productos y hay que bajarlo a tres.
+- El ritmo vertical idéntico de las secciones (hallazgo 12) y las violaciones de
+  `style-src` (hallazgo 14): los dos de gravedad baja, los dos para Pf.
+
+**Qué se decidió**
+
+- **D13 pasa a verde: el sitio publica precios, como pisos.** Página nueva desde
+  USD 890 cotizada por fases; productos desde USD 39 al mes más USD 90 de puesta
+  en marcha. «Depende del alcance» es lo que contesta todo el mundo y por eso no
+  tranquiliza a nadie: sin un piso, el que tiene presupuesto no se anima y el que
+  no lo tiene escribe igual. **El fondo de RN5 no se movió**: son pisos, no
+  tarifas cerradas, siguen derivando a proforma y el bot sigue sin poder inventar
+  un número. La prueba que prohibía toda cifra se reescribió para vigilar eso en
+  vez de borrarse, y comprueba los tres montos uno por uno.
+- **La promesa de respuesta el mismo día hábil se publica en dos sitios**, bajo
+  el botón de portada y bajo el de envío. Solo vale si se cumple: una promesa de
+  respuesta incumplida hace más daño que no prometer, porque el visitante la usa
+  para medir si el resto de la página también es verdad.
+- **Ninguna cifra de la banda es de relleno, y la nota que la acompaña no es
+  letra chica.** Se pidió publicar «más de 20 páginas» como recurso de venta. No
+  se hizo: es la cifra que un prospecto contrasta justo antes de firmar, choca
+  con RN8 y repetiría el error del adaptador de portafolio con clientes
+  inventados que este mismo paquete borró. Lo que se hizo fue contar el trabajo
+  real: seis, cuatro, cuatro y tres, confirmados el 3 de septiembre de 2026. Las
+  páginas son seis y no cinco porque Burnout también es un encargo; Care queda
+  fuera de la cuenta por ser la página de un producto propio.
+- **La banda no explica por qué el portafolio enseña menos.** Se escribió una nota
+  que lo hacía y se retiró el mismo día, por decisión del usuario: dicha desde el
+  cliente que no autorizó, sonaba a disculpa. Si el hueco vuelve a cerrarse, será
+  desde la política propia —«no publicamos el nombre de un cliente sin su
+  permiso»— y en el encabezado de Trabajos, no en la banda.
+- La única inversión de tema de la página es la de cierre. Servicios vuelve al
+  esquema de la página y se separa por elevación, no por color.
+- Los rótulos de sección se fueron enteros: los cuatro repetían palabra por
+  palabra el enlace del menú que acababa de traer al visitante hasta ahí.
+- **Nada de clientes inventados.** Durante el pase existió un adaptador con tres
+  trabajos de ejemplo; se eliminó en cuanto entró un trabajo real. Mezclar
+  ficticios con reales en una sección que dice «son los que el cliente autorizó a
+  mostrar» no tiene defensa.
+- **El rango de diseño se enseña en tableros, no mezclando estilos.** Una página
+  minimalista arriba y brutalista abajo no se lee como versátil.
+- El titular de trabajos dejó de afirmar que todo lo listado está publicado. Solo
+  es cierto de lo que lleva enlace.
+- **Un solo esquema de color.** Mantener el claro obligaba a validar dos veces
+  cada decisión visual, y el sitio se llama Noctis: la marca, el cielo de la
+  portada y los recorridos en vídeo están construidos sobre el oscuro. La paleta
+  de la página se movió de `html[data-mode='dark']` a `html` —(0,0,1) en vez de
+  (0,1,1)— para que `.inv` gane por especificidad y no por orden del archivo.
+- **RA-06 se cierra por retirada de alcance, no por incumplimiento.** Sin dos
+  esquemas no hay nada entre lo que barrer.
+
 ### P3.1 — Capa de movimiento expresiva · 2026-08-14 · **fuera de la numeración**
 
 **Qué se construyó**

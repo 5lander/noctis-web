@@ -1,0 +1,50 @@
+/*
+ * La banda va pegada a la portada, sin el respiro de una sección normal.
+ *
+ * Es continuación de lo que dice el titular, no un apartado nuevo: si llevara
+ * los 118 px de las demás secciones, se leería como si empezara otro tema. El
+ * filete de arriba es el mismo recurso que separa secciones, a media opacidad.
+ */
+.band {
+  position: relative;
+  padding: 34px 0 52px;
+}
+
+.band::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: var(--linea);
+}
+
+.inner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.place {
+  display: block;
+}
+
+.log {
+  display: block;
+}
+
+@media (max-width: 1000px) {
+  .band {
+    padding: 26px 0 40px;
+  }
+
+  .inner {
+    align-items: flex-start;
+    gap: 22px;
+  }
+
+  .log {
+    width: 100%;
+  }
+}

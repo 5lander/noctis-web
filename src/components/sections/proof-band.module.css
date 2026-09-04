@@ -1,0 +1,121 @@
+/*
+ * La banda de cifras.
+ *
+ * No es una fila de tarjetas, a propósito. Cuatro cajas con borde y sombra
+ * competirían con las tarjetas de producto que vienen justo debajo y la página
+ * se leería como dos grillas seguidas. Acá lo único que separa una cifra de la
+ * siguiente es una línea vertical de 1 px: el peso lo lleva el número, que es lo
+ * que tiene que leerse de un vistazo.
+ */
+.band {
+  padding: 64px 0;
+  border-top: 1px solid var(--linea);
+  border-bottom: 1px solid var(--linea);
+}
+
+.figures {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+}
+
+/*
+ * La separación va en el borde izquierdo y la primera columna no lo lleva. Con
+ * `gap` más borde, la línea quedaría flotando a media distancia entre dos
+ * cifras en vez de partirlas.
+ */
+.figure {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 30px;
+  border-left: 1px solid var(--linea);
+}
+
+.figure:first-child {
+  border-left: none;
+  padding-left: 0;
+}
+
+.value {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(46px, 5.2vw, 72px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  /*
+   * Sin esto el número se encoge y se ensancha mientras el contador sube, y la
+   * línea de abajo baila con él. Las cifras tabulares tienen todas el mismo
+   * ancho, así que el bloque queda quieto.
+   */
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  align-items: baseline;
+}
+
+/* El sufijo es la unidad, no la cifra: pesa la mitad y no compite. */
+.suffix {
+  font-size: 0.46em;
+  letter-spacing: 0;
+  color: var(--texto-2);
+}
+
+.meaning {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-accion);
+}
+
+.detail {
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--texto-2);
+  max-width: 30ch;
+}
+
+@media (max-width: 900px) {
+  .band {
+    padding: 48px 0;
+  }
+
+  .figures {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 36px 0;
+  }
+
+  /*
+   * En dos columnas la línea correcta es la del medio, y las de la izquierda de
+   * cada fila sobran. `nth-child(odd)` es exactamente la primera de cada fila.
+   */
+  .figure:nth-child(odd) {
+    border-left: none;
+    padding-left: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .figures {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 30px 0;
+  }
+
+  .figure,
+  .figure:nth-child(odd) {
+    border-left: none;
+    padding: 0;
+  }
+
+  .detail {
+    max-width: none;
+  }
+}

@@ -6,8 +6,8 @@
 ## Dónde va el proyecto
 
 **Paquete actual:** P6 — API de agendamiento (siguiente)
-**Último commit de paquete:** P3.1 — Capa de movimiento expresiva (fuera de la numeración, después de P5)
-**Fecha de última actualización:** 2026-08-14
+**Último commit de paquete:** P11.2 — Pase visual y rango de diseño (fuera de la numeración original)
+**Fecha de última actualización:** 2026-09-03
 **Modo:** ⏸️ P3.1 se construyó en autonomía hasta el commit, a pedido. P6 en adelante espera confirmación del usuario.
 
 ## Paquetes
@@ -15,7 +15,7 @@
 | # | Paquete | Estado |
 |---|---|---|
 | P0 | Fundación | ✅ Cerrado · 2026-08-14 · `6d69dc7` |
-| P1 | Sistema de diseño y modo claro/oscuro | ✅ Cerrado · 2026-08-14 · `e8466b9` |
+| P1 | Sistema de diseño y modo claro/oscuro | ✅ Cerrado · 2026-08-14 · `e8466b9`. **El modo claro se retiró en P11.3**: la paleta clara sobrevive como franja invertida |
 | P2 | Contenido tipado y secciones estáticas | ✅ Cerrado · 2026-08-14 · `65eb06d` |
 | P3 | Capa de animación GSAP | ✅ Cerrado · 2026-08-14 · `c4fc55f` |
 | P3.1 | Capa de movimiento expresiva (fuera de numeración) | ✅ Cerrado · 2026-08-14 |
@@ -25,7 +25,10 @@
 | P7 | Agendador en la interfaz | ⬜ Pendiente |
 | P8 | Bot conversacional | ⬜ Pendiente |
 | P9 | Correo transaccional | ⬜ Pendiente |
-| P10 | Formulario de contacto y portafolio | ⬜ Pendiente |
+| P10 | Formulario de contacto (el portafolio se adelantó a P11) | ⬜ Pendiente |
+| P11 | Portafolio administrable, cierre público y profundidad visual | ✅ Cerrado · 2026-08-16 |
+| P11.2 | Pase visual y rango de diseño (fuera de numeración) | ✅ Cerrado · 2026-09-02 |
+| P11.3 | Esquema único oscuro, banda de cifras y pasada de textos (fuera de numeración) | ✅ Cerrado · 2026-09-03 |
 | Pf | Endurecimiento y auditoría completa | ⬜ Pendiente |
 | P12 | Conexión de servicios reales | ⬜ Pendiente |
 
@@ -48,6 +51,7 @@ Estados: ⬜ Pendiente · 🔄 En curso · ✅ Cerrado
 | 2026-08-14 | **D15 cerrado**: GSAP es gratuito por completo desde 2025, plugins incluidos. El paquete de npm ya los traía: no hubo nada que instalar | [0012](docs/decisiones/ADR-0012-licencia-de-gsap-resuelta.md) |
 | 2026-08-14 | El criterio de animación gira: de "que no se note" a "que se note". `ANIMACION.md` pasa a v2.0 con nueve requisitos nuevos. **Decisión del usuario** | [0013](docs/decisiones/ADR-0013-criterio-de-animacion-expresivo.md) |
 | 2026-08-14 | `three` como dependencia de producción para el cielo de la portada, autorizada explícitamente, con el uso acotado y la salida escrita si el presupuesto de Pf no da | [0014](docs/decisiones/ADR-0014-three-js-para-el-cielo-de-la-portada.md) |
+| 2026-08-16 | Portafolio en SQLite con `node:sqlite`, sin ORM: es lo único que corre en un hosting compartido sin compilar nada. Detrás de un puerto, así que PostgreSQL es un archivo nuevo | [0015](docs/decisiones/ADR-0015-portafolio-en-sqlite-sin-orm.md) |
 | 2026-08-14 | Rebrand: la paleta vive en dos capas (los siete `--color-*` del spec de marca + los alias cortos que consumen los componentes) y el logotipo se sirve como imagen de fondo, no como SVG copiado en un componente | [0011](docs/decisiones/ADR-0011-paleta-de-marca-en-dos-capas-y-logo-como-imagen.md) |
 
 ## Dudas abiertas
@@ -64,6 +68,121 @@ Estados: ⬜ Pendiente · 🔄 En curso · ✅ Cerrado
 - **El camino crítico del proyecto es P5.** El motor de disponibilidad es el componente central del dominio: si queda mal, la prueba de arquitectura falla y P6, P7 y P8 se construyen sobre arena. Se prueba sin base de datos, sin red y sin Google Calendar
 - **Este proyecto construye completo primero y endurece en Pf.** Ver la adaptación deliberada en `CLAUDE.md` §0
 - **Los adaptadores simulados no se descartan.** Son el entorno de pruebas y el modo demostración comercial
+
+### Lo que dejó P11.2 y hay que usar, no reinventar
+
+Nace del **diagnóstico visual del 2 de septiembre**
+(`docs/auditoria-ux/diagnostico-visual-2026-09-02.html`), que midió catorce
+hallazgos sobre la página servida. El detalle está en
+`docs/pasos/P11.2/CONSTRUCCION.md`.
+
+| Necesito… | Ya existe en |
+|---|---|
+| Una imagen del sitio | `SiteImage` en `content/types.ts`. **El texto alternativo va en `content/`**, no en el componente |
+| Añadir un trabajo al portafolio | El panel en `/admin`. **No inventes clientes**: un adaptador con trabajos ficticios se probó y se retiró |
+| Subir un recorrido en vídeo | Campo del formulario de trabajo. MP4, tope de 12 MB, sin sonido |
+| Añadir una columna a una tabla del portafolio | `COLUMNAS_AGREGADAS` en el adaptador de SQLite. `CREATE TABLE IF NOT EXISTS` no toca una tabla que ya existe |
+| Enseñar un lenguaje de diseño nuevo | `content/design-languages.ts` más su tablero en `public/lenguaje/` |
+| Un radio de esquina | `--borde`, `--borde-control` o `--borde-circulo`. La regla por tamaño de objeto está escrita en `tokens.css` |
+| Que la barra reaccione a una franja | Ya lo hace `NavContrast`. Basta con que la sección lleve la clase `inv` |
+
+**Tres trampas que costaron tiempo y volverán a costarlo:**
+
+1. **Una sección nueva con `[data-anim]` dentro necesita `data-reveal-root`.**
+   `revealSections()` solo recorre las raíces marcadas. Sin el atributo, la pieza
+   se queda en opacidad cero para siempre y parece que no existe.
+2. **Un token que referencia a otro se resuelve donde se declara, no donde se
+   usa.** `--barra-fondo` se declara en la raíz, así que hereda el color ya
+   resuelto: para voltearlo hay que volver a declararlo sobre el elemento. Está
+   documentado en `tokens.css`, junto al token.
+3. **`contrast.spec.ts` localiza los bloques por `"<selector> {"`.** Si se agrupa
+   un selector con `.inv`, `.inv` tiene que quedar **el último** de la lista o la
+   prueba deja de encontrar el bloque.
+
+**Burnout va sin enlace a propósito**, hasta que su DNS apunte. Basta con poner
+su `href` desde el panel y la tarjeta pasa a enlazar sola.
+
+**Los recorridos se montan fotograma a fotograma, no con el grabador de
+Playwright.** Ese grabador comprime a VP8 con poco bitrate y desde su máster no
+se recupera nitidez re-codificando. Se avanza el scroll 15 px por fotograma, se
+captura, y ffmpeg monta a 24 fps: máster limpio a 1920×1200. Y si la página que
+se graba declara `scroll-behavior: smooth`, hay que anularlo antes o el recorrido
+se queda clavado en la portada.
+
+**Rótulos en versalita: el presupuesto es 2 en toda la página.** Hoy hay 1, el de
+lugar en la banda del registro nocturno. Antes había 17 y era la razón principal
+de que el sitio se leyera como plantilla.
+
+### Lo que dejó P11 y hay que usar, no reinventar
+
+**Este paquete nació de la auditoría UX del 16 de agosto** (`docs/auditoria-ux/`).
+No estaba en el plan original: cierra los cuatro hallazgos críticos y el hueco de
+plan que la auditoría encontró — metadatos, Open Graph, sitemap y robots estaban
+en `SPEC.md` §12 como «Fase 4 — cierre» y no habían quedado asignados a ningún
+paquete al renumerar a P0–P12.
+
+| Necesito… | Ya existe en |
+|---|---|
+| Trabajos o clientes | `services.portfolio` del registro de servicios. **Nunca leas la base directamente desde un componente** |
+| Cargar un trabajo | `/admin`, con `ADMIN_CLAVE` y `ADMIN_SECRETO` puestas. Sin ellas la ruta devuelve 404 |
+| Cambiar dónde se guarda | `PORTAFOLIO_ADAPTER` y `SQLITE_RUTA`. Para hosting sin disco, un adaptador nuevo detrás de `PortfolioRepositoryPort` |
+| Una imagen subida | Se sirve por `/media/[name]`. **No van a `public/`**: el despliegue las borraría |
+| Profundidad en una superficie nueva | `--superficie-2`, `--realce`, `--sombra-2` y `--sombra-3` de `tokens.css`. **Los siete `--color-*` no se tocan**: son el spec de marca y `contrast.spec.ts` los compara uno a uno |
+| Un separador de sección | El `::before` degradado de `section.module.css`, no un `border-top` |
+
+### Trampas de P11
+
+- **La barra ya no se esconde.** `effects/nav-bar.ts` solo condensa y escribe
+  `data-nav-condensed` en el `<html>`. Si alguien vuelve a mover la barra con
+  `yPercent`, se pierde la única llamada a la acción persistente del sitio.
+- **`SITIO_URL` tiene que estar puesta durante `npm run build`.** `robots.txt` y
+  `sitemap.xml` son estáticos y se generan ahí: sin la variable salen sin la
+  línea de sitemap y con la lista vacía, y el fallo no se ve hasta producción.
+- **`SQLITE_RUTA` y `MEDIOS_RUTA` fuera de la carpeta que borra el despliegue.**
+  Si el hosting reemplaza el directorio de la aplicación al publicar, el
+  portafolio se vacía en cada publicación.
+- **La cookie del panel decide `Secure` por el anfitrión, no por `NODE_ENV`.** La
+  primera versión usaba `NODE_ENV`, y un `next start` local sobre `http://` —que
+  es producción— emitía una cookie que el navegador descartaba: el panel pedía la
+  clave sin parar y sin decir por qué. Lo encontró la prueba de extremo a
+  extremo, no una revisión de código.
+- **El limitador de acceso va por origen, no por clave fija.** Con clave fija,
+  cualquiera que fallara cinco veces dejaba fuera también al dueño.
+- **El cielo de la portada se pide solo si se va a ver.** `hero-sky-lazy.tsx`
+  comprueba movimiento reducido, WebGL y ahorro de datos **antes** de importar.
+  Un `dynamic()` a secas no ahorra nada: el trozo se descarga igual. Medido: 325
+  KB de JavaScript en el caso normal, 197 KB con movimiento reducido.
+- **Una portada invertida tiene que voltear también `--realce`.** Si no, en modo
+  claro la tarjeta oscura recibe el realce blanco y le cruza una barra por el
+  borde superior. Es la misma clase de error que `.inv` ya documentaba.
+- **El titular cambió de metáfora a pérdida concreta.** Era «Su negocio no
+  cierra a las seis»; ahora es «Cada tarea repetida le cuesta horas y ventas».
+  Decisión del usuario: que se entienda que lo que se vende es ahorro de tiempo
+  y de dinero. Dos consecuencias que hay que conocer antes de tocar nada:
+  **el pie ya no repite el titular** —`SPEC.md` §6.11 lo pedía, pero cerrar una
+  página de venta recordando la pérdida es cerrar en el punto más bajo, así que
+  abre con el problema y cierra con el estado al que se llega— y **el rótulo del
+  registro nocturno pasó a ser «Ejemplo · una noche sin nadie atendiendo»**, que
+  es lo que evita que el cielo, la luna y el nombre se queden sin argumento al
+  salir la metáfora de la noche del titular. Tres pruebas de `content.spec.ts`
+  fijan las tres cosas.
+- **El alto de la portada está calibrado, no elegido.** El titular nuevo ocupa
+  tres líneas y empujó los botones de 645 px a 833 px en 1440×900 — a un pelo del
+  borde, y fuera de pantalla en una laptop de 768 px de alto. Se corrigió con
+  tamaño, relleno y una consulta `@media (max-height: 820px)`. Si alguien alarga
+  el titular, **hay que volver a medir dónde cae el botón**: está en
+  `docs/auditoria-ux/` por qué eso importa.
+- **`content/works.ts` no existe y no debe volver.** Hay una prueba que falla si
+  alguien lo recrea: los trabajos son datos, no contenido escrito a mano.
+
+### Lo que sigue pendiente después de P11
+
+| # | Qué falta | Bloquea |
+|---|---|---|
+| C3 | Número real de WhatsApp en `WHATSAPP_NUMERO` | El botón flotante y el enlace del pie no se pintan sin él |
+| C4 | Aviso de privacidad redactado y publicado en `/privacidad` | **El formulario ya enlaza a esa ruta y todavía no existe.** Es lo primero que hay que cerrar antes de publicar |
+| — | RUC, razón social, dirección, correo y teléfono en `FOOTER` | Cada línea vacía simplemente no se pinta, pero el pie queda sin identidad verificable |
+| P10 | `POST /api/contacto` | El formulario sigue respondiendo 404 al enviar |
 
 ### Lo que dejó P5 y hay que usar, no reinventar
 
@@ -207,7 +326,7 @@ logo: el vidrio esmerilado en superficies flotantes más allá de la barra
 | Un color, un tamaño, una curva | `src/styles/tokens.css`. **Ni un valor literal dentro de un componente** |
 | Un botón, un campo, una etiqueta, un estado, un acordeón | `src/components/ui/`. En inglés: `Button`, `Field`, `Label`, `Status`, `Accordion` (ADR-0008) |
 | Una franja con el esquema contrario | La clase `.inv`. Redefine también `--fondo-2`, que el prototipo no hacía |
-| Cambiar el modo | `src/components/theme/`. El modo vive en `data-mode` del `<html>`, no en estado de React |
+| Cambiar el modo | **Ya no se cambia.** El sitio es oscuro y punto: P11.2 retiró el conmutador, el script de modo y `data-mode`. La paleta clara sigue viva como franja invertida |
 | Un `aria-label` o microcopia | `src/content/ui.ts` |
 
 ### Lo que dejó P0 y hay que usar, no reinventar
@@ -231,15 +350,17 @@ logo: el vidrio esmerilado en superficies flotantes más allá de la barra
 
 ### Trampas de P1
 
-- **El `<html>` sale del servidor con `data-mode`.** Sin atributo no hay un solo
-  token de color definido: la página sin JavaScript se quedaba sin paleta
+- **El `<html>` salía del servidor con `data-mode` porque sin atributo no había
+  un solo token de color definido.** Ya no hace falta: desde P11.2 la paleta vive
+  en `html` a secas y no depende de ningún atributo. Si alguien vuelve a meter
+  color detrás de un selector de estado, esta trampa vuelve con él
 - React escapa las comillas de `<script>{código}</script>`, y dentro de un
   `<script>` el navegador no decodifica entidades. Un script en línea necesita
   `dangerouslySetInnerHTML`; hay **una** excepción declarada en
   `audit:forbidden` y se imprime en cada corrida
 - `--texto-3` es **decorativo**: puntos, separadores, líneas y contenido con
-  `aria-hidden`. En modo claro da 2.79:1. Si se necesita texto secundario, es
-  `--texto-2`
+  `aria-hidden`. Dentro de la franja invertida da 2.79:1. Si se necesita texto
+  secundario, es `--texto-2`
 - Los umbrales de complejidad muerden de verdad: una página de vista previa con
   cinco secciones pasó de 40 líneas y hubo que partirla
 
@@ -262,3 +383,23 @@ logo: el vidrio esmerilado en superficies flotantes más allá de la barra
 npm ci && npm run audit && npm run build && npm start
 curl -s localhost:3000/api/estado     # → {"estado":"ok","modo":"demo"}
 ```
+
+
+## Pendiente fuera del sitio — contabilidad y RUC
+
+Anotado el 3 de septiembre de 2026, al publicar los precios. **Nada de esto
+bloquea la publicación de la página**, pero conviene resolverlo antes de facturar
+el primer proyecto. Los tres puntos requieren confirmación de un contador: acá se
+dejan escritos para que no se pierdan, no como asesoría.
+
+1. **Las actividades registradas en el RUC cubren solo sistemas de comprobantes
+   electrónicos.** No incluyen páginas web ni software de gestión, que es lo que
+   la página vende desde hoy. Hay que agregar las actividades que correspondan.
+2. **El techo de USD 20.000 anuales del régimen actual se alcanza en un año
+   bueno** con los montos publicados (página desde USD 890, suscripción desde
+   USD 39 al mes más USD 90 de puesta en marcha). Conviene prever la migración
+   antes de llegar, no después.
+3. **La proforma debe decir que los valores no incluyen impuestos.** Así, el día
+   que cambie el régimen, el número publicado en el sitio no se mueve.
+
+Queda como C5 en `DECISIONES.md`.

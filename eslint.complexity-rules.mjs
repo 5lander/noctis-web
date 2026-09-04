@@ -21,4 +21,10 @@ export const IGNORED_PATHS = [
   'coverage/**',
   'report/**',
   'next-env.d.ts',
+  // Copias de trabajo que quedaron de P11. Están en `.gitignore`, pero eso no
+  // las esconde de las herramientas: hasta que se excluyeron acá y en
+  // `tsconfig.json`, `audit:types` y `audit:lint` fallaban por archivos que ya
+  // nadie considera parte del proyecto, y un check que falla por ruido es un
+  // check que se termina ignorando.
+  '_to_delete/**',
 ];

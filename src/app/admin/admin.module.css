@@ -1,0 +1,249 @@
+/*
+ * El panel usa los tokens del sitio, no una hoja aparte.
+ *
+ * No es coherencia por gusto: si el panel tuviera su propia paleta, el día que
+ * cambie un color de marca habría dos sitios donde cambiarlo y uno se olvidaría.
+ * Lo único propio de acá es la densidad — una tabla de trabajos quiere filas
+ * apretadas, no el aire de una portada.
+ */
+
+.shell {
+  min-height: 100dvh;
+  background: var(--fondo);
+  color: var(--texto);
+}
+
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 14px 24px;
+  background: var(--barra-fondo);
+  backdrop-filter: var(--barra-filtro);
+  border-bottom: 1px solid var(--linea);
+}
+
+.bar strong {
+  font-family: var(--display);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.bar nav {
+  display: flex;
+  gap: 16px;
+  margin-left: auto;
+  font-size: 0.9rem;
+}
+
+.bar a,
+.bar button {
+  color: var(--texto-2);
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 4px 2px;
+}
+
+.bar a:hover,
+.bar button:hover {
+  color: var(--texto);
+}
+
+.main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 24px 96px;
+  display: grid;
+  gap: 48px;
+}
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.head h2 {
+  font-family: var(--display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+
+.head p {
+  margin: 0;
+  color: var(--texto-2);
+  font-size: 0.92rem;
+  max-width: 62ch;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.table th {
+  text-align: left;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--texto-2);
+  font-weight: 500;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--linea-control);
+}
+
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--linea);
+  vertical-align: middle;
+}
+
+.table tr:hover td {
+  background: var(--fondo-2);
+}
+
+.thumb {
+  width: 68px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: var(--borde-control);
+  border: 1px solid var(--linea);
+  display: block;
+}
+
+.rowActions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.rowActions form {
+  display: contents;
+}
+
+.empty {
+  padding: 32px 12px;
+  color: var(--texto-2);
+  border: 1px dashed var(--linea-control);
+  border-radius: var(--borde);
+  text-align: center;
+}
+
+.pill {
+  display: inline-block;
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--linea-control);
+  color: var(--texto-2);
+}
+
+.pillOn {
+  border-color: transparent;
+  background: var(--color-accion);
+  color: var(--fondo);
+}
+
+.form {
+  display: grid;
+  gap: 22px;
+  max-width: 720px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.hint {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: var(--texto-2);
+}
+
+.formActions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding-top: 8px;
+}
+
+.danger {
+  margin-left: auto;
+}
+
+.notice {
+  padding: 12px 16px;
+  border-radius: var(--borde-control);
+  border: 1px solid var(--linea-control);
+  background: var(--fondo-2);
+  font-size: 0.9rem;
+}
+
+.signIn {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.signInCard {
+  width: min(420px, 100%);
+  display: grid;
+  gap: 18px;
+  padding: 36px;
+  border-radius: var(--borde);
+  border: 1px solid var(--linea);
+  background: var(--fondo-2);
+  box-shadow: var(--sombra-1);
+}
+
+.signInCard h1 {
+  font-family: var(--display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.signInCard p {
+  margin: 0;
+  color: var(--texto-2);
+  font-size: 0.92rem;
+}
+
+@media (max-width: 720px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .table thead {
+    display: none;
+  }
+
+  .table td {
+    display: block;
+    border: none;
+    padding: 4px 0;
+  }
+
+  .table tr {
+    display: block;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--linea);
+  }
+}
