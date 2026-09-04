@@ -14,7 +14,12 @@
 
 export const SENT_PARAM = 'enviado';
 
-export const SENT_VALUES = {
+/*
+ * Los dos valores que puede llevar el parámetro. No se exportan: quien los
+ * necesita usa `redirectTargetFor` para escribirlos y `readSentOutcome` para
+ * leerlos, y así el formato de la URL vive en un solo archivo.
+ */
+const SENT_VALUES = {
   ok: 'si',
   failed: 'no',
 } as const;

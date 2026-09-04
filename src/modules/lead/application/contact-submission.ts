@@ -66,7 +66,8 @@ const submissionSchema = z.object({
   desde: z.coerce.number().int().min(0).default(0),
 });
 
-export type SpamSignal = 'trampa' | 'prisa';
+/** Interno: viaja dentro del veredicto, no se nombra desde fuera. */
+type SpamSignal = 'trampa' | 'prisa';
 
 export type SubmissionVerdict =
   | { readonly outcome: 'accepted'; readonly lead: Lead }
