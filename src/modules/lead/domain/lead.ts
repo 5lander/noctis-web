@@ -29,7 +29,8 @@ export const LEAD_LIMITS = {
   message: 2000,
 } as const;
 
-export type LeadField = keyof typeof LEAD_LIMITS;
+/** Interno: solo existe para escribir `LeadDraft` y recorrer los topes. */
+type LeadField = keyof typeof LEAD_LIMITS;
 
 /** Lo que llega del formulario: todo texto, porque de un formulario no sale otra cosa. */
 export type LeadDraft = Readonly<Record<LeadField, string>>;
@@ -83,11 +84,11 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_PHONE_DIGITS = 7;
 const NOT_DIGITS = /\D/g;
 
-export function isValidEmail(value: string): boolean {
+function isValidEmail(value: string): boolean {
   return EMAIL_PATTERN.test(value);
 }
 
-export function isUsablePhone(value: string): boolean {
+function isUsablePhone(value: string): boolean {
   return value.replace(NOT_DIGITS, '').length >= MIN_PHONE_DIGITS;
 }
 
