@@ -4,6 +4,56 @@ Una entrada por commit de paquete. Formato: qué se construyó, qué quedó fuer
 
 ## [Sin publicar]
 
+### P10 — Formulario de contacto y cierre público · 2026-09-04
+
+**Qué se construyó**
+
+- **`POST /api/contacto` existe.** El formulario apuntaba ahí desde P2 y ahí no
+  había nada: la vía principal de conversión devolvía 404. Ahora el módulo `lead`
+  está completo —dominio, caso de uso y ruta—, y el dominio se prueba sin
+  servidor y sin cuenta de correo, igual que el motor de disponibilidad.
+- **RN7 escrita una vez.** `hasValidContact` decide si se manda el aviso: correo
+  bien formado **o** número de al menos siete dígitos. Sin ninguno de los dos no
+  hay correo, porque una bandeja con un aviso por cada curioso se deja de mirar.
+- **Dos badenes anti-automatización.** Un campo trampa que nadie ve, y un control
+  de prisa cuyo instante de partida **lo sella el servidor al pintar**, no un
+  guion: por eso la comprobación sigue valiendo sin JavaScript. Un envío que huele
+  a robot recibe `200` igual que uno bueno; solo uno de los dos genera correo.
+- **El formulario funciona sin JavaScript.** El `<form>` conserva `action` y
+  `method`; sin guion, la ruta contesta `303` a `/?enviado=si#contacto` y la
+  portada pinta el mismo mensaje.
+- **Tarjeta social.** `opengraph-image.jpg` a 1200×630, generada por
+  `npm run og:generar`, que **lee el titular de `content/`** y se cae si no lo
+  encuentra en vez de inventarlo. Hasta hoy el enlace compartido por WhatsApp
+  llegaba como texto pelado.
+- **Página 404 del sitio.** Antes salía la de Next: fondo claro, tipografía del
+  sistema y en inglés, en un sitio de un solo esquema oscuro.
+- **Burnout enlaza a `https://burnout.ec`**, que ya está en línea.
+
+**Tres fallos que solo aparecieron verificando en navegador**
+
+- **El `IntersectionObserver` de los recorridos nunca funcionó.** ScrollSmoother
+  mueve el contenido con `transform` y un observador de intersección no mira las
+  transformaciones de un ancestro: se comprobó con uno propio, que avisó una vez
+  al crearse y siguió callado mientras el vídeo pasaba de +2974 px a −9203 px. El
+  recorrido seguía andando fuera de pantalla. Se cambió por una comprobación
+  colgada de `timeupdate`, que además rebobina — un recorrido que quedó congelado
+  a mitad de página se lee como que arrancó solo.
+- **La confirmación del envío era invisible.** Llevaba `data-anim` y nacía después
+  de que su disparador ya había corrido.
+- **La bandeja simulada mostraba otra bandeja.** En desarrollo Next evalúa el
+  registro de servicios dos veces, así que había dos `FakeMail`.
+
+**Qué quedó fuera**
+
+- Brevo real (P12), analítica (D10) y el testimonio (C2).
+
+**Decisiones**
+
+- **D5 cerrado: solo correo, sin base de datos.** La ficha vive lo que vive el
+  aviso. El día que haga falta historial, se agrega un adaptador detrás del mismo
+  puerto.
+
 ### Pendientes de P11.2 cerrados · 2026-09-03
 
 **Qué se construyó**

@@ -264,3 +264,66 @@
     order: 0;
   }
 }
+
+/*
+ * El botón que arranca el recorrido.
+ *
+ * Cubre la pieza entera porque el gesto natural es tocar la imagen, no buscar un
+ * control en una esquina. Mientras el vídeo está quieto se ve el disco; en
+ * cuanto arranca, el botón sigue ahí para poder pausar pero se vuelve invisible
+ * salvo al enfocarlo o al pasar el puntero, que es cuando hace falta.
+ */
+.play {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--texto);
+  cursor: pointer;
+  border-radius: var(--borde);
+  transition: background 0.4s var(--curva);
+}
+
+.play[data-quieto] {
+  background: color-mix(in srgb, var(--velo) 55%, transparent);
+}
+
+.playIcon {
+  width: 66px;
+  height: 66px;
+  border-radius: var(--borde-circulo);
+  background: color-mix(in srgb, var(--color-accion) 92%, transparent);
+  box-shadow: var(--sombra-2);
+  opacity: 0;
+  transform: scale(0.9);
+  transition:
+    opacity 0.35s var(--curva),
+    transform 0.35s var(--curva);
+}
+
+/* El triángulo se dibuja con bordes: un icono de tres líneas no merece un SVG. */
+.playIcon::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  margin: 24px 0 0 27px;
+  border-style: solid;
+  border-width: 9px 0 9px 15px;
+  border-color: transparent transparent transparent var(--color-fondo);
+}
+
+.play[data-quieto] .playIcon,
+.play:hover .playIcon,
+.play:focus-visible .playIcon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.work:hover .play[data-quieto] .playIcon {
+  transform: scale(1.06);
+}

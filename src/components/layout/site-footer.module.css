@@ -131,3 +131,14 @@
     grid-template-columns: 1fr;
   }
 }
+
+/*
+ * La firma abre la última línea y el año la cierra: `.rights` ya se empuja a la
+ * derecha con `margin-left: auto`, así que basta con ponerla antes. Va un punto
+ * más apagada que el resto de la línea porque es crédito, no información que el
+ * visitante haya venido a buscar.
+ */
+.credit {
+  font-size: 13px;
+  color: var(--texto-3);
+}

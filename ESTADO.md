@@ -6,8 +6,8 @@
 ## Dónde va el proyecto
 
 **Paquete actual:** P6 — API de agendamiento (siguiente)
-**Último commit de paquete:** P11.2 — Pase visual y rango de diseño (fuera de la numeración original)
-**Fecha de última actualización:** 2026-09-03
+**Último commit de paquete:** P10 — Formulario de contacto y cierre público
+**Fecha de última actualización:** 2026-09-04
 **Modo:** ⏸️ P3.1 se construyó en autonomía hasta el commit, a pedido. P6 en adelante espera confirmación del usuario.
 
 ## Paquetes
@@ -25,7 +25,7 @@
 | P7 | Agendador en la interfaz | ⬜ Pendiente |
 | P8 | Bot conversacional | ⬜ Pendiente |
 | P9 | Correo transaccional | ⬜ Pendiente |
-| P10 | Formulario de contacto (el portafolio se adelantó a P11) | ⬜ Pendiente |
+| P10 | Formulario de contacto y cierre público (el portafolio se adelantó a P11) | ✅ Cerrado · 2026-09-04 |
 | P11 | Portafolio administrable, cierre público y profundidad visual | ✅ Cerrado · 2026-08-16 |
 | P11.2 | Pase visual y rango de diseño (fuera de numeración) | ✅ Cerrado · 2026-09-02 |
 | P11.3 | Esquema único oscuro, banda de cifras y pasada de textos (fuera de numeración) | ✅ Cerrado · 2026-09-03 |
@@ -69,6 +69,37 @@ Estados: ⬜ Pendiente · 🔄 En curso · ✅ Cerrado
 - **Este proyecto construye completo primero y endurece en Pf.** Ver la adaptación deliberada en `CLAUDE.md` §0
 - **Los adaptadores simulados no se descartan.** Son el entorno de pruebas y el modo demostración comercial
 
+### Lo que dejó P10 y hay que usar, no reinventar
+
+El detalle está en `docs/pasos/P10/CONSTRUCCION.md` y el contrato del endpoint en
+`docs/apis/contacto.md`.
+
+| Necesito… | Ya existe en |
+|---|---|
+| Validar una ficha de prospecto | `createLead` en `modules/lead/domain/lead.ts`. **RN7 vive en `hasValidContact`**, en un solo lugar |
+| Mandar un aviso por correo | El caso de uso `NotifyLead`, que recibe el puerto por constructor |
+| Ver los correos que se «enviaron» | `/dev/bandeja`, solo en desarrollo |
+| Un endpoint nuevo | Copiar la forma de `api/contacto/route.ts`: límite, tope de cuerpo, veredicto de la capa de aplicación, error genérico |
+| Cambiar la tarjeta social | Editar el titular en `content/` y correr `npm run og:generar`. **No se edita la imagen a mano** |
+| Un texto de error de cara al usuario | `content/errors.ts` |
+
+**Tres trampas que costaron tiempo en este paquete y volverán a costarlo:**
+
+1. **`IntersectionObserver` no funciona dentro de `#smooth-content`.**
+   ScrollSmoother mueve el contenido con `transform`, y un observador de
+   intersección no mira las transformaciones de un ancestro. Se comprobó con un
+   observador propio: avisó una vez al crearse y nunca más, mientras el elemento
+   recorría doce mil píxeles. Usar ScrollTrigger, o un `getBoundingClientRect`
+   colgado de un evento que ya exista.
+2. **Nada que aparezca por una acción del usuario puede llevar `data-anim`.** La
+   confirmación del formulario nace después de que su disparador ya corrió, así
+   que quedaba en opacidad cero para siempre: presente para el lector de pantalla
+   e invisible para todos los demás.
+3. **En desarrollo, `service-registry` se evalúa dos veces** —Next arma un grafo
+   de módulos para las rutas y otro para las páginas—, así que cualquier estado en
+   memoria de un adaptador simulado sale duplicado. Si tiene que compartirse,
+   colgarlo de `Symbol.for` como hace la bandeja de `FakeMail`.
+
 ### Lo que dejó P11.2 y hay que usar, no reinventar
 
 Nace del **diagnóstico visual del 2 de septiembre**
@@ -99,8 +130,10 @@ hallazgos sobre la página servida. El detalle está en
    un selector con `.inv`, `.inv` tiene que quedar **el último** de la lista o la
    prueba deja de encontrar el bloque.
 
-**Burnout va sin enlace a propósito**, hasta que su DNS apunte. Basta con poner
-su `href` desde el panel y la tarjeta pasa a enlazar sola.
+~~**Burnout va sin enlace a propósito**, hasta que su DNS apunte.~~ **Ya apunta:
+`https://burnout.ec`, puesto el 4 de septiembre de 2026.** Se cargó directo en la
+base porque el panel hace lo mismo; si se despliega a otra máquina, hay que
+ponerlo ahí desde `/admin` — `data/` no se versiona.
 
 **Los recorridos se montan fotograma a fotograma, no con el grabador de
 Playwright.** Ese grabador comprime a VP8 con poco bitrate y desde su máster no
@@ -138,6 +171,8 @@ paquete al renumerar a P0–P12.
 - **`SITIO_URL` tiene que estar puesta durante `npm run build`.** `robots.txt` y
   `sitemap.xml` son estáticos y se generan ahí: sin la variable salen sin la
   línea de sitemap y con la lista vacía, y el fallo no se ve hasta producción.
+  **Desde P10 también decide la URL de la tarjeta social**: sin ella, `og:image`
+  apunta a `localhost` y el enlace que alguien pegue en WhatsApp llega sin imagen.
 - **`SQLITE_RUTA` y `MEDIOS_RUTA` fuera de la carpeta que borra el despliegue.**
   Si el hosting reemplaza el directorio de la aplicación al publicar, el
   portafolio se vacía en cada publicación.

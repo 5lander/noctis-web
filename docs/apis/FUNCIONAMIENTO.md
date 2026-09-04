@@ -7,7 +7,7 @@ Todas las superficies son internas: **no hay API pública**. CORS cerrado al pro
 | Estado del servicio | `estado.md` | P0 | ✅ construida |
 | Disponibilidad y reserva | `agendamiento.md` | P6 | ⬜ pendiente |
 | Chat y ficha de prospecto | `chat.md` | P8 | ⬜ pendiente |
-| Formulario de contacto | `contacto.md` | P10 | ⬜ pendiente |
+| Formulario de contacto | `contacto.md` | P10 | ✅ construida |
 
 Reglas comunes: validación por esquema en servidor · límite de uso por endpoint · error genérico al cliente y detalle solo en el registro · **nunca una traza al navegador**.
 

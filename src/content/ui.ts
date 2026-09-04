@@ -11,6 +11,14 @@ export const UI_TEXT = {
   menuToggle: 'Abrir el menú de secciones',
   whatsapp: 'Escribir por WhatsApp',
   tourLabel: 'Recorrido en vídeo de la página de',
+  /*
+   * Los dos estados del botón que cubre el recorrido. Es lo único que oye quien
+   * usa lector de pantalla, así que dice la acción y sobre qué trabajo, no
+   * «reproducir» a secas: en la página hay dos recorridos y hacen falta los dos
+   * datos para saber cuál se está tocando.
+   */
+  tourPlay: 'Ver el recorrido de',
+  tourPause: 'Pausar el recorrido de',
 } as const;
 
 /**
