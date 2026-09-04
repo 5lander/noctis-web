@@ -115,3 +115,38 @@
   color: var(--texto-2);
   max-width: 52ch;
 }
+
+/*
+ * El campo trampa. No se oculta con `display: none` ni con `visibility: hidden`
+ * porque los robots que valen algo saltan lo que está declarado invisible: se
+ * saca del lienzo. Para el visitante no existe igual, y sigue en el documento
+ * para que el que rellena todo lo llene.
+ */
+.trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/*
+ * La confirmación ocupa el lugar exacto del formulario y con el mismo material:
+ * el bloque no se encoge al enviar, así que la página no da un salto justo
+ * cuando la persona acaba de hacer lo que le pedimos.
+ */
+.sent {
+  display: flex;
+  align-items: center;
+  min-height: 220px;
+  padding: 32px;
+  border: 1px solid var(--linea);
+  border-radius: var(--borde);
+  background: var(--superficie-2);
+  box-shadow: var(--sombra-2);
+  font-size: 18px;
+  line-height: 1.5;
+  max-width: 34ch;
+}

@@ -13,6 +13,7 @@
 export const ERROR_CODES = {
   tooManyRequests: 'demasiadas_peticiones',
   internal: 'error_interno',
+  invalidSubmission: 'envio_invalido',
 } as const;
 
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];
@@ -21,4 +22,14 @@ export const ERROR_MESSAGES: Readonly<Record<ErrorCode, string>> = {
   [ERROR_CODES.tooManyRequests]:
     'Recibimos demasiadas peticiones desde su conexión. Espere un momento y vuelva a intentar.',
   [ERROR_CODES.internal]: 'Algo falló de nuestro lado. Intente de nuevo en unos minutos.',
+  /*
+   * Dice qué revisar sin decir qué comprobación falló.
+   *
+   * La diferencia importa: «el nombre y una forma de contactarlo» es lo que el
+   * visitante puede arreglar, y es verdad para los cuatro motivos de rechazo que
+   * existen. Enumerar cuál de los cuatro fue le sirve más a quien está probando
+   * el formulario con un guion que a quien lo está llenando en serio.
+   */
+  [ERROR_CODES.invalidSubmission]:
+    'Revise el nombre y una forma de contactarlo, y vuelva a enviar.',
 };

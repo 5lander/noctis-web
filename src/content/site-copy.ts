@@ -206,6 +206,32 @@ export const CONTACT = {
   ],
   submit: 'Enviar mensaje',
   /*
+   * El campo trampa: un robot que rellena todo lo que encuentra lo llena, y una
+   * persona no lo ve nunca. Su rótulo existe igual porque el HTML lo exige y
+   * porque el día que algo falle y quede visible tiene que decir qué hacer.
+   *
+   * Se llama «sitio» y no «trampa» a propósito: el nombre del campo viaja en el
+   * cuerpo del envío, y uno que se anuncie como trampa deja de serlo.
+   */
+  trap: { id: 'sitio', label: 'Sitio web (dejar vacío)' },
+  /*
+   * Los tres finales del envío. Están acá y no dentro del componente porque un
+   * mensaje de estado es texto de cara al usuario como cualquier otro.
+   *
+   * El de éxito repite la promesa de la nota de abajo —el mismo día hábil— en
+   * vez de decir «enviado» a secas: lo que la persona necesita saber al soltar
+   * el botón no es que el mensaje salió, es cuándo le van a contestar.
+   *
+   * El de fallo ofrece la salida que sí funciona sin nuestro servidor de por
+   * medio. Un error que solo dice «no se pudo» deja al visitante sin nada que
+   * hacer, que es la peor forma de perder a alguien que ya decidió escribir.
+   */
+  status: {
+    sending: 'Enviando…',
+    success: 'Listo, ya llegó. Le contestamos el mismo día hábil.',
+    failed: 'No se pudo enviar. Escríbanos por WhatsApp mientras lo revisamos.',
+  },
+  /*
    * La línea de debajo del botón. El botón se queda como está: es claro y hace
    * lo que dice.
    *
@@ -262,4 +288,26 @@ export const FOOTER = {
    */
   privacyLabel: 'Aviso de privacidad',
   privacyHref: '/privacidad',
+} as const;
+
+/**
+ * La página que ve quien llega a una dirección que no existe.
+ *
+ * Es la última pantalla de la que se puede recuperar a alguien, y hasta hoy era
+ * la de Next: fondo blanco, tipografía del sistema y la palabra «404» en inglés.
+ * Alguien que escribió mal el enlace o que siguió uno viejo terminaba en una
+ * pantalla que no parecía de Noctis, que es justo lo contrario de lo que el
+ * sitio entero está tratando de demostrar.
+ *
+ * No pide disculpas y no explica el error: dice qué pasó en una línea y ofrece
+ * las dos salidas que sirven. Un 404 que se lamenta hace perder tiempo a quien
+ * ya perdió el suyo llegando acá.
+ */
+export const NOT_FOUND = {
+  eyebrow: 'Error 404',
+  title: 'Esta dirección no existe.',
+  support:
+    'O el enlace vino mal escrito, o la página cambió de sitio. Todo lo que sí existe está en la portada.',
+  home: 'Ir a la portada',
+  contact: 'Escribirnos',
 } as const;

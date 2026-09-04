@@ -48,13 +48,14 @@ export const SITE = {
 export const WHATSAPP = {
   digits: '593980105699',
   /*
-   * El mensaje precargado arranca en modo problema y no en modo cotización.
+   * El mensaje precargado dice a qué viene y nada más.
    *
-   * «Quiero una proforma» obliga al visitante a saber ya qué está comprando, y
-   * el que escribe por WhatsApp normalmente todavía no lo sabe: sabe qué le
-   * duele. Este texto es el que de verdad escribiría, y llega abierto.
+   * Va sin punto final: lo que llega al chat es el arranque de algo que el
+   * visitante va a seguir escribiendo, no un mensaje terminado que solo hay que
+   * enviar. Y declara intención de contratar, que es lo que separa una consulta
+   * de una curiosidad antes de que nadie conteste.
    */
-  greeting: 'Hola, vi la página de Noctis y quiero contarles qué necesito.',
+  greeting: 'Hola, estoy interesado en contratar sus servicios',
 } as const;
 
 /**

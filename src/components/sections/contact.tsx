@@ -1,91 +1,32 @@
 import { Container } from '@/components/layout/container';
-import { Button } from '@/components/ui/button';
-import { Field } from '@/components/ui/field';
+import { ContactForm } from '@/components/sections/contact-form';
 import { CONTACT } from '@/content/site-copy';
+import type { SentOutcome } from '@/shared/infrastructure/http/contact-redirect';
 
 import styles from './contact.module.css';
 
 /**
  * El formulario de contacto, en franja invertida.
  *
- * **P2 pone la marca, no el envío.** El endpoint `POST /api/contacto` con
- * validación en servidor, campo trampa y verificación de tiempo llega en P10, y
- * con él la confirmación en pantalla sin recargar.
+ * La sección se queda en el servidor y solo el formulario es de cliente. La
+ * división no es de estilo: el titular y el párrafo de apoyo no necesitan
+ * JavaScript para existir, y bajarlos al navegador solo porque están al lado de
+ * algo que sí lo necesita es peso que paga cada visitante.
  *
- * El formulario apunta a `/api/contacto` con `method="post"` desde ya, y no a
- * ninguna otra parte, por una razón concreta: un `<form>` sin destino envía por
- * `GET` a la propia página y deja lo que escribió el visitante en la barra de
- * direcciones y en el historial. Hasta que exista el endpoint esto responde 404,
- * que es una señal honesta de "todavía no está" en vez de una fuga silenciosa.
+ * `startedAt` es la mitad del control anti-robots de la ruta: entre que la
+ * página se genera y que alguien termina de escribir su problema pasan segundos,
+ * y un envío instantáneo no lo hizo una persona. Lo sella el servidor a
+ * propósito, para que la comprobación funcione también sin JavaScript, y baja
+ * como propiedad porque un componente no puede leer el reloj mientras pinta
+ * (ver `request-clock.ts`).
  */
-
-const FIELDS = CONTACT.fields;
-
-/**
- * `autocomplete` no es una comodidad: es el criterio **WCAG 2.1 AA 1.3.5,
- * identificar el propósito de la entrada**, y era el único incumplimiento de
- * nivel AA que quedaba en la página. Declararlo permite además que el navegador
- * rellene los cuatro campos de una pasada en celular, que es donde el formulario
- * se abandona.
- *
- * `inputMode` en el teléfono saca el teclado numérico. Va junto con `type="tel"`
- * y no en su lugar: uno describe el dato, el otro el teclado.
- */
-interface TextInputProps {
-  readonly field: { readonly id: string; readonly label: string; readonly placeholder: string };
-  readonly type: 'text' | 'email' | 'tel';
-  readonly autoComplete: string;
-  readonly required?: boolean;
-}
-
-function TextInput({ field, type, autoComplete, required = false }: TextInputProps) {
-  return (
-    <Field htmlFor={field.id} label={field.label}>
-      <input
-        id={field.id}
-        name={field.id}
-        type={type}
-        autoComplete={autoComplete}
-        inputMode={type === 'tel' ? 'tel' : undefined}
-        placeholder={field.placeholder}
-        required={required}
-      />
-    </Field>
-  );
-}
-
-function ContactForm() {
-  return (
-    <form className={styles['form']} method="post" action="/api/contacto" data-anim>
-      <TextInput field={FIELDS.name} type="text" autoComplete="name" required />
-      <TextInput field={FIELDS.business} type="text" autoComplete="organization" />
-      <TextInput field={FIELDS.email} type="email" autoComplete="email" required />
-      <TextInput field={FIELDS.whatsapp} type="tel" autoComplete="tel" />
-      <Field htmlFor={FIELDS.interest.id} label={FIELDS.interest.label} wide>
-        <select id={FIELDS.interest.id} name={FIELDS.interest.id} defaultValue="">
-          {CONTACT.interestOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-      </Field>
-      <Field htmlFor={FIELDS.message.id} label={FIELDS.message.label} wide>
-        <textarea
-          id={FIELDS.message.id}
-          name={FIELDS.message.id}
-          placeholder={FIELDS.message.placeholder}
-        />
-      </Field>
-      <div className={styles['submit']}>
-        <Button type="submit">{CONTACT.submit}</Button>
-        <p className={styles['note']}>{CONTACT.note}</p>
-      </div>
-    </form>
-  );
-}
-
-export function Contact() {
+export function Contact({
+  outcome,
+  startedAt,
+}: {
+  readonly outcome: SentOutcome | null;
+  readonly startedAt: number;
+}) {
   return (
     <section id="contacto" className={`inv ${styles['section']}`} data-reveal-root>
       <Container>
@@ -94,7 +35,7 @@ export function Contact() {
             <h2>{CONTACT.title}</h2>
             <p className={styles['support']}>{CONTACT.support}</p>
           </div>
-          <ContactForm />
+          <ContactForm startedAt={startedAt} outcome={outcome} />
         </div>
       </Container>
     </section>

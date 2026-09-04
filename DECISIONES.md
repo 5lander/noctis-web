@@ -10,7 +10,7 @@
 | D2 | Máximo de reuniones por día | 4 | 🟡 | `config/scheduling.ts` | — |
 | D3 | Duración, margen, aviso mínimo, ventana | 20 min · 10 min · 12 h · 10 días hábiles | 🟡 | `config/scheduling.ts` | — |
 | D4 | Modelo del bot y tope de presupuesto | Definir al conectar; tope mensual obligatorio antes de encender | 🔴 | `config/chat.ts` | Conexión real en P12 |
-| D5 | Persistencia de fichas y conversaciones | En memoria en v1; PostgreSQL si se decide persistir | 🟡 | `AlmacenPort` | — |
+| D5 | Persistencia de fichas y conversaciones | **Solo correo: la ficha de contacto no se guarda.** Vive lo que vive el aviso, que es lo que pide la minimización de la LOPDP. `AlmacenPort` sigue en pie para el chat | ✅ | `AlmacenPort` | Cerrado en P10, 2026-09-04 |
 | D6 | Plazo de conservación de datos de prospectos | 12 meses, borrado automático al vencer | 🟡 | `config/privacy.ts` | — |
 | D7 | Dónde se hace la reunión | Google Meet generado con el evento | 🟡 | `config/scheduling.ts` | — |
 | D8 | Cuenta de calendario | Cuenta de empresa, no la personal de Lander | 🟡 | Variables de entorno | Conexión real |

@@ -17,6 +17,12 @@ import { Services } from '@/components/sections/services';
 import { Works } from '@/components/sections/works';
 import { NAV_LINKS } from '@/content/site-copy';
 import { services } from '@/shared/infrastructure/config/service-registry';
+import {
+  readSentOutcome,
+  SENT_PARAM,
+  type SentOutcome,
+} from '@/shared/infrastructure/http/contact-redirect';
+import { requestStartedAt } from '@/shared/infrastructure/http/request-clock';
 
 /**
  * La página, en el orden exacto del prototipo (`SPEC.md` §6).
@@ -36,19 +42,50 @@ import { services } from '@/shared/infrastructure/config/service-registry';
  * `ProofBand` va entre la marquesina y los productos porque ese es el punto
  * donde el visitante decide si sigue bajando, y lo que decide eso es si cree
  * que hay alguien detrás. Sus cifras son comprobables: ver `content/proof.ts`.
+ *
+ * La página lee un solo parámetro de la URL, y solo por una razón: cuando el
+ * formulario se envía **sin JavaScript**, la ruta contesta con una redirección
+ * de vuelta acá y el resultado viaja ahí. Cualquier otro valor se ignora — lo
+ * que llega por la URL es dato y no instrucción, así que `readSentOutcome`
+ * devuelve `null` para todo lo que no sea uno de los dos que conoce.
  */
-export default async function HomePage() {
-  // Si no hay trabajos publicados la sección no se pinta, así que su enlace
-  // tampoco: un ancla hacia un `id` que no está en el documento no hace nada.
-  //
-  // La misma condición gobierna el segundo botón de la portada. Estaba fuera de
-  // este filtro y salía siempre: el botón que promete la prueba del sitio no
-  // llevaba a ninguna parte mientras el portafolio estuviera vacío.
+type SearchParams = Promise<Record<string, string | readonly string[] | undefined>>;
+
+interface PageState {
+  readonly outcome: SentOutcome | null;
+  readonly startedAt: number;
+  readonly hasWorks: boolean;
+  readonly links: readonly NavLink[];
+}
+
+/**
+ * Todo lo que la página necesita saber antes de pintar, resuelto de una vez.
+ *
+ * Si no hay trabajos publicados la sección no se pinta, así que su enlace
+ * tampoco: un ancla hacia un `id` que no está en el documento no hace nada. La
+ * misma condición gobierna el segundo botón de la portada, que llegó a salir
+ * siempre — el botón que promete la prueba del sitio no llevaba a ninguna parte
+ * mientras el portafolio estuviera vacío.
+ */
+async function readPageState(searchParams: SearchParams): Promise<PageState> {
+  const enviado = (await searchParams)[SENT_PARAM];
   const works = await services.portfolio.listWorks({ status: 'published' });
   const hasWorks = works.length > 0;
-  const links: readonly NavLink[] = NAV_LINKS.filter(
-    (link) => link.id !== 'trabajos' || hasWorks,
-  );
+
+  return {
+    outcome: readSentOutcome(typeof enviado === 'string' ? enviado : undefined),
+    startedAt: await requestStartedAt(),
+    hasWorks,
+    links: NAV_LINKS.filter((link) => link.id !== 'trabajos' || hasWorks),
+  };
+}
+
+export default async function HomePage({
+  searchParams,
+}: {
+  readonly searchParams: SearchParams;
+}) {
+  const { outcome, startedAt, hasWorks, links } = await readPageState(searchParams);
 
   return (
     <>
@@ -68,7 +105,7 @@ export default async function HomePage() {
             <Process />
             <Quote />
             <Questions />
-            <Contact />
+            <Contact outcome={outcome} startedAt={startedAt} />
           </main>
           <SiteFooter />
         </div>

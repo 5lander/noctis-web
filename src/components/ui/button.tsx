@@ -36,6 +36,15 @@ interface ButtonProps {
    * por qué exigir que los campos obligatorios estén completos.
    */
   readonly formNoValidate?: boolean;
+  /**
+   * Apaga el botón mientras la acción está en curso.
+   *
+   * Es la única forma de que un envío lento no se convierta en dos: el
+   * formulario de contacto cambia el rótulo a «Enviando…», y sin esto un
+   * segundo clic sobre ese rótulo manda la ficha otra vez. Solo aplica a la
+   * forma `<button>`: un `<a>` deshabilitado no existe en HTML.
+   */
+  readonly disabled?: boolean;
 }
 
 function classNamesFor(variant: ButtonVariant): string {
@@ -49,6 +58,7 @@ export function Button({
   type = 'button',
   formAction,
   formNoValidate,
+  disabled = false,
 }: ButtonProps) {
   const className = classNamesFor(variant);
 
@@ -64,6 +74,7 @@ export function Button({
     <button
       className={className}
       type={type}
+      disabled={disabled}
       {...(formAction === undefined ? {} : { formAction })}
       {...(formNoValidate === undefined ? {} : { formNoValidate })}
     >

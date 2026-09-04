@@ -20,8 +20,9 @@ import styles from './site-footer.module.css';
  *
  * **Sin razón social, a pedido.** El RUC identifica la actividad comercial, que
  * es lo que un cliente comprueba, y lo hace sin publicar el nombre de una
- * persona. Debajo va la firma del estudio, que es crédito de autoría y no dato
- * de identidad.
+ * persona. La firma del estudio no va en esa columna sino en la última línea,
+ * junto al año: es crédito de autoría, no un dato de identidad, y mezclarla con
+ * el RUC la hacía parecer lo segundo.
  *
  * La regla de omitir la línea vacía se queda igual. No era del momento en que
  * faltaban los datos: es la que impide publicar un marcador de posición donde va
@@ -74,7 +75,6 @@ function Legal() {
   return (
     <div className={styles['legal']}>
       <Line value={FOOTER.taxId} />
-      <Line value={FOOTER.credit} />
       <a href={FOOTER.privacyHref}>{FOOTER.privacyLabel}</a>
     </div>
   );
@@ -96,6 +96,13 @@ export function SiteFooter() {
           <Legal />
         </div>
         <div className={styles['inner']}>
+          {/*
+            La firma va en la última línea, con el año, y no en la columna de
+            identidad. Ahí arriba se leía como un dato más de la empresa, al lado
+            del RUC; acá abajo se lee como lo que es, el crédito de quien hizo la
+            página. Es el sitio donde el visitante lo busca sin pensarlo.
+          */}
+          <span className={styles['credit']}>{FOOTER.credit}</span>
           <span className={styles['rights']}>{FOOTER.rights}</span>
         </div>
       </Container>

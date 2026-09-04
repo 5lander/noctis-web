@@ -317,9 +317,31 @@ const LINE_COMMENT = /^\s*\/\/.*$/gm;
  */
 const ARROW = /=>/g;
 
+/**
+ * Un argumento de tipo tampoco es una etiqueta.
+ *
+ * `useState<Estado>(...)`, `Promise<void>` y `FormEvent<HTMLFormElement>` le dan
+ * al buscador un `>` y un `<` con código en medio, y lo que hay en medio se
+ * lee como texto de interfaz. Aparecieron todos juntos al conectar el
+ * formulario, que es el primer componente de cliente con estado tipado.
+ *
+ * La regla que los distingue es exacta y no una lista de excepciones: **un
+ * argumento de tipo va pegado a su nombre** —`useState<`— mientras que una
+ * etiqueta JSX siempre viene después de un espacio, un salto, un paréntesis o
+ * una llave. Por eso solo se descarta el `<` precedido de un carácter de
+ * identificador. Se aplica dos veces por los genéricos anidados, que es todo lo
+ * que se anida en este proyecto.
+ */
+const TYPE_ARGUMENT = /(?<=[A-Za-z0-9_])<[^<>]*>/g;
+
 /** Los comentarios explican el porqué en español; no son texto de la interfaz. */
 function withoutComments(source: string): string {
-  return source.replace(BLOCK_COMMENT, '').replace(LINE_COMMENT, '').replace(ARROW, '= ');
+  return source
+    .replace(BLOCK_COMMENT, '')
+    .replace(LINE_COMMENT, '')
+    .replace(ARROW, '= ')
+    .replace(TYPE_ARGUMENT, '')
+    .replace(TYPE_ARGUMENT, '');
 }
 
 function tsxFilesIn(directory: string, found: string[] = []): string[] {

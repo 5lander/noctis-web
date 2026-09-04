@@ -227,12 +227,21 @@ Imágenes de trabajos con `next/image`, formato moderno, carga diferida salvo la
 
 Campos: nombre (requerido), negocio, correo (requerido), WhatsApp, interés (select), mensaje.
 
-- Validación en cliente y **también en servidor**
-- Route Handler con protección anti-spam (honeypot como mínimo)
-- Envío por Brevo (API v3, no SMTP)
-- Límite de peticiones por IP
-- Confirmación en pantalla sin recargar; el prototipo ya tiene el texto
-- **Pendiente de decidir:** ¿solo correo, o además se guarda en base de datos?
+**Construido en P10.** El contrato completo está en
+[`apis/contacto.md`](apis/contacto.md); acá queda lo que decide el producto.
+
+- Validación en cliente y **también en servidor**. La del servidor manda
+- Route Handler con dos badenes anti-automatización: campo trampa y control de
+  prisa. El instante de partida lo sella el servidor al pintar, no un guion, para
+  que la comprobación siga valiendo sin JavaScript
+- Límite de peticiones por origen: cinco cada quince minutos
+- Confirmación en pantalla sin recargar, **y también sin JavaScript** — ahí la
+  ruta redirige a la portada con el resultado en la URL
+- Envío por Brevo (API v3, no SMTP). Hoy detrás de `MailPort` con adaptador
+  simulado; el real se conecta en P12 sin tocar el dominio ni la ruta
+- **Resuelto:** solo correo. No se guarda en base de datos. La ficha vive lo que
+  vive el correo, que es lo que pide la minimización de la LOPDP; el día que
+  haga falta un historial, se agrega un adaptador detrás del mismo puerto
 
 ---
 
@@ -247,7 +256,7 @@ Hay que resolverlos antes o durante la implementación:
 | Testimonio | Nombre y cargo reales, o se retira la sección |
 | WhatsApp | Número y texto previo del mensaje |
 | Agendar llamada | Resuelto: agendador propio contra calendario real. Ver `SPEC-agendamiento-bot.md` |
-| Formulario | ¿Solo correo o también base de datos? |
+| ~~Formulario~~ | Resuelto en P10: solo correo, sin base de datos |
 | Dominio y hosting | Dónde se despliega |
 | Analítica | ¿Se instala algo? Cuál |
 | Inglés | ¿Hace falta versión en inglés? Afecta la arquitectura de rutas |
